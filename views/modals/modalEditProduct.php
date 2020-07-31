@@ -9,6 +9,7 @@
         </button>
       </div>
       <form id="EditProductForm" class="display_flex_row" enctype="multipart/form-data" method="post">
+      <input type="hidden" name="idproducto" id="idproducto">
         <div class="modal-body display_flex_row">
           <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="col-12">

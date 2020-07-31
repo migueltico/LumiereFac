@@ -90,32 +90,27 @@ class inventarioController extends view
 
   public function updateProduct($var)
   {
-    $original = $_POST["original"];
-    $urls = $_POST["urls"];
+    $sucursal = $_POST["sucursales"];
+    $codigo = $_POST["codigoBarras"];
+    $sucursal = explode(",", $sucursal);
+    $urlImg = upload::uploads();
+    $urls= implode(",", $urlImg['urls']);
+    $datos = array(
+      ":descripcion" => $_POST["descripcion"],
+      ":marca" => $_POST["marca"],
+      ":estilo" => $_POST["estilo"],
+      ":categoria" => (int) $_POST["categoria"],
+      ":talla" => (int)$_POST["talla"],
+      ":codigoBarras" => $_POST["codigoBarras"],
+      ":iva_valor" => ((int) $_POST["iva_valor"] > 0 ? (int)$_POST["iva_valor"] : 0),
+      ":iva" => (isset($_POST["iva"]) ? 1 : 0),
+      ":modificado_por" => (int) $_SESSION["id"],
+      ":urls" => $urls ,
+      ":idproducto" => (int) $_POST["idproducto"],
+    );
 
-    $original = explode(",", $original);
-    $urls = explode(",", $urls);
-    // $sucursal = $_POST["sucursales"];
-    // $codigo = $_POST["codigoBarras"];
-    // $sucursal = explode(",", $sucursal);
-    // $datos = array(
-    //   ":descripcion" => $_POST["descripcion"],
-    //   ":marca" => $_POST["marca"],
-    //   ":estilo" => $_POST["estilo"],
-    //   ":categoria" => (int) $_POST["categoria"],
-    //   ":codigoBarras" => $_POST["codigoBarras"],
-    //   ":talla" => (int)$_POST["talla"],
-    //   ":iva_valor" => ((int) $_POST["iva_valor"] > 0 ? (int)$_POST["iva_valor"] : 0),
-    //   ":iva" => (isset($_POST["iva"]) ? 1 : 0),
-    //   ":idusuario" => (int) $_SESSION["id"],
-    //   ":modificado_por" => (int) $_SESSION["id"],
-    //   ":idproducto" => (int) $_POST["idproducto"],
-    // );
-
-    // $updateProduct = product::updateProduct($datos, $sucursal);
-
-    // echo json_encode($updateProduct);
-    // echo json_encode([$urls,$deleteUrls]);
-    echo json_encode(["original" => $original, "actual" => $urls, "borrar" => array_diff($original, $urls)]);
+    $updateProduct = product::updateProduct($datos, $sucursal);
+    header('Content-Type: application/json');
+    echo json_encode($updateProduct);
   }
 }

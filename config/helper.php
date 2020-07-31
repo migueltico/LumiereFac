@@ -118,8 +118,7 @@ class helper
 
     // Check if file already exists
     if (file_exists($target_file)) {
-      $response["FileExist"] = "Sorry, file already exists.";
-      $uploadOk = 0;
+      unlink($target_file);
     }
 
     // Check file size

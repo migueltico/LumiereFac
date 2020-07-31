@@ -75,9 +75,9 @@ class productModel
         $con = new conexion();
         $result = $con->SPCALL("CALL getProductBySucursal($id)");
         if ($result['error'] == '00000') {
-            return array("data" =>  $result['data'],"rows"=>$result['rows'], "error" => 0, "msg" => "Registros cargados correctamente");
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 0, "msg" => "Registros cargados correctamente");
         } else if ($result['error'] !== '00000') {
-            return array("data" =>  $result['data'],"rows"=>$result['rows'], "error" => 1,   "errorData" => $result, "msg" => "Error al Cargar los datos");
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 1,   "errorData" => $result, "msg" => "Error al Cargar los datos");
         }
     }
     /**
@@ -127,8 +127,21 @@ class productModel
     public static function updateProduct($datos)
     {
         $con = new conexion();
-        $setData = ':descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:idproducto';
+        $setData = ':descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:modificado_por,:urls,:idproducto';
         $sql = "CALL updateProduct($setData)";
         return $con->SPCALLNR($sql, $datos);
+        // $arr  =   array(
+        //     "p.descripcion" => "param1",
+        //     "p.marca" => "param2",
+        //     "p.estilo" => "param3",
+        //     "p.idcategoria" => "param4",
+        //     "p.idtalla" => "param5",
+        //     "p.codigo" => "param6",
+        //     "p.iva" => "param7",
+        //     "p.activado_iva" => "param8",
+        //     "p.modificado_por" => "param9",
+        //     "p.image_url" => "param10",
+        //     "p.idproducto" => "param11"
+        // );
     }
 }

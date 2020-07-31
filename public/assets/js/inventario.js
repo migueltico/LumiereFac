@@ -3,14 +3,10 @@ $('#bodyContent').on("click", "#addProduct #AddProductFormBtn", function (e) {
     agregarProducto(e)
     //console.log("CLICK EN AGREGAR");
 })
-// $('#bodyContent').on("change", "#filesImages", function (e) {
-//     //e.preventDefault();
-//     //uploadFiles(e, 'AddImage', '#imageContainer', 'imgContainerChildren')
-//     // loadImagePreview(e, '#addProduct')
-// })
-$('#bodyContent').on("click", "#generarCodigo", function (e) {
+
+$('#bodyContent').on("click", "#addProduct #generarCodigo", function (e) {
     e.preventDefault();
-    generarCodigo(e)
+    generarCodigo(e, '#addProduct')
 })
 //REFRESCA LA TABLA EN INVENTARIO
 $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
@@ -24,21 +20,11 @@ $('#bodyContent').on("click", "#newProduct", function (e) {
     $("#addProduct #imageContainer").html('')
 })
 //DETECTA EL CLICK EN LA X PARA REMOVER IMAGEN DEL MODAL
-$('#bodyContent').on("click", ".imgContainerChildren span", function ({
+$('#bodyContent').on("click", "#addProduct .imgContainerChildren span", function ({
     target
 }) {
-    let url2 = $(target).data('url')
-    let indexImg = $(target).data('index')
-    let el = $(target).parent()
-    let filesImages = $('#addProduct #filesImages')
-    dt.items.remove(indexImg)
-    TransferInput('#addProduct')
+    removeItemFromDt(target, '#addProduct')
 })
-// $("#bodyContent").on("click", "#addProduct", "hidden.bs.modal", function (e) {
-//     removeImgAdd2(e)
-
-
-// });
 
 
 function agregarProducto(e) {
@@ -67,7 +53,6 @@ function agregarProducto(e) {
             })
             .then((resp) => resp.json())
             .then((resp) => {
-                console.log(resp);
                 if (resp.error == '0') {
                     Swal.fire({
                         position: 'top-end',
@@ -102,45 +87,15 @@ function agregarProducto(e) {
             });
     }
 }
-/**
- * //Solo la variable Container lleva simbolo de clase o ID
- * @param {*} e evento
- * @param {*} formId Id del Form
- * @param {*} containerID ( Lleva el simbolo antepuesto )Id o Clase del contenedor donde se agregaran las imagenes
- * @param {*} wrappImgeId  Clase del wrapper de la imagen y el span
- */
-function uploadFiles(e, formId, containerID, wrappImgeId) {
-    let url = '/upload/files';
-    let form = document.getElementById(formId)
-    let formDatas = new FormData(form)
 
-    fetch(url, {
-            method: 'POST',
-            body: formDatas
-        })
-        .then((resp) => resp.json())
-        .then((resp) => {
-            console.log(resp);
-            resp.urls.map(image => {
-                let img = `<div class="${wrappImgeId} shadow  imgWrapper"><span class="shadow-sm" data-url="${image.url}">x</span><img src="${image.url}" alt=""></div>`
-                $(containerID).append(img)
-                console.log(containerID);
-                console.log(img);
-            });
-        })
-        .catch((err) => {
-            console.log('error en FETCH:', err);
-        });
-}
-
-function generarCodigo(e) {
+function generarCodigo(e, modalId) {
     let url = '/inventario/generar/codigobarras';
     fetch(url, {
             method: 'POST',
         })
         .then((result) => result.json())
         .then((resp) => {
-            $("#txtcodigoBarra").val(resp.codigo)
+            $(`${modalId} #txtcodigoBarra`).val(resp.codigo)
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
@@ -154,6 +109,7 @@ function loadTable(e) {
         .then((result) => result.text())
         .then((html) => {
             $(".loadTable").html(html)
+            console.log('Load New data');
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
@@ -222,43 +178,72 @@ function validarFormADD(modalId) {
 }
 
 
-//************GROUP EDIT **********************************************************/
+
+//**************************************************************************** */
+//**************************************************************************** */
+//*****           ****        ********             ****                 ****** */
+//*****    ***********   *****   **********   ***************    ************* */
+//*****    ***********   *******   ********   ***************    ************* */
+//*****         ******   *******   ********   ***************    ************* */
+//*****    ***********   *******   ********   ***************    ************* */
+//*****    ***********   *******   ********   ***************    ************* */
+//*****    ***********   *****   **********   ***************    ************* */
+//*****           ****        ********             **********    ************* */
+//**************************************************************************** */
+//**************************************************************************** */
 
 
 //SE EJECUTA AL PRESIONAR EDITAR EN ALGUN PRODUCTO
+$('#bodyContent').on("click", "#EditProduct #generarCodigo", function (e) {
+    e.preventDefault();
+    generarCodigo(e, '#EditProduct')
+})
 $("#bodyContent").on("click", ".EditProductBtn", function (e) {
     resetInputImage(e, '#EditProduct')
     $(`#EditProduct #imageContainer`).html('')
     console.log("EDIT");
     loadDataEditModal(e, '#EditProduct')
 });
-
-//
-$("#bodyContent").on("click", "#EditProductFormBtn", function (e) {
+$("#bodyContent").on("click", "#EditProduct #EditProductFormBtn", function (e) {
     e.preventDefault()
-    document.getElementById("EditProductForm").reset();
-    resetInputImage(e, '#EditProduct')
-    $(`#EditProduct #imageContainer`).html('')
-    UpdateEditModal(e)
+    UpdateEditModal(e, '#EditProduct')
+    loadTable()
 });
-$("#bodyContent").on("click", "#EditProduct .imgContainerChildren span", function (e) {
-    removeimgEdit(e)
-});
-// $('#bodyContent').on("change", "#EditProduct #filesImage", function (e) {
-//     //e.preventDefault();
-//     loadImagePreview(e, '#EditProduct')
-//     //uploadFiles(e, 'EditImage', '#imageContainer', 'imgContainerChildren')
-//     console.log('change 2');
-// })
-
-function removeimgEdit(e) {
-    console.log($(e.target).parent());
-    $(e.target).parent().remove()
+//DETECTA EL CLICK EN LA X PARA REMOVER IMAGEN DEL MODAL
+$('#bodyContent').on("click", "#EditProduct .imgContainerChildren span", function ({
+    target
+}) {
+    removeItemFromDt(target, '#EditProduct')
+})
+//REMUEVE LA IMAGEN SELECCIONADA DEL DATA TRANSFER
+function removeItemFromDt(target, modalId) {
+    let url2 = $(target).data('url')
+    let indexImg = $(target).data('index')
+    let el = $(target).parent()
+    let filesImages = $(`${modalId} #filesImages`)
+    dt.items.remove(indexImg)
+    $(el).remove()
+    DeleteTransferItem(modalId)
 }
 
-function loadDataEditModal(e,modalId) {
+function DeleteTransferItem(modalId) {
+    let filesImages = $(`${modalId} #filesImages`)[0] // selecciono el elemento como tal pero con la utilidad de usar jquery con dos ID
+    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
+    let data = filesImages.files
+    for (var i = 0; i < data.length; i++) {
+        // dt.items.add(new File([], data))
+        dt.items.add(new File([data[i]], data[i].name, {
+            type: data[i].type,
+            lastModified: new Date().getTime()
+        }))
+    }
+    filesImageHidden.files = dt.files
+}
+
+function loadDataEditModal(e, modalId) {
     let id = $(e.target).data('id')
     let formDatas = new FormData()
+    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
     formDatas.append('idproducto', id)
     fetch('/inventario/getProductBySucursal', {
             method: 'POST',
@@ -276,17 +261,15 @@ function loadDataEditModal(e,modalId) {
                 $(`${modalId} :input#idproducto`).val(id)
                 $(`${modalId} :input#originalUrl`).val(datos.image_url)
 
-                urls.map((image,i) => {
-                    let url =makeBlobFile(image)
-                    dt.files = url
-                    TransferInput(modalId)
-                   // let img = `<div class="imgContainerChildren imgWrapper"><span data-url="${image}">x</span><img src="${image}" alt=""></div>`
+                urls.map((image, index) => {
                     let img = `<div class="imgContainerChildren imgWrapper shadow">
-                    <span class="shadow-sm" data-url="${image}" data-index="${i}">x</span>
-                    <img src="${image}" />
-                    </div>`;
-                    $(`${modalId} #imageContainer`).append(img)
-                });
+                            <span class="shadow-sm" data-hasurl='1' data-url="${image}" data-index="${index}">x</span>
+                            <img src="${image}" />
+                            </div>`;
+                    $(`${modalId} #imageContainer`).append(img);
+                })
+
+
                 $(`${modalId} :input.checkSucursal`).prop('checked', false)
                 sucursales.forEach(id => {
                     let idtag = `#EditProduct :input#idsucursal${id}`
@@ -311,6 +294,9 @@ function loadDataEditModal(e,modalId) {
                         $(option).prop("selected", true)
                     }
                 })
+
+
+                makeBlobFile(urls, modalId)
             } else {
                 console.log(resp);
             }
@@ -318,31 +304,26 @@ function loadDataEditModal(e,modalId) {
         .catch((err) => {
             console.log('error en FETCH:', err);
         });
+    //  TransferInput(modalId)
 }
 
-function UpdateEditModal() {
-    let form = document.getElementById('EditProductForm')
+function UpdateEditModal(e, modalId) {
+    let form = $(`${modalId} #EditProductForm`)[0]
+    //let form = document.getElementById('EditProductForm')
     let formData = new FormData(form)
     let sucursales = []
     let urls = []
-    let cksucursales = $(".checkSucursal.edit")
-    let images = $("#imageContainer2.edit .imgContainerChildren2 span")
+    let cksucursales = $(`${modalId} .checkSucursal`)
     cksucursales.map((i, el) => {
         let data = $(el).data('sucursal')
         if ($(el).prop('checked')) {
             sucursales.push(data)
         }
     })
-    images.map((i, el) => {
-        let data = $(el).data('url')
-        urls.push(data)
-    })
     formData.append("sucursales", sucursales)
-    formData.append("urls", urls)
-
-    for (var value of formData.values()) {
-        console.log(value);
-    }
+    // for (var value of formData.values()) {
+    //     console.log(value);
+    // }
 
     fetch("/inventario/updateProduct", {
             method: 'POST',
@@ -350,7 +331,9 @@ function UpdateEditModal() {
         }).then(resp => resp.json())
         .then(resp => {
             console.log(resp);
-        })
+        }).catch((err) => {
+            console.log('error en FETCH:', err);
+        });
 }
 
 //************END GROUP EDIT **********************************************************/
@@ -371,7 +354,7 @@ function TransferInput(modalId) {
     // console.log('TransferInput Change');
     $(`${modalId} #imageContainer`).html('');
     let filesImages = $(`${modalId} #filesImages`)[0] // selecciono el elemento como tal pero con la utilidad de usar jquery con dos ID
-    let filesImageHidden = document.getElementById('filesImageHidden')
+    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
     let data = filesImages.files
     let dataArray = []
     for (var i = 0; i < data.length; i++) {
@@ -383,8 +366,6 @@ function TransferInput(modalId) {
     }
     filesImageHidden.files = dt.files
     $(`${modalId} #filesImages`).val('')
-    // console.log(filesImageHidden.files);
-
     for (var i = 0; i < filesImageHidden.files.length; i++) {
         // console.log(filesImageHidden.files[i]);
         let reader = new FileReader();
@@ -393,7 +374,7 @@ function TransferInput(modalId) {
         reader.onload = function (e) {
             let image = e.target.result
             let img = `<div class="imgContainerChildren imgWrapper shadow">
-            <span class="shadow-sm" data-url="${image}" data-index="${index}">x</span>
+            <span class="shadow-sm"  data-hasurl='0'  data-url="${image}" data-index="${index}">x</span>
             <img src="${image}" />
             </div>`;
             $(`${modalId} #imageContainer`).append(img);
@@ -410,23 +391,59 @@ function resetInputImage(e, modalId) {
     dt.clearData()
 }
 
-function makeBlobFile(url){
-    
-fetch(url)
-.then(res => res.blob())
-.then(blob => {
-  const file = new File([blob], makeid(8), blob)
-  console.log(file)
-  return file
-})
+function makeBlobFile(urls, modalId) {
+    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
+    urls.map((url, i) => {
+        fetch(urls[i])
+            .then(res => res.blob())
+            .then(blob => {
+                // let nameImg = makeid(3, blob.type);
+                let nameImg = GetFilename(url);
+                let long = (urls.length - 1)
+                //  dt.items.add(new File([blob], makeid(8), blob))
+                dt.items.add(new File([blob], nameImg, {
+                    type: blob.type,
+                    lastModified: new Date().getTime(),
+                }))
+                filesImageHidden.files = dt.files
+                // $(`${modalId} #imageContainer`).html('');
+            })
+
+
+
+    })
+
 }
-function makeid(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+
+function makeid(length, type) {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-    return result;
- }
- 
+    let mime = type
+    mime = mime.split('/')
+    mime = 'image_' + result + '.' + mime[1]
+    return mime.toLowerCase()
+}
+
+function GetFilename(url) {
+    if (url) {
+        var m = url.toString().match(/.*\/(.+?)\./);
+        if (m && m.length > 1) {
+            let mime = url.split('.')[1]
+            return m[1] + '.' + mime;
+        }
+    }
+    return "";
+}
+
+//NO BORRAR, SIRVE PARA CONVERTIR URLS CON FETCH EN FILES
+
+// fetch(url)
+// .then(res => res.blob())
+// .then(blob => {
+//     const file = new File([blob], 'dot.png', blob)
+//     console.log(file)
+// })
