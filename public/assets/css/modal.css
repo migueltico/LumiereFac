@@ -1,0 +1,100 @@
+.borderContainer {
+  border: 1px solid #eeee;
+  margin: 1rem;
+}
+
+.borderModal.borderContainer {
+  position: relative;
+  padding: 1rem 0.2rem;
+  max-width: calc(100% - 2rem);
+}
+
+.borderModal.borderContainer::before {
+  content: "Activar en Sucursal";
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  background-color: white;
+}
+
+.imgWrapperContainer {
+  display: grid;
+  position: relative;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 200px;
+  gap: 0.7rem;
+  background-color: #fafafa;
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+}
+
+.imgWrapperContainer::before {
+  content: "Imagenes";
+  position: absolute;
+  font-size: 2rem;
+  top: calc(50% - 2rem);
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: #eaeaea;
+}
+
+.imgWrapperContainer img {
+  display: block;
+  position: relative;
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+}
+
+
+.imgWrapperContainer .imgWrapper {
+  position: relative;
+  background: white;
+  padding: 0.3rem;
+}
+
+
+.imgWrapperContainer .imgWrapper span {
+  content: 'x';
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  background-color: #007bff;
+  color: #fff;
+  z-index: 1;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.5;
+  font-weight: 600;
+  top: 5%;
+  right: 5%;
+  cursor: pointer;
+  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.4) !important;
+}
+
+
+.imgWrapperContainer .imgWrapper span:hover {
+  background-color: #0066d3;
+
+
+}
+
+.imgWrapperContainer img:first-child {
+  border: 5px solid #17a2b8;
+}
+
+button.close span {
+  pointer-events: none;
+}
+
+.custom-file-input {
+  cursor: copy;
+}
+
+.display_flex_row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}

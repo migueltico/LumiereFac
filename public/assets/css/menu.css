@@ -1,0 +1,130 @@
+
+
+/*MENU*/
+.lateral {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    background: #273e53;
+}
+
+.listitems li span.spanStyleMenu::before {
+    content: "";
+    color: white;
+    position: absolute;
+    background-color: white;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    left: calc(50% - 4px);
+    top: calc(50% - 4px);
+}
+
+.listitems li span {
+    position: relative;
+    padding: 0.5rem 0rem;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.listitems li span.spanStyleMenu::after {
+    content: "";
+    position: absolute;
+    color: white;
+    background-color: white;
+    width: 2px;
+    height: 100%;
+    left: calc(50% - 1px);
+    top: 0;
+
+}
+
+
+.marca {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #6265ff;
+    width: 100%;
+    height: var(--TopBarHeight);
+    color: white;
+    z-index: 2;
+}
+.menuContainer {
+    position: relative;
+    z-index: 9999;
+    color: white;
+}
+
+
+
+.main_menu {
+    width: 100%;    
+}
+
+
+.main_menu li a {
+    width: 100%;
+    padding: 1rem 0.7rem 1rem 0.7rem;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    text-decoration: none;
+    color: white;
+    font-weight: 400;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main_menu li a>span .bi {
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.main_menu li ul {
+    display: none;
+    width: 100%;
+    color: white;
+    background-color: #1b3650;
+
+}
+
+.main_menu li ul li {
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    width: 100%;
+    color: white;
+    cursor: pointer;
+}
+
+
+.main_menu li a {
+
+    transition: background-color ease-in-out 200ms;
+
+}
+
+.main_menu li a:hover {
+    background-color: #122e46;
+
+}
+
+#main_menu li ul.active li:hover {
+    background-color: #122e46;
+    cursor: pointer;
+}
+
+.activeBtn {
+    border-top: 1px solid #162f46;
+    background-color: #122e46;
+    border-bottom: 2px solid #0c2944;
+    cursor: pointer;
+}
+
+.menu_down svg {
+    font-size: 1rem;
+}

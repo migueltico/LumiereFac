@@ -1,0 +1,23 @@
+Options +FollowSymLinks
+Options -Indexes
+# Activamos mod_rewrite
+RewriteEngine on
+
+# Definimos la ruta base, por facilidad, una única vez
+SetEnvIf RUTA_BASE ^(.*)$ RUTA_BASE=/public/assets/
+
+# Aquí nos evitamos comprobar que sea un archivo (agrego comprobación
+# para detectar también directorio) en cada conjunto de reglas
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(.*)$ $1 [QSA,L]
+
+# Obtenemos todo lo que vaya tras "assets/"
+RewriteCond %{REQUEST_URI} /(.+)$
+# Y éstos coinciden con un archivo existente..
+RewriteCond %{DOCUMENT_ROOT}%{ENV:RUTA_BASE}%1 -f
+# Entonces (si se cumplen todas las condiciones) redirigimos (R)
+# y dejamos de evaluar el resto de reglas (L)
+RewriteRule ^(.*)$ %{ENV:RUTA_BASE}%1 [L,R]
+
+RewriteRule ^ index.php [QSA,L]

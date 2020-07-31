@@ -1,0 +1,26 @@
+.table tbody tr:hover {
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#f6f8f9+0,e5ebee+50,d7dee3+51,f5f7f9+100;White+Gloss */
+    background: #f5f5f5 !important;
+    /* Old browsers */
+
+
+
+    transition: all ease-in 100ms;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.table tbody tr:hover .Editbuttons {
+    opacity: 1;
+    pointer-events: initial;
+}
+
+.Editbuttons {
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+}
+
+.table thead th {
+    cursor: default;
+}

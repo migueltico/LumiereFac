@@ -1,0 +1,14 @@
+.newBtn{
+    display: block;
+    background-color: green;
+    color: white;
+    padding:0.35rem 0.6rem;
+    margin: 0px 10px;
+    appearance: none;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+}
+.newBtn:hover{
+    background-color: rgb(0, 180, 0);
+}

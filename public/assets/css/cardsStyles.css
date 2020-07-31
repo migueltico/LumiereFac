@@ -1,0 +1,28 @@
+.cardGroup {
+    min-height: 42;
+    background-color: white;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    margin-bottom: 1rem;
+}
+
+.cardHeader {
+    display: flex;
+    flex-direction: row;
+    min-height:14px;
+    border-bottom: 1px solid var(--separatorColor);
+    padding: 0.8rem;
+    color: rgb(37, 38, 92);
+}
+
+.cardBody {
+    min-height: 14px;
+    padding: 0.9rem;
+}
+
+.cardFooter {
+    min-height:14px;
+    border-top: 1px solid var(--separatorColor);;
+    padding: 0.8rem;
+}

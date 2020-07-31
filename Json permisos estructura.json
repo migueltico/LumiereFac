@@ -1,0 +1,32 @@
+{
+    "modulo1": {
+        "guardar": 1,
+        "eliminar": 1,
+        "ver": 1,
+        "nuevo": 1
+    },
+    "modulo2": {
+        "guardar": 1,
+        "eliminar": 1,
+        "ver": 1,
+        "nuevo": 1
+    },
+    "modulo3": {
+        "guardar": 1,
+        "eliminar": 1,
+        "ver": 1,
+        "nuevo": 1
+    },
+    "modulo4": {
+        "guardar": 1,
+        "eliminar": 1,
+        "ver": 1,
+        "nuevo": 1
+    },
+    "modulo5": {
+        "guardar": 1,
+        "eliminar": 1,
+        "ver": 1,
+        "nuevo": 1
+    }
+}
