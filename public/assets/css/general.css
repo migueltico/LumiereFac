@@ -1,6 +1,6 @@
 :root {
-    --primaryColor: #5053ff;
-    --secondColor: rgb(0, 132, 255);
+    --primaryColor: #009eff;
+    --secondColor: #0192ec;
     --separatorColor: #eee;
     --tableRowColor: rgb(250, 250, 250);
     --TopBarHeight: 50px;
@@ -30,8 +30,9 @@ html {
 /*TOBAR*/
 .topbar {
     height: var(--TopBarHeight);
-    background-color: #5053ff;
+    background-color: var(--primaryColor);
 }
+
 .main {
     /* min-height: 100vh; */
     background-color: var(--separatorColor);
@@ -40,10 +41,11 @@ html {
 .mainContainer {
     /* display: grid;
     grid-template-columns: 210px 1fr; */
-width: 100vw;
+    width: 100vw;
     display: flex;
     flex-direction: row;
     /*column-gap: 0.5rem;*/
+    position: relative;
 }
 
 .mainContainer .lateral {
@@ -51,8 +53,8 @@ width: 100vw;
     grid-template-columns: 210px 1fr; */
     width: 210px;
     /*column-gap: 0.5rem;*/
-    height: calc(100vh -  var(--TopBarHeight));
-    overflow-y: scroll;
+    height: calc(100vh - var(--TopBarHeight));
+    overflow-y: hidden;
 }
 
 .mainContainer .bodyMain {
@@ -64,11 +66,22 @@ width: 100vw;
     height: 100vh;
     overflow-y: scroll;
     padding: 1rem;
-    height: calc(100vh -  var(--TopBarHeight));
+    height: calc(100vh - var(--TopBarHeight));
+    position: relative;
 }
 
 .bodyContent {
-    
+    position: relative;
+    min-height: 100%;
+}
+
+.showAnotherSucursal:first-child {
+    font-weight: 600;
+}
+
+#nameSucursal {
+    font-size: 1.3rem;
+    margin-left: 1.5rem;
 }
 
 .gravado {
@@ -78,6 +91,135 @@ width: 100vw;
     height: 15px;
     text-align: center;
     margin: 0 auto;
+}
+
+.inputGastos {
+    text-align: right;
+    margin-right: 20px;
+
+}
+
+.strongSugerido {
+    position: relative;
+    padding-right: 35px !important;
+}
+
+.BtnCalcularSugerido {
+    position: absolute;
+    height: 35%;
+    width: 30px;
+    top: calc(50% - 16px);
+    right: 0;
+}
+.itemLeftData {
+    position: relative;
+    min-width: 100px;
+    text-align: center;
+    padding-right: 35px !important;
+}
+
+.itemLeftDataBtn {
+    position: absolute;
+    height: 38%;
+    width: 32px;
+    top: calc(50% - 16px);
+    right: 0;
+}
+
+.gastosLabel {
+    min-width: 120px;
+}
+
+.inputWithStockBtn {
+    max-width: 75px !important;
+    min-width: 75px !important;
+}
+
+.inputWithStockBtn2 {
+    max-width: 35px !important;
+    min-width: 35px !important;
+}
+
+.inputWithStock {
+    max-width: 150px !important;
+    min-width: 100px !important;
+    text-align: center;
+}
+
+.inputWithStock2 {
+    max-width: 150px !important;
+    min-width: 150px !important;
+    text-align: center;
+}
+
+.loading {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 150px 0;
+}
+
+.loading::before {
+    content: "Cargando Datos";
+    position: absolute;
+
+}
+
+.carousel-control-next-icon {
+    min-height: 50px;
+    min-width: 50px;
+    background-image: url("/public/assets/img/arrow.png");
+    transform: scaleX(-1);
+
+}
+
+.carousel-control-prev-icon {
+    min-height: 50px;
+    min-width: 50px;
+    background-image: url("/public/assets/img/arrow.png");
+
+}
+
+.carousel-item.active {
+    max-height: 70vh !important;
+    width: 100%;
+}
+
+.carousel-item.active img {
+    object-fit: cover;
+    height: 100% !important;
+    display: block;
+}
+
+.carousel-indicators li {
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+button.btn svg {
+    pointer-events: none;
+}
+
+.tooltipimgView {
+    display: block;
+    height: 60px;
+    width: 50px;
+    background-color: #fff;
+    box-shadow: 0 4px 7px 0px rgba(0, 0, 0, .3);
+    padding: 0.2rem;
+    z-index: 10;
+}
+
+.tooltipimgView img {
+    display: block;
+    position: relative;
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
 }
 
 .noGravado {
@@ -121,6 +263,7 @@ width: 100vw;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #c5c5c5;
 }
+
 .table-responsive::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.164);
     background-color: #F5F5F5;

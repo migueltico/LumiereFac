@@ -17,7 +17,7 @@ class view
             $$property = $value;
         }
 
-        
+
         if (!empty($parameters['get'])) {
             // echo 'Si tiene datos el get';
             // print_r($get);
@@ -32,13 +32,13 @@ class view
         }
         require_once "./views/$template_url.php";
     }
-    public static function renderElement(String $template_url, array $parameters)
+    public static function renderElement(String $template_url, array $parameters = null)
     {
-        foreach ($parameters as $property => $value) {
-            $$property = $value;
+        if ($parameters !== null) {
+            foreach ($parameters as $property => $value) {
+                $$property = $value;
+            }
         }
-
-        
         if (!empty($parameters['get'])) {
             // echo 'Si tiene datos el get';
             // print_r($get);
@@ -53,7 +53,7 @@ class view
         }
         require_once "./views/elements/$template_url.php";
     }
-    public static function renderT(String $template_url,array $block, array $parameters)
+    public static function renderT(String $template_url, array $block, array $parameters)
     {
         foreach ($parameters as $property => $value) {
             $$property = $value;
@@ -75,16 +75,20 @@ class view
         $view_name = TEMPLATE . $template_url . ".tpl.php";
         include($view_name);
     }
-    public static function block($name){
-        return BLOCKS . $name.".php";
+    public static function block($name)
+    {
+        return BLOCKS . $name . ".php";
     }
-    public static function modal($name){
-        return MODALS . $name.".php";
+    public static function modal($name)
+    {
+        return MODALS . $name . ".php";
     }
-    public static function contents($name){
-        return CONTENTS . $name.".php";
+    public static function contents($name)
+    {
+        return CONTENTS . $name . ".php";
     }
-    public static function element($name){
-        return ELEMENTS . $name.".php";
+    public static function element($name)
+    {
+        return ELEMENTS . $name . ".php";
     }
 }

@@ -15,7 +15,9 @@
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['gear'] ?></span><span>Admin</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
                 <li data-linkto="/sucursal" class="dataLink"><span class="spanStyleMenu"></span><span>Sucursales</span><span></span></li>
-                <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Gastos</span><span></span></li>
+                <li data-linkto="/admin/gastos" class="dataLink"><span class="spanStyleMenu"></span><span>Gastos</span><span></span></li>
+                <li data-linkto="/admin/categoriaprecios" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias de precios</span><span></span></li>
+                <li data-linkto="/admin/categoriasytallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
                 <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>
@@ -32,7 +34,7 @@
             <a class="btnSlideDown" href="/inventario"><span><?= $icons['box'] ?></span><span>Inventario</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
                 <li data-linkto="/inventario/listarproductos" class="dataLink"><span class="spanStyleMenu"></span><span>Lista de Productos</span><span></span></li>
-                <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Agregar Stock</span><span></span></li>
+                <li data-linkto="/inventario/addstock" class="dataLink"><span class="spanStyleMenu"></span><span>Agregar Stock</span><span></span></li>
                 <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>
@@ -66,7 +68,7 @@
             <a href="/logout"><span><?= $icons['exit'] ?></span><span>Cerrar Sesion</span><span class="menu_down"></span></a>
         </li>
         <li class="uniq_menu2">
-            <a target='_blank'  href="C:\xampp\php\logs"><span><?= $icons['exit'] ?></span><span>Log</span><span class="menu_down"></span></a>
+            <a target='_blank' href="C:\xampp\php\logs"><span><?= $icons['exit'] ?></span><span>Log</span><span class="menu_down"></span></a>
         </li>
 
     </ul>

@@ -3,21 +3,89 @@ $('#bodyContent').on("click", "#addProduct #AddProductFormBtn", function (e) {
     agregarProducto(e)
     //console.log("CLICK EN AGREGAR");
 })
-
-$('#bodyContent').on("click", "#addProduct #generarCodigo", function (e) {
+//GENERA CODIGO DE BARRAS
+$('#bodyContent').on("click", "#addProduct #addProduct_generarCodigo", function (e) {
     e.preventDefault();
     generarCodigo(e, '#addProduct')
 })
+
 //REFRESCA LA TABLA EN INVENTARIO
 $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
     e.preventDefault();
     loadTable(e)
 })
+
 //SE EJECUTA AL PRESIONAR EL BTN NUEVO PARA NUEVO PRODUCTO
 $('#bodyContent').on("click", "#newProduct", function (e) {
     document.getElementById("AddProductForm").reset();
     resetInputImage(e, '#addProduct')
-    $("#addProduct #imageContainer").html('')
+    $("#addProduct #addProduct_imageContainer").html('')
+})
+//SE EJECUTA AL PRESIONAR ENTER EN EL INPUT DE BUSQUEDA EN INVENTARIO
+$('#bodyContent').on("keypress", "#productSearch", function (e) {
+    if (e.charCode == 13) {
+        let toSearch = document.getElementById('productSearch').value
+        let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
+        $(".loadTable").html('')
+        $(".loadTable").append(img)
+        console.log(toSearch);
+        let formData = new FormData()
+        formData.append("toSearch", toSearch)
+        fetch("/inventario/search", {
+                method: "POST",
+                body: formData
+            }).then(resp => resp.text())
+            .then(resp => {
+                $(".loadTable").html(resp)
+                //console.log(resp);
+            })
+    }
+
+})
+//SE EJECUTA AL PRESIONAR ENTER EN EL INPUT DE BUSQUEDA EN INVENTARIO
+$('#bodyContent').on("keypress", "#productSearchStock", function (e) {
+    if (e.charCode == 13) {
+        let toSearch = document.getElementById('productSearchStock').value
+        let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
+        $(".loadTable").html('')
+        $(".loadTable").append(img)
+        console.log(toSearch);
+        let formData = new FormData()
+        formData.append("toSearch", toSearch)
+        fetch("/inventario/search/stock", {
+                method: "POST",
+                body: formData
+            }).then(resp => resp.text())
+            .then(resp => {
+                $(".loadTable").html(resp)
+                //console.log(resp);
+            })
+    }
+
+})
+//Calcula el precio sugerido
+$('#bodyContent').on("click", ".BtnCalcularSugerido", function (e) {
+    let id = e.target.dataset.id
+    let costo = document.getElementById(`costo_${id}`).value
+    let unitario = document.getElementById(`unitario_${id}`).value
+    let formData = new FormData()
+    formData.append("id", id)
+    formData.append("costo", costo)
+    formData.append("unitario", unitario)
+    fetch("/inventario/calcular/sugerido", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.json())
+        .then(resp => {
+            let sugerido = document.getElementById(`sugerido_${id}`)
+            let precioVenta = document.getElementById(`precioVenta_${id}`)
+            if (precioVenta.value == "" || precioVenta.value == 0.00 || precioVenta.value == 0) {
+                precioVenta.value = resp.precio_sugerido.toFixed(2)
+            }
+            sugerido.innerText = resp.precio_sugerido.toFixed(2)
+            console.log(sugerido.innerText);
+        })
+
 })
 //DETECTA EL CLICK EN LA X PARA REMOVER IMAGEN DEL MODAL
 $('#bodyContent').on("click", "#addProduct .imgContainerChildren span", function ({
@@ -25,7 +93,115 @@ $('#bodyContent').on("click", "#addProduct .imgContainerChildren span", function
 }) {
     removeItemFromDt(target, '#addProduct')
 })
+//Muestra imagenes
+$('#bodyContent').on("click", ".SeeImgProduct", function (e) {
+    e.preventDefault();
+    let urls = e.target.dataset.urls
+    let idProduct = e.target.dataset.idproductedit
+    let name = e.target.dataset.name
+    //  console.log(idProduct);
+    urls = urls.split(',')
+    $('#galleryShow .carousel-inner').html('')
+    $('#galleryShow .carousel-indicators').html('')
+    $('#galleryShow #galleryShowTitle').text(`# ${idProduct} - ${name}`)
 
+
+    urls.map((url, i) => {
+        let img = `
+        <div class="carousel-item ${(i==0?'active':'')}">
+            <img src="${url}" data-interval="1000" class="d-block w-100" alt="Imagen Articulo">
+        </div>
+        `
+        let indicator = `
+                        <li data-target="#carouselIndicators" data-slide-to=""${i}" class="${(i==0?'active':'')}"></li>
+        `
+
+        $('#galleryShow .carousel-indicators').append(indicator)
+        $('#galleryShow .carousel-inner').append(img)
+    })
+})
+
+$("#bodyContent").on('click', '.btnSaveProductPrice', function (e) {
+    saveProductPrice(e)
+})
+$("#bodyContent").on('click', '.addStockBtn', function (e) {
+    let id = e.target.dataset.id
+    addStock(id)
+})
+
+function saveProductPrice(e) {
+    let id = e.target.dataset.id
+    let precioVenta = document.getElementById(`precioVenta_${id}`)
+    let unitario = document.getElementById(`unitario_${id}`)
+    let sugerido = document.getElementById(`sugerido_${id}`)
+    let costo = document.getElementById(`costo_${id}`)
+    let formData = new FormData()
+    formData.append('venta', precioVenta.value)
+    formData.append('costo', costo.value)
+    formData.append('unitario', unitario.value)
+    formData.append('sugerido', sugerido.innerText)
+    formData.append('id', id)
+    fetch("/inventario/saveProductPrice", {
+            method: 'POST',
+            body: formData
+        })
+        .then((resp) => resp.json())
+        .then((resp) => {
+            console.log(resp);
+            if (resp.error == '00000') {
+                Swal.fire({
+                    position: 'top',
+                    title: 'Producto Actualizado',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500
+                })
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: resp.msg,
+                    text: resp.errorData.errorMsg[2],
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        })
+}
+
+function addStock(id) {
+    Swal.fire({
+        title: 'Ingrese la cantidad para Agregar al stock actual',
+        input: 'number',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Agregar',
+        showLoaderOnConfirm: true,
+        preConfirm: (data) => {
+            let formData = new FormData()
+            formData.append('stock', data)
+            formData.append('id', id)
+            return fetch('/inventario/updateStock', {
+                    method: "POST",
+                    body: formData
+                })
+                .then(resp => resp.json())
+                .catch(error => {
+                    Swal.showValidationMessage(
+                        `Request failed: ${error}`
+                    )
+                })
+        },
+    }).then((result) => {
+        console.log(result);
+        Swal.fire({
+            title: `${result.value.stock}`,
+            text: result.value.id
+        })
+
+    })
+}
 
 function agregarProducto(e) {
 
@@ -34,40 +210,29 @@ function agregarProducto(e) {
         let form = document.getElementById('AddProductForm')
         let formDatas = new FormData(form)
         let urls = []
-        let sucursales = [];
-        let checkeds = $("#addProduct .checkSucursal")
-        checkeds.map((i, input) => {
-            if ($(input).prop('checked')) {
-                sucursales.push($(input).data('sucursal'))
-            }
-        })
-        // $("#addProduct #imageContainer .imgContainerChildren img").each((i, input) => {
-        //     let img = $(input).attr("src")
-        //     urls.push(img)
-        // })
         formDatas.append("urls", urls)
-        formDatas.append("sucursales", sucursales)
         fetch(url, {
                 method: 'POST',
                 body: formDatas
             })
             .then((resp) => resp.json())
             .then((resp) => {
+                console.log(resp);
                 if (resp.error == '0') {
                     Swal.fire({
-                        position: 'top-end',
+                        position: 'top',
                         title: 'Producto Agregado',
                         text: resp.msg,
                         icon: 'success',
                         confirmButtonText: 'OK'
                     })
-                    $("#addProduct #imageContainer").html('')
-                    $("#addProduct #txtcodigoBarra").val('')
+                    $("#addProduct #addProduct_imageContainer").html('')
+                    $("#addProduct #addProduct_txtcodigoBarra").val('')
                     loadTable()
                 } else {
-                    $("#addProduct #txtcodigoBarra").val('')
+                    $("#addProduct #addProduct_txtcodigoBarra").val('')
                     Swal.fire({
-                        position: 'top-end',
+                        position: 'top',
                         title: resp.msg,
                         text: resp.errorData.errorMsg[2],
                         icon: 'error',
@@ -77,13 +242,13 @@ function agregarProducto(e) {
             })
             .catch((err) => {
                 Swal.fire({
-                    position: 'top-end',
+                    position: 'top',
                     title: 'Error!',
                     text: err,
                     icon: 'error',
                     confirmButtonText: 'Cool'
                 })
-                $("#addProduct #txtcodigoBarra").val('')
+                $("#addProduct #addProduct_txtcodigoBarra").val('')
             });
     }
 }
@@ -95,7 +260,11 @@ function generarCodigo(e, modalId) {
         })
         .then((result) => result.json())
         .then((resp) => {
-            $(`${modalId} #txtcodigoBarra`).val(resp.codigo)
+            $(`
+                            $ {
+                                modalId
+                            }
+                            _txtcodigoBarra `).val(resp.codigo)
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
@@ -103,74 +272,80 @@ function generarCodigo(e, modalId) {
 }
 
 function loadTable(e) {
+    let img = ` < div class = "loading" > < img src = "/public/assets/img/loading.gif" > < /div>`;
+    $(".loadTable").html('')
+    $(".loadTable").append(img)
     fetch('/inventario/refresh/producttable', {
-            method: 'POST'
+            method: 'POST',
         })
         .then((result) => result.text())
         .then((html) => {
             $(".loadTable").html(html)
-            console.log('Load New data');
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
         });
 }
 
-
-
 function removeImgAdd2({
     target
 }, modalId) {
     let classes = $(target.classList)
     if (classes[1] == 'fade' || classes[0] == 'close' || classes[0] == 'closeBtn') {
-        $(`${modalId} #imageContainer`).html('');
+        $(`${modalId}_imageContainer`).html('');
     }
 }
 
 function validarFormADD(modalId) {
-    let descripcion = $(modalId + " #descripcion").val()
-    let estilo = $(modalId + " #estilo").val()
-    let marca = $(modalId + " #marca").val()
-    let codigo = $(modalId + " #txtcodigoBarra").val()
-    let cbTalla = $(modalId + " #cbTalla").children("option:selected").val()
-    let cbCategoria = $(modalId + " #cbCategoria").children("option:selected").val()
-    let iva = $(modalId + " #iva").prop("checked")
-    let iva_valor = $(modalId + " #iva_valor").val()
+    let descripcion = $(modalId + "_descripcion").val()
+    let estilo = $(modalId + "_estilo").val()
+    let marca = $(modalId + "_marca").val()
+    let codigo = $(modalId + "_txtcodigoBarra").val()
+    let cbTalla = $(modalId + "_cbTalla").children("option:selected").val()
+    let cbCategoria = $(modalId + "_cbCategoria").children("option:selected").val()
+    let cbCategoriaPrecio = $(modalId + "_cbCategoriaPrecio").children("option:selected").val()
+    let iva = $(modalId + "_iva").prop("checked")
+    let iva_valor = $(modalId + "_iva_valor").val()
     let validate = 0
-    $(modalId + " #iva_valor").removeClass('is-invalid')
-    $(modalId + " #descripcion").removeClass('is-invalid')
-    $(modalId + " #estilo").removeClass('is-invalid')
-    $(modalId + " #marca").removeClass('is-invalid')
-    $(modalId + " #txtcodigoBarra").removeClass('is-invalid')
-    $(modalId + " #cbTalla").removeClass('is-invalid')
-    $(modalId + " #cbCategoria").removeClass('is-invalid')
+    $(modalId + "_iva_valor").removeClass('is-invalid')
+    $(modalId + "_descripcion").removeClass('is-invalid')
+    $(modalId + "_estilo").removeClass('is-invalid')
+    $(modalId + "_marca").removeClass('is-invalid')
+    $(modalId + "_txtcodigoBarra").removeClass('is-invalid')
+    $(modalId + "_cbTalla").removeClass('is-invalid')
+    $(modalId + "_cbCategoria").removeClass('is-invalid')
+    $(modalId + "_cbCategoriaPrecio").removeClass('is-invalid')
 
     if (iva && iva_valor == '') {
-        $(modalId + " #iva_valor").addClass('is-invalid')
+        $(modalId + "_iva_valor").addClass('is-invalid')
         validate = 1
     }
     if (descripcion == '') {
-        $(modalId + " #descripcion").addClass('is-invalid')
+        $(modalId + "_descripcion").addClass('is-invalid')
         validate = 1
     }
     if (estilo == '') {
-        $(modalId + " #estilo").addClass('is-invalid')
+        $(modalId + "_estilo").addClass('is-invalid')
         validate = 1
     }
     if (marca == '') {
-        $(modalId + " #marca").addClass('is-invalid')
+        $(modalId + "_marca").addClass('is-invalid')
         validate = 1
     }
     if (codigo == '') {
-        $(modalId + " #txtcodigoBarra").addClass('is-invalid')
+        $(modalId + "_txtcodigoBarra").addClass('is-invalid')
         validate = 1
     }
     if (cbTalla == '0') {
-        $(modalId + " #cbTalla").addClass('is-invalid')
+        $(modalId + "_cbTalla").addClass('is-invalid')
         validate = 1
     }
     if (cbCategoria == '0') {
-        $(modalId + " #cbCategoria").addClass('is-invalid')
+        $(modalId + "_cbCategoria").addClass('is-invalid')
+        validate = 1
+    }
+    if (cbCategoriaPrecio == '0') {
+        $(modalId + "_cbCategoriaPrecio").addClass('is-invalid')
         validate = 1
     }
     return validate
@@ -194,25 +369,35 @@ function validarFormADD(modalId) {
 
 
 //SE EJECUTA AL PRESIONAR EDITAR EN ALGUN PRODUCTO
-$('#bodyContent').on("click", "#EditProduct #generarCodigo", function (e) {
+$('#bodyContent').on("click", "#EditProduct #EditProduct_generarCodigo", function (e) {
     e.preventDefault();
     generarCodigo(e, '#EditProduct')
 })
+
+//CARGA DATOS AL MODAL DE EDICION
 $("#bodyContent").on("click", ".EditProductBtn", function (e) {
+    miStorage = window.localStorage;
+    miStorage.setItem('deleteUrls', '');
     resetInputImage(e, '#EditProduct')
-    $(`#EditProduct #imageContainer`).html('')
-    console.log("EDIT");
+    $(`#EditProduct #EditProduct_imageContainer`).html('')
     loadDataEditModal(e, '#EditProduct')
 });
 $("#bodyContent").on("click", "#EditProduct #EditProductFormBtn", function (e) {
     e.preventDefault()
     UpdateEditModal(e, '#EditProduct')
-    loadTable()
+
 });
 //DETECTA EL CLICK EN LA X PARA REMOVER IMAGEN DEL MODAL
 $('#bodyContent').on("click", "#EditProduct .imgContainerChildren span", function ({
     target
 }) {
+    let hasUrl = $(target).data('hasurl')
+    miStorage = window.localStorage;
+    let data = miStorage.getItem('deleteUrls')
+    data = (data == null ? '' : data)
+    let datoString = (hasUrl == '1' ? $(target).data('url') : '')
+    let newData = data + (data == '' ? datoString : `,${datoString}`)
+    miStorage.setItem('deleteUrls', newData);
     removeItemFromDt(target, '#EditProduct')
 })
 //REMUEVE LA IMAGEN SELECCIONADA DEL DATA TRANSFER
@@ -220,15 +405,15 @@ function removeItemFromDt(target, modalId) {
     let url2 = $(target).data('url')
     let indexImg = $(target).data('index')
     let el = $(target).parent()
-    let filesImages = $(`${modalId} #filesImages`)
+    //let filesImages = $(`${modalId}_filesImages`)
     dt.items.remove(indexImg)
     $(el).remove()
     DeleteTransferItem(modalId)
 }
 
 function DeleteTransferItem(modalId) {
-    let filesImages = $(`${modalId} #filesImages`)[0] // selecciono el elemento como tal pero con la utilidad de usar jquery con dos ID
-    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
+    let filesImages = $(`${modalId}_filesImages`)[0] // selecciono el elemento como tal pero con la utilidad de usar jquery con dos ID
+    let filesImageHidden = $(`${modalId}_filesImageHidden`)[0]
     let data = filesImages.files
     for (var i = 0; i < data.length; i++) {
         // dt.items.add(new File([], data))
@@ -241,56 +426,62 @@ function DeleteTransferItem(modalId) {
 }
 
 function loadDataEditModal(e, modalId) {
-    let id = $(e.target).data('id')
+    let id = $(e.target).data('idproductedit')
+
+    //console.log(e.target.dataset.idproductedit);
     let formDatas = new FormData()
-    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
+    let filesImageHidden = $(`${modalId}_filesImageHidden`)[0]
     formDatas.append('idproducto', id)
-    fetch('/inventario/getProductBySucursal', {
+    fetch('/inventario/getProductById', {
             method: 'POST',
             body: formDatas
         }).then((result) => result.json())
         .then((resp) => {
+            //console.log(resp);
             if (!resp.error) {
                 let datos = resp.data[0]
-                let sucursales = datos.sucursales.split(',')
-                let urls = datos.image_url.split(',')
                 let id = datos.idproducto
+                $(`${modalId}_imageContainer`).html('')
+                $(`${modalId}_editIdProducto`).text(`Editar Producto #${id}`)
+                $(`${modalId}_idproducto`).val(id)
 
-                $(`${modalId} #imageContainer`).html('')
-                $(`${modalId} #editIdProducto`).text(`Editar Producto #${id}`)
-                $(`${modalId} :input#idproducto`).val(id)
-                $(`${modalId} :input#originalUrl`).val(datos.image_url)
+                let urls = ''
+                if (datos.image_url !== '') {
+                    // $(`${modalId}_originalUrl`).val(datos.image_url)
+                    urls = datos.image_url.split(',')
+                    urls.map((image, index) => {
+                        if (image !== '') {
 
-                urls.map((image, index) => {
-                    let img = `<div class="imgContainerChildren imgWrapper shadow">
+                            let img = `<div class="imgContainerChildren imgWrapper shadow">
                             <span class="shadow-sm" data-hasurl='1' data-url="${image}" data-index="${index}">x</span>
                             <img src="${image}" />
                             </div>`;
-                    $(`${modalId} #imageContainer`).append(img);
-                })
-
-
-                $(`${modalId} :input.checkSucursal`).prop('checked', false)
-                sucursales.forEach(id => {
-                    let idtag = `#EditProduct :input#idsucursal${id}`
-                    $(idtag).prop("checked", true)
-                });
-                $(`${modalId} :input#descripcion`).val(datos.descripcion)
-                $(`${modalId} :input#marca`).val(datos.marca)
-                $(`${modalId} :input#estilo`).val(datos.estilo)
-                $(`${modalId} :input#txtcodigoBarra`).val(datos.codigo)
+                            $(`${modalId}_imageContainer`).append(img);
+                        }
+                    })
+                }
+                $(`${modalId}_descripcion`).val(datos.descripcion)
+                $(`${modalId}_marca`).val(datos.marca)
+                $(`${modalId}_estilo`).val(datos.estilo)
+                $(`${modalId}_txtcodigoBarra`).val(datos.codigo)
 
                 if (datos.activado_iva == '1') {
-                    $(`${modalId} :input#iva`).prop('checked', true)
+                    $(`${modalId}_iva`).prop('checked', true)
                 }
-                $(`${modalId} :input#iva_valor`).val(datos.iva)
-                $(`${modalId} :input#cbTalla option`).each((i, option) => {
+                $(`${modalId}_iva_valor`).val(datos.iva)
+
+                $(`${modalId}_cbTalla option`).each((i, option) => {
                     if ($(option).val() == datos.idtalla) {
                         $(option).prop("selected", true)
                     }
                 })
-                $(`${modalId} :input#cbCategoria option`).each((i, option) => {
+                $(`${modalId}_cbCategoria option`).each((i, option) => {
                     if ($(option).val() == datos.idcategoria) {
+                        $(option).prop("selected", true)
+                    }
+                })
+                $(`${modalId}_cbCategoriaPrecio option`).each((i, option) => {
+                    if ($(option).val() == datos.categoriaPrecio) {
                         $(option).prop("selected", true)
                     }
                 })
@@ -311,38 +502,48 @@ function UpdateEditModal(e, modalId) {
     let form = $(`${modalId} #EditProductForm`)[0]
     //let form = document.getElementById('EditProductForm')
     let formData = new FormData(form)
-    let sucursales = []
-    let urls = []
-    let cksucursales = $(`${modalId} .checkSucursal`)
-    cksucursales.map((i, el) => {
-        let data = $(el).data('sucursal')
-        if ($(el).prop('checked')) {
-            sucursales.push(data)
-        }
-    })
-    formData.append("sucursales", sucursales)
-    // for (var value of formData.values()) {
-    //     console.log(value);
-    // }
+    let urlsToDelete = localStorage.getItem('deleteUrls')
+    formData.append("urlsToDelete", urlsToDelete)
+    //  for (var value of formData.values()) {
+    //      console.log(value);
+    //  }
 
     fetch("/inventario/updateProduct", {
             method: 'POST',
             body: formData
         }).then(resp => resp.json())
         .then(resp => {
-            console.log(resp);
+            if (resp.error == "00000") {
+                // Swal.fire({
+                //     position: 'top',
+                //     title: 'Producto Actualizado',
+                //     icon: 'success',
+                //     confirmButtonText: 'OK'
+                // })
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: 'Error al actualizar el Producto',
+                    text: resp.error,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+            $(`#EditProduct`).modal('toggle')
+            loadTable(e)
         }).catch((err) => {
             console.log('error en FETCH:', err);
+            loadTable(e)
         });
 }
 
 //************END GROUP EDIT **********************************************************/
 
 
-$("#bodyContent").on("change", "#addProduct #filesImages", function (e) {
+$("#bodyContent").on("change", "#addProduct_filesImages", function (e) {
     TransferInput('#addProduct')
 });
-$("#bodyContent").on("change", "#EditProduct #filesImages", function (e) {
+$("#bodyContent").on("change", "#EditProduct_filesImages", function (e) {
     TransferInput('#EditProduct')
 });
 const dt = new DataTransfer()
@@ -352,11 +553,10 @@ const dt = new DataTransfer()
  */
 function TransferInput(modalId) {
     // console.log('TransferInput Change');
-    $(`${modalId} #imageContainer`).html('');
-    let filesImages = $(`${modalId} #filesImages`)[0] // selecciono el elemento como tal pero con la utilidad de usar jquery con dos ID
-    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
+    $(`${modalId}_imageContainer`).html('');
+    let filesImages = $(`${modalId}_filesImages`)[0]
+    let filesImageHidden = $(`${modalId}_filesImageHidden`)[0]
     let data = filesImages.files
-    let dataArray = []
     for (var i = 0; i < data.length; i++) {
         // dt.items.add(new File([], data))
         dt.items.add(new File([data[i]], data[i].name, {
@@ -365,7 +565,7 @@ function TransferInput(modalId) {
         }))
     }
     filesImageHidden.files = dt.files
-    $(`${modalId} #filesImages`).val('')
+    $(`${modalId}_filesImages`).val('')
     for (var i = 0; i < filesImageHidden.files.length; i++) {
         // console.log(filesImageHidden.files[i]);
         let reader = new FileReader();
@@ -377,7 +577,7 @@ function TransferInput(modalId) {
             <span class="shadow-sm"  data-hasurl='0'  data-url="${image}" data-index="${index}">x</span>
             <img src="${image}" />
             </div>`;
-            $(`${modalId} #imageContainer`).append(img);
+            $(`${modalId}_imageContainer`).append(img);
         };
 
     }
@@ -387,32 +587,34 @@ function TransferInput(modalId) {
 
 function resetInputImage(e, modalId) {
 
-    $(`${modalId} #filesImages`).val('')
+    $(`${modalId}_filesImages`).val('')
     dt.clearData()
 }
 
 function makeBlobFile(urls, modalId) {
-    let filesImageHidden = $(`${modalId} #filesImageHidden`)[0]
-    urls.map((url, i) => {
-        fetch(urls[i])
-            .then(res => res.blob())
-            .then(blob => {
-                // let nameImg = makeid(3, blob.type);
-                let nameImg = GetFilename(url);
-                let long = (urls.length - 1)
-                //  dt.items.add(new File([blob], makeid(8), blob))
-                dt.items.add(new File([blob], nameImg, {
-                    type: blob.type,
-                    lastModified: new Date().getTime(),
-                }))
-                filesImageHidden.files = dt.files
-                // $(`${modalId} #imageContainer`).html('');
-            })
+    if (urls !== '') {
+        let filesImageHidden = $(`${modalId}_filesImageHidden`)[0]
+        urls.map((url, i) => {
+            fetch(urls[i])
+                .then(res => res.blob())
+                .then(blob => {
+                    // let nameImg = makeid(3, blob.type);
+                    let nameImg = GetFilename(url);
+                    let long = (urls.length - 1)
+                    //  dt.items.add(new File([blob], makeid(8), blob))
+                    dt.items.add(new File([blob], nameImg, {
+                        type: blob.type,
+                        lastModified: new Date().getTime(),
+                    }))
+                    filesImageHidden.files = dt.files
+                    // $(`${modalId} #imageContainer`).html('');
+                })
 
 
 
-    })
+        })
 
+    }
 }
 
 function makeid(length, type) {
@@ -436,7 +638,7 @@ function GetFilename(url) {
             return m[1] + '.' + mime;
         }
     }
-    return "";
+    return "nothing";
 }
 
 //NO BORRAR, SIRVE PARA CONVERTIR URLS CON FETCH EN FILES

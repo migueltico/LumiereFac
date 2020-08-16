@@ -9,6 +9,10 @@
     cursor: pointer;
     z-index: 100;
 }
+.table tbody tr td {
+    border-top:none;
+    vertical-align: middle;
+}
 
 .table tbody tr:hover .Editbuttons {
     opacity: 1;
@@ -16,6 +20,7 @@
 }
 
 .Editbuttons {
+    position: relative;
     opacity: 0;
     pointer-events: none;
     cursor: pointer;

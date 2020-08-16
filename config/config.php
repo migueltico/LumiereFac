@@ -19,6 +19,7 @@ $route_group_active = false;
 $middleware_array = [];
 $middleware_active = false;
 $error404 = false;
+//setlocale(LC_MONETARY, 'cr_CR');
 class Config  
 {
     

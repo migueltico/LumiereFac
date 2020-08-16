@@ -6,6 +6,7 @@ use config\view;
 // manda a llamar al controlador de conexiones a bases de datos
 use models\productModel as product;
 use models\sucursalModel as sucursal;
+use models\adminModel as admin;
 use controllers\uploadsController as upload;
 //Funciones de ayuda
 use Config\helper as help;
@@ -18,15 +19,59 @@ class inventarioController extends view
   {
     $icon = help::icon();
     $categorias = product::getCategory();
+    $cat_precios = admin::getCategoriaPrecios();
+    //$categorias = product::getCategory();
     $tallas = product::getTallas();
-    $sucursal = sucursal::getSucursal();
-    $products = product::getProductsBySucursal($_SESSION['idsucursal']);
+    $products = product::getProducts();
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
-    $data["sucursal"] = $sucursal['data'];
     $data["products"] = $products['data'];
+    $data["cat_precios"] = $cat_precios['data'];
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/ListaProductos', $data);
+  }
+  public function addstock($var)
+  {
+    $icon = help::icon();
+    $products = product::searchProduct('');
+    $data["products"] = $products['data'];
+    $data["icons"] =  $icon['icons'];
+    //echo view::renderElement('inventario/productosTableStock', $data);
+    echo view::renderElement('inventario/addstock', $data);
+  }
+  public function saveProductPrice($var)
+  {
+    $data = array(
+      ':id' => $_POST['id'],
+      ':costo' => $_POST['costo'],
+      ':venta' => $_POST['venta'],
+      ':unitario' => $_POST['unitario'],
+      ':sugerido' => $_POST['sugerido']
+    );
+    $stock = product::saveProductPrice($data);
+    $datos = json_encode($data);
+    if ($stock['error'] == '00000') {
+      admin::saveLog("Guardar", "Inventario | Agregar Stock",  "Se actualizo los siguientes datos del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+    }
+    header('Content-Type: application/json');
+    echo json_encode($stock);
+  }
+  public function updateStock($var)
+  {
+    // $data = array(
+    //   ':id' => $_POST['id'],
+    //   ':costo' => $_POST['costo'],
+    //   ':venta' => $_POST['venta'],
+    //   ':unitario' => $_POST['unitario'],
+    //   ':sugerido' => $_POST['sugerido']
+    // );
+    // $stock = product::saveProductPrice($data);
+    // $datos = json_encode($data);
+    // if ($stock['error'] == '00000') {
+    //   admin::saveLog("Guardar", "Inventario | Agregar Stock",  "Se actualizo los siguientes datos del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+    // }
+    header('Content-Type: application/json');
+    echo json_encode($_POST);
   }
 
   public function generarCodigo($var)
@@ -44,45 +89,70 @@ class inventarioController extends view
     $icon = help::icon();
     $categorias = product::getCategory();
     $tallas = product::getTallas();
-    $sucursal = sucursal::getSucursal();
-    $products = product::getProductsBySucursal($_SESSION['idsucursal']);
+    $products = product::getProducts();
+    $cat_precios = admin::getCategoriaPrecios();
+    $data["cat_precios"] = $cat_precios['data'];
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
-    $data["sucursal"] = $sucursal['data'];
     $data["products"] = $products['data'];
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/productosTable', $data);
   }
-  public function getProductBySucursal($var)
+  public function getProductById($var)
   {
 
-    $products = product::getProductBySucursal($_POST['idproducto']);
+    $products = product::getProductById($_POST['idproducto']);
     header('Content-Type: application/json');
     echo json_encode($products);
   }
 
-  public function addproduct($var)
+  public function searchProduct($var)
   {
-    $sucursal = $_POST["sucursales"];
-    $codigo = $_POST["codigoBarras"];
-    $sucursal = explode(",", $sucursal);
-    $addProduct = '';
+    $toSearch = $_POST['toSearch'];
+    $icon = help::icon();
+    $products = product::searchProduct($toSearch);
+    $categorias = product::getCategory();
+    $tallas = product::getTallas();
+    $cat_precios = admin::getCategoriaPrecios();
+    $data["cat_precios"] = $cat_precios['data'];
+    $data["categorias"] = $categorias['data'];
+    $data["tallas"] = $tallas['data'];
+    $data["products"] = $products['data'];
+    $data["icons"] =  $icon['icons'];
+    echo view::renderElement('inventario/productosTable', $data);
+  }
+
+
+  public function searchProductstock($var)
+  {
+    $toSearch = $_POST['toSearch'];
+    $icon = help::icon();
+    $products = product::searchProduct($toSearch);
+    $data["products"] = $products['data'];
+    $data["icons"] =  $icon['icons'];
+    echo view::renderElement('inventario/productosTableStock', $data);
+  }
+
+  public function addproduct()
+  {
     $datos = array(
       ":descripcion" => $_POST["descripcion"],
       ":marca" => $_POST["marca"],
       ":estilo" => $_POST["estilo"],
       ":categoria" => (int) $_POST["categoria"],
-      ":codigoBarras" => $codigo,
+      ":codigoBarras" =>  $_POST["codigoBarras"],
       ":talla" => (int)$_POST["talla"],
       ":iva_valor" => ((int) $_POST["iva_valor"] > 0 ? (int)$_POST["iva_valor"] : 0),
       ":iva" => (isset($_POST["iva"]) ? 1 : 0),
       ":idusuario" => (int) $_SESSION["id"],
       ":modificado_por" => (int) $_SESSION["id"],
-      ":urls" => $_POST["urls"],
+      ":estado" => (isset($_POST["estado"]) ? 1 : 0),
+      ":categoriaPrecio" => $_POST["categoriaPrecio"],
+      ":urls" => $_POST["urls"]
     );
     $urls = upload::uploads();
     $datos[":urls"] = implode(",", $urls['urls']);
-    $addProduct = product::Addproduct($datos, $sucursal);
+    $addProduct = product::Addproduct($datos);
     header('Content-Type: application/json');
     //echo json_encode(array($datos, $urls, $sucursal));
     echo json_encode($addProduct);
@@ -90,11 +160,12 @@ class inventarioController extends view
 
   public function updateProduct($var)
   {
-    $sucursal = $_POST["sucursales"];
-    $codigo = $_POST["codigoBarras"];
-    $sucursal = explode(",", $sucursal);
-    $urlImg = upload::uploads();
-    $urls= implode(",", $urlImg['urls']);
+    if ($_FILES['file']['name'][0] !== '') {
+      $urlImg = upload::uploads();
+      $urls = implode(",", $urlImg['urls']);
+    } else {
+      $urls = '';
+    }
     $datos = array(
       ":descripcion" => $_POST["descripcion"],
       ":marca" => $_POST["marca"],
@@ -105,12 +176,49 @@ class inventarioController extends view
       ":iva_valor" => ((int) $_POST["iva_valor"] > 0 ? (int)$_POST["iva_valor"] : 0),
       ":iva" => (isset($_POST["iva"]) ? 1 : 0),
       ":modificado_por" => (int) $_SESSION["id"],
-      ":urls" => $urls ,
+      ":urls" => $urls,
       ":idproducto" => (int) $_POST["idproducto"],
+      ":categoriaPrecio" => $_POST["categoriaPrecio"],
+      ":estado" => (isset($_POST["estado"]) ? 1 : 0),
     );
 
-    $updateProduct = product::updateProduct($datos, $sucursal);
+    $updateProduct = product::updateProduct($datos);
+    $unlinkState = upload::removeImgAdd($_POST["urlsToDelete"]);
+    $updateProduct['unlinkState'] = $unlinkState['data'];
     header('Content-Type: application/json');
     echo json_encode($updateProduct);
+  }
+  public function calcular_sugerido($var)
+  {
+    $id = $_POST['id'];
+    $datos[':id'] = $id;
+    $resultFactor = product::getFactorProductById($datos);
+    $resultGastos = admin::getGastos();
+    $gastos = $resultGastos['data'];
+    $factor = $resultFactor['data']['factor'];
+    $tipo_cambio = 600;
+    $sugerido = 0;
+    $costo_en_dolar = (float) $_POST['costo'];
+    $unitario = (float) $_POST['unitario'];
+    $total_gasto_admin = (float) $gastos['total'];
+    // Se suman todos los ingresos
+    $total_ingresos = (float)($gastos['efectivo'] + $gastos['tarjeta'] + $gastos['transferencia']);
+
+    //Se calcula el porcentaje de gastos
+    $result_porcent_gastos = (float)($total_gasto_admin / $total_ingresos);
+
+    $costo_administrativo_unitario = (float)round(($unitario * $result_porcent_gastos), 2);
+
+    //Calculamos el precio del flete x Kilo respecto al factor
+    $p_fleteXkilo = ($factor * 7.0);
+    $costo_en_dolar_mas_flete = ($costo_en_dolar + $p_fleteXkilo);
+    $costo_en_colones = $costo_en_dolar_mas_flete * $tipo_cambio;
+    $precio_sin_utilidad = $costo_en_colones + $costo_administrativo_unitario;
+    $utilidad = round(($precio_sin_utilidad * 0.40), 2);
+    $precio_sugerido = (float) ($precio_sin_utilidad + $utilidad);
+    header('Content-Type: application/json');
+    echo json_encode(array(
+      "precio_sugerido" => $precio_sugerido,
+    ));
   }
 }

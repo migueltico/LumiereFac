@@ -1,3 +1,2 @@
-<section class="topbar">
-
+<section class="topbar bg-primary">
 </section>

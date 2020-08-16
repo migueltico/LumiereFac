@@ -14,21 +14,55 @@ class sucursalController extends view
 {
 
   public function index($var)
-  {    
-    $sucursal = sucursal::getSucursal();
-    $var["sucursales"] = $sucursal['data'];    
-    view::renderElement('sucursales', $var);
+  {
+    $sucursal = sucursal::getAllSucursal();
+    $var["sucursales"] = $sucursal['data'];
+    view::renderElement('sucursal/sucursales', $var);
+  }
+  public function sucursaltable($var)
+  {
+    $sucursal = sucursal::getAllSucursal();
+    $var["sucursales"] = $sucursal['data'];
+    view::renderElement('sucursal/sucursaltable', $var);
+  }
+  public function deleteSucursal($var)
+  {
+    $sucursal = sucursal::createNewDataBAse('CCCCCC');
+   // $sucursal = sucursal::deleteSucursal($_POST['idsucursal']);
+    header('Content-Type: application/json');
+    echo json_encode($sucursal);
   }
   public function addSucursal($var)
-  {    
+  {
     $data = array(
-      ":descripcion"=>$_POST["descripcion"],
-      ":ubicacion"=>$_POST["ubicacion"],
-      ":telefono"=>$_POST["telefono"],
-      ":creado_por"=>$_SESSION["id"],
-      ":descripcion"=>$_SESSION["id"]
+      ":sucursal" => $_POST["sucursal"],
+      ":ubicacion" => $_POST["ubicacion"],
+      ":tel" => $_POST["tel"],
+      ":creado_por" => $_SESSION["id"],
+      ":modificado_por" => $_SESSION["id"]
     );
     $sucursal = sucursal::setSucursal($data);
+    header('Content-Type: application/json');
+    echo json_encode($sucursal);
+  }
+  public function updateSucursal($var)
+  {
+    $data = array(
+      ":sucursal" => $_POST["sucursal"],
+      ":ubicacion" => $_POST["ubicacion"],
+      ":tel" => $_POST["tel"],
+      ":idsucursal" => $_POST["idsucursal"],
+      ":modificado_por" => $_SESSION["id"]
+    );
+    $sucursal = sucursal::updateSucursal($data);
+    header('Content-Type: application/json');
+    echo json_encode($sucursal);
+  }
+  public function getSucursalById($var)
+  {
+    $sucursal = sucursal::getSucursalById($_POST['idsucursal']);
+    header('Content-Type: application/json');
+    echo json_encode($sucursal);
   }
 
 }

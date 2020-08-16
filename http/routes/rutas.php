@@ -10,22 +10,41 @@ use config\route;
 route::post('/validateauth', 'loginController@validar');
 route::post('/validateauth*', 'loginController@validar');
 route::get('/logout', 'loginController@logout');
-route::get('/', 'loginController@index',['loginMiddleware@auth']);
+route::get('/', 'loginController@index', ['loginMiddleware@auth']);
 //+++++++++++ DASHBOARD +++++++++++//
-route::get('/dashboard', 'dashboardController@index',['loginMiddleware@auth']);
+route::get('/dashboard', 'dashboardController@index', ['loginMiddleware@auth']);
 //+++++++++++ SUCURSAL +++++++++++//
-route::post('/sucursal', 'sucursalController@index',['loginMiddleware@auth']);
-route::post('/sucursal/nueva/sucursal', 'sucursalController@addSucursal');
+route::post('/sucursal', 'sucursalController@index', ['loginMiddleware@auth']);
+route::post('/sucursal/addSucursal', 'sucursalController@addSucursal');
+route::post('/sucursal/updateSucursal', 'sucursalController@updateSucursal');
+route::post('/sucursal/getSucursalById', 'sucursalController@getSucursalById');
+route::post('/sucursal/refresh/sucursaltable', 'sucursalController@sucursaltable');
+route::post('/sucursal/deleteSucursal', 'sucursalController@deleteSucursal');
+//+++++++++++ ADMIN +++++++++++//
+route::post('/admin/gastos', 'adminController@indexGastos', ['loginMiddleware@auth']);
+route::post('/admin/gastos/saveGastos', 'adminController@saveGastos');
+route::post('/admin/categoriaprecios', 'adminController@indexCategoriaPrecios', ['loginMiddleware@auth']);
+route::post('/admin/categoriaprecios/table', 'adminController@tableCategoriaPrecios');
+route::post('/admin/categoriaprecios/add', 'adminController@AddCategoriaPrecios');
+route::post('/admin/categoriaprecios/edit', 'adminController@EditCategoriaPrecios');
+route::post('/admin/categoriaprecios/delete', 'adminController@DeleteCategoriaPrecios');
 //+++++++++++ INVENTARIO +++++++++++//
-route::post('/inventario/listarproductos', 'inventarioController@index',['loginMiddleware@auth']);
+route::post('/inventario/listarproductos', 'inventarioController@index', ['loginMiddleware@auth']);
 route::post('/inventario/addproduct', 'inventarioController@addproduct');
 route::post('/inventario/updateProduct', 'inventarioController@updateProduct');
-route::post('/inventario/getProductBySucursal', 'inventarioController@getProductBySucursal');
+route::post('/inventario/getProductById', 'inventarioController@getProductById');
 route::post('/inventario/refresh/producttable', 'inventarioController@producttable');
+route::post('/inventario/refresh/RefreshBySucursalTableProduct', 'inventarioController@RefreshBySucursalTableProduct');
 route::post('/inventario/generar/codigobarras', 'inventarioController@generarCodigo');
+route::post('/inventario/search', 'inventarioController@searchProduct');
+route::post('/inventario/search/stock', 'inventarioController@searchProductstock');
+route::post('/inventario/addstock', 'inventarioController@addstock');
+route::post('/inventario/saveProductPrice', 'inventarioController@saveProductPrice');
+route::post('/inventario/updateStock', 'inventarioController@updateStock');
+route::post('/inventario/calcular/sugerido', 'inventarioController@calcular_sugerido');
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');
-route::post('/remove/img/add', 'uploadsController@removeImgAdd');
+route::post('/remove/img', 'uploadsController@removeImgAdd');
 //+++++++++++ FACTURACION +++++++++++//
 //route::get('/', 'indexController@dashboard', ["loginMiddleware@validate_login"]);
 

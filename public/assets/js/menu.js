@@ -17,8 +17,8 @@ $("#main_menu li a.btnSlideDown").click(function (e) {
     }
 })
 $("#main_menu li.uniq_menu").click(function (e) {
-    e.preventDefault();
-    alert('aaa')
+    // e.preventDefault();
+    //alert('aaa')
 
 
 })
@@ -28,6 +28,9 @@ $("li.dataLink").click((e) => {
 
 function loadPage(e) {
     let url = $(e.target).data('linkto');
+    let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
+    $(".bodyContent").html('')
+    $(".bodyContent").append(img)
     fetch(url, {
             method: 'POST'
         })
@@ -41,7 +44,11 @@ function loadPage(e) {
 }
 //BORRAR ES TEMPORAL
 function loadPage2() {
-    let url = '/inventario/listarproductos';
+    let img = '<div class="loading"><img src="/public/assets/img/loading.gif" alt="Loading..."></div>';
+    $(".bodyContent").html('')
+    $(".bodyContent").append(img)
+   // let url = '/inventario/listarproductos';
+    let url = '/inventario/addstock';
     fetch(url, {
             method: 'POST'
         })
@@ -53,6 +60,6 @@ function loadPage2() {
             console.log('error en FETCH:', err);
         });
 }
-$(document).ready(function(){
+$(document).ready(function () {
     loadPage2()
 })

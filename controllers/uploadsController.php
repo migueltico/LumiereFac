@@ -19,18 +19,17 @@ class uploadsController extends view
         for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
             $data = help::uploadImage($i);
             if ($data['ok']) {
-                array_push($urls['urls'],ltrim($data['url'],"."));
-            }else{
-                array_push( $urls['error'], $data);
+                array_push($urls['urls'], ltrim($data['url'], "."));
+            } else {
+                array_push($urls['error'], $data);
             }
         }
         return $urls;
         // header('Content-Type: application/json');
         // echo json_encode($result);
     }
-    public function removeImgAdd($var)
+    public static function removeImgAdd($urls)
     {
-        $urls = $_POST['url'];
         $fullResult = true;
         if ($urls !== '') {
 
@@ -43,7 +42,6 @@ class uploadsController extends view
                 }
             }
         }
-        header('Content-Type: application/json');
-        echo json_encode(array("data" => $fullResult, "error" => $_POST['url'], "msg" => "Registros ingresados correctamente"));
+        return array("data" => $fullResult, "error" => $urls, "msg" => "Registros ingresados correctamente");
     }
 }
