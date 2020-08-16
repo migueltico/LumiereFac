@@ -131,7 +131,7 @@ class productModel
     {
         $con = new conexion();
         $setData = ':id,:costo,:venta,:unitario,:sugerido';
-        $sql = "CALL sp_updateStockProduct($setData)";
+        $sql = "CALL sp_updatePriceProduct($setData)";
         return $con->SPCALLNR($sql, $datos);
     }
     /**
@@ -142,8 +142,20 @@ class productModel
     public static function updateStock($datos)
     {
         $con = new conexion();
-        $setData = ':id,:costo,:venta,:unitario,:sugerido';
+        $setData = ':id,:stock';
         $sql = "CALL sp_updateStockProduct($setData)";
+        return $con->SPCALLNR($sql, $datos);
+    }
+    /**
+     * Actualiza el stock Minimo
+     *
+     * @return void
+     */
+    public static function updateMinStock($datos)
+    {
+        $con = new conexion();
+        $setData = ':id,:MinStock';
+        $sql = "CALL sp_updateMinStockProduct($setData)";
         return $con->SPCALLNR($sql, $datos);
     }
     /**

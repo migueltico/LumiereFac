@@ -34,7 +34,7 @@
             <a class="btnSlideDown" href="/inventario"><span><?= $icons['box'] ?></span><span>Inventario</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
                 <li data-linkto="/inventario/listarproductos" class="dataLink"><span class="spanStyleMenu"></span><span>Lista de Productos</span><span></span></li>
-                <li data-linkto="/inventario/addstock" class="dataLink"><span class="spanStyleMenu"></span><span>Agregar Stock</span><span></span></li>
+                <li data-linkto="/inventario/addstock" class="dataLink"><span class="spanStyleMenu"></span><span>Stock y Precios</span><span></span></li>
                 <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>

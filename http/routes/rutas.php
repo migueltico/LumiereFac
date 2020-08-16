@@ -39,8 +39,10 @@ route::post('/inventario/generar/codigobarras', 'inventarioController@generarCod
 route::post('/inventario/search', 'inventarioController@searchProduct');
 route::post('/inventario/search/stock', 'inventarioController@searchProductstock');
 route::post('/inventario/addstock', 'inventarioController@addstock');
+route::post('/inventario/refreshProductstock', 'inventarioController@refreshProductstock');
 route::post('/inventario/saveProductPrice', 'inventarioController@saveProductPrice');
 route::post('/inventario/updateStock', 'inventarioController@updateStock');
+route::post('/inventario/updateMinStock', 'inventarioController@updateMinStock');
 route::post('/inventario/calcular/sugerido', 'inventarioController@calcular_sugerido');
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

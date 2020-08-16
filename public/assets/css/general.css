@@ -102,6 +102,16 @@ html {
 .strongSugerido {
     position: relative;
     padding-right: 35px !important;
+    min-width: 100px;
+}
+
+.strongSugerido div {
+    border: 1px solid purple;
+    padding: 0.25rem;
+    width: 80%;
+    top: 24px;
+    left: -3px;
+    position: absolute;
 }
 
 .BtnCalcularSugerido {
@@ -110,7 +120,14 @@ html {
     width: 30px;
     top: calc(50% - 16px);
     right: 0;
+    text-align: center;
+    font-size: 1.6rem;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 .itemLeftData {
     position: relative;
     min-width: 100px;
@@ -120,10 +137,16 @@ html {
 
 .itemLeftDataBtn {
     position: absolute;
-    height: 38%;
-    width: 32px;
+    height: 35%;
+    width: 30px;
     top: calc(50% - 16px);
     right: 0;
+    text-align: center;
+    font-size: 1.6rem;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .gastosLabel {

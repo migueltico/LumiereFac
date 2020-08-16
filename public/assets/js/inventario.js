@@ -128,6 +128,33 @@ $("#bodyContent").on('click', '.addStockBtn', function (e) {
     let id = e.target.dataset.id
     addStock(id)
 })
+$("#bodyContent").on('click', '.addMinStockBtn', function (e) {
+    let id = e.target.dataset.id
+    addMinStock(id)
+})
+
+function refreshStock() {
+    let img = '<div class="loading"><img src="/public/assets/img/loading.gif" alt="Loading..."></div>';
+    let toSearch = document.getElementById('productSearchStock')
+    let formData = new FormData()
+    console.log(toSearch);
+    formData.append('toSearch', toSearch.value)
+    $(".loadTable").html('')
+    $(".loadTable").append(img)
+    let url = '/inventario/refreshProductstock';
+    fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+        .then((result) => result.text())
+        .then((html) => {
+            $(".loadTable").html(html)
+        })
+        .catch((err) => {
+            console.log('error en FETCH:', err);
+        });
+}
+
 
 function saveProductPrice(e) {
     let id = e.target.dataset.id
@@ -149,6 +176,7 @@ function saveProductPrice(e) {
         .then((resp) => {
             console.log(resp);
             if (resp.error == '00000') {
+                //refreshStock()
                 Swal.fire({
                     position: 'top',
                     title: 'Producto Actualizado',
@@ -157,6 +185,7 @@ function saveProductPrice(e) {
                     timer: 2500
                 })
             } else {
+                refreshStock()
                 Swal.fire({
                     position: 'top',
                     title: resp.msg,
@@ -180,13 +209,18 @@ function addStock(id) {
         showLoaderOnConfirm: true,
         preConfirm: (data) => {
             let formData = new FormData()
-            formData.append('stock', data)
+            formData.append('stock', (data.length == 0 ? 0 : data))
             formData.append('id', id)
             return fetch('/inventario/updateStock', {
                     method: "POST",
                     body: formData
                 })
-                .then(resp => resp.json())
+                .then(resp => resp.json()).then(resp => {
+                    let stock = document.getElementById(`StockInner_${id}`)
+                    let now = stock.innerText
+                    stock.innerText = parseInt((data.length == 0 ? 0 : data)) + parseInt(now)
+                    return resp
+                })
                 .catch(error => {
                     Swal.showValidationMessage(
                         `Request failed: ${error}`
@@ -194,11 +228,89 @@ function addStock(id) {
                 })
         },
     }).then((result) => {
-        console.log(result);
-        Swal.fire({
-            title: `${result.value.stock}`,
-            text: result.value.id
-        })
+        // refreshStock()
+        if (result.value.error == "00000") {
+
+            Swal.fire({
+                position: 'top',
+                title: 'Stock Actualizado',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                timer: 2500
+            })
+        } else {
+            refreshStock()
+            Swal.fire({
+                position: 'top',
+                title: 'Error al actualizar el stock',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        }
+
+    })
+}
+
+function addMinStock(id) {
+    Swal.fire({
+        title: 'Ingrese la cantidad minima del stock de este producto',
+        input: 'number',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Agregar',
+        showLoaderOnConfirm: true,
+        preConfirm: (data) => {
+            let formData = new FormData()
+            formData.append('MinStock', (data.length == 0 ? 0 : data))
+            formData.append('id', id)
+            return fetch('/inventario/updateMinStock', {
+                    method: "POST",
+                    body: formData
+                })
+                .then(resp => resp.json()).then(resp => {
+                    //console.log(resp);
+                    let MinStock = document.getElementById(`MinStockInner_${id}`)
+                    MinStock.innerText = (data.length == 0 ? 0 : data)
+                    return resp
+                })
+                .catch(error => {
+                    Swal.showValidationMessage(
+                        `Request failed: ${error}`
+                    )
+                })
+        },
+    }).then((result) => {
+        if (result.value.error == "00000") {
+            let MinStock = document.getElementById(`MinStockInner_${id}`)
+            let Stock = document.getElementById(`StockInner_${id}`)
+            let Min = parseInt(MinStock.innerText)
+            let StockNow = parseInt(Stock.innerText)
+            if (StockNow <= Min) {
+                console.log(StockNow);
+                Stock.classList.add("text-danger")
+                Stock.classList.remove("text-success")
+            } else {
+                Stock.classList.remove("text-danger")
+                Stock.classList.add("text-success")
+            }
+            Swal.fire({
+                position: 'top',
+                title: 'Stock Actualizado',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                timer: 2500
+            })
+        } else {
+            refreshStock()
+            Swal.fire({
+                position: 'top',
+                title: 'Error al actualizar el stock',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        }
 
     })
 }

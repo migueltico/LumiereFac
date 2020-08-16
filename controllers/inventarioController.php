@@ -51,29 +51,48 @@ class inventarioController extends view
     $stock = product::saveProductPrice($data);
     $datos = json_encode($data);
     if ($stock['error'] == '00000') {
-      admin::saveLog("Guardar", "Inventario | Agregar Stock",  "Se actualizo los siguientes datos del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+      admin::saveLog("Actualizar", "Inventario",  "Se actualizo los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
     }
     header('Content-Type: application/json');
     echo json_encode($stock);
   }
   public function updateStock($var)
   {
-    // $data = array(
-    //   ':id' => $_POST['id'],
-    //   ':costo' => $_POST['costo'],
-    //   ':venta' => $_POST['venta'],
-    //   ':unitario' => $_POST['unitario'],
-    //   ':sugerido' => $_POST['sugerido']
-    // );
-    // $stock = product::saveProductPrice($data);
-    // $datos = json_encode($data);
-    // if ($stock['error'] == '00000') {
-    //   admin::saveLog("Guardar", "Inventario | Agregar Stock",  "Se actualizo los siguientes datos del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
-    // }
+    $data = array(
+      ':id' => $_POST['id'],
+      ':stock' => $_POST['stock'],
+    );
+    $stock = product::updateStock($data);
+    $datos = json_encode($data);
+    if ($stock['error'] == '00000') {
+      admin::saveLog("Actualizar", "Inventario",  "Se actualizo el Stock del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+    } 
     header('Content-Type: application/json');
-    echo json_encode($_POST);
+    echo json_encode($stock);
   }
-
+  public function updateMinStock($var)
+  {
+    $data = array(
+      ':id' => $_POST['id'],
+      ':MinStock' => $_POST['MinStock'],
+    );
+    $stock = product::updateMinStock($data);
+    $datos = json_encode($data);
+    if ($stock['error'] == '00000') {
+      admin::saveLog("Actualizar", "Inventario",  "Se actualizo el Stock Minimo del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+    } 
+    header('Content-Type: application/json');
+    echo json_encode($stock);
+  }
+  public function refreshProductstock($var)
+  {
+    $toSearch = $_POST['toSearch'];
+    $icon = help::icon();
+    $products = product::searchProduct($toSearch);
+    $data["products"] = $products['data'];
+    $data["icons"] =  $icon['icons'];
+    echo view::renderElement('inventario/productosTableStock', $data);
+  }
   public function generarCodigo($var)
   {
     try {

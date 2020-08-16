@@ -1,6 +1,6 @@
 <div class="card mb-5 shadow">
     <div class="card-header">
-        <h4>Añadir Stock</h4>
+        <h4>Stock y Precios</h4>
         <div class="row">
             <div class="input-group mb-3 col-lg-6 col-md-8 col-sm-12 mt-3">
                 
