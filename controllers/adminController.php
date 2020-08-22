@@ -26,6 +26,16 @@ class adminController extends view
         $data['categorias_precios'] = $cat_precios['data'];
         view::renderElement('categoriaPrecios/categoriaPrecios', $data);
     }
+    public function indexCategoriasTallas($var)
+    {
+        $getTallas = admin::getTallas();
+        $getCategorias = admin::getCategorias();
+        $icon = help::icon();
+        $data["icons"] =  $icon['icons'];
+        $data['categorias'] = $getCategorias['data'];
+        $data['tallas'] = $getTallas['data'];
+        view::renderElement('categoriasTallas/categoriasTallas', $data);
+    }
     public function tableCategoriaPrecios($var)
     {
         $cat_precios = admin::getCategoriaPrecios();
@@ -33,6 +43,16 @@ class adminController extends view
         $data["icons"] =  $icon['icons'];
         $data['categorias_precios'] = $cat_precios['data'];
         view::renderElement('categoriaPrecios/categoriaPreciosTable', $data);
+    }
+    public function tableCategoriaTallas($var)
+    {
+        $getTallas = admin::getTallas();
+        $getCategorias = admin::getCategorias();
+        $icon = help::icon();
+        $data["icons"] =  $icon['icons'];
+        $data['categorias'] = $getCategorias['data'];
+        $data['tallas'] = $getTallas['data'];
+        view::renderElement('categoriasTallas/categoriasTallas', $data);
     }
     public function saveGastos()
     {
@@ -49,6 +69,23 @@ class adminController extends view
         header('Content-Type: application/json');
         echo json_encode($result);
     }
+    public function editCategorias()
+    {
+        $data[':categoria'] = $_POST['categoria'];
+        $data[':id'] = $_POST['id'];
+        $result = admin::editCategorias($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+    public function editTallas()
+    {
+        $data[':id'] = $_POST['id'];
+        $data[':descripcion'] = $_POST['descripcion'];
+        $data[':talla'] = $_POST['talla'];
+        $result = admin::editTallas($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
     public function AddCategoriaPrecios()
     {
 
@@ -56,6 +93,21 @@ class adminController extends view
         $data[':factor'] = $_POST['factor'];
         $data[':iduser'] = $_SESSION['id'];
         $result = admin::AddCategoriaPrecios($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+    public function AddCategoria()
+    {
+        $data[':categoria'] = $_POST['categoria'];
+        $result = admin::AddCategoria($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+    public function AddTalla()
+    {
+        $data[':descripcion'] = $_POST['descripcion'];
+        $data[':talla'] = $_POST['talla'];
+        $result = admin::AddTalla($data);
         header('Content-Type: application/json');
         echo json_encode($result);
     }

@@ -4,6 +4,8 @@
     --separatorColor: #eee;
     --tableRowColor: rgb(250, 250, 250);
     --TopBarHeight: 50px;
+    --BackColorFact: #eee;
+    --ColorFact: #0192ec;
 }
 
 *,
@@ -68,6 +70,53 @@ html {
     padding: 1rem;
     height: calc(100vh - var(--TopBarHeight));
     position: relative;
+}
+
+@media only screen and (max-width : 768px) {
+    .mainContainer .lateral {
+        position: absolute;
+        width: 0px !important;
+        height: calc(100vh - var(--TopBarHeight));
+        overflow-y: hidden;
+    }
+
+    .mainContainer .bodyMain {
+        /* display: grid;
+        grid-template-columns: 210px 1fr; */
+        width: 100vw !important;
+        /*column-gap: 0.5rem;*/
+        background-color: var(--separatorColor);
+        height: 100vh;
+        overflow-y: scroll;
+        padding: 1rem;
+        height: calc(100vh - var(--TopBarHeight));
+        position: relative;
+    }
+}
+
+@media only screen and (min-width : 1200px) {
+    .mainContainer .lateral {
+        /* display: grid;
+        grid-template-columns: 210px 1fr; */
+        width: 210px;
+        /*column-gap: 0.5rem;*/
+        height: calc(100vh - var(--TopBarHeight));
+        overflow-y: hidden;
+    }
+
+    .mainContainer .bodyMain {
+        /* display: grid;
+        grid-template-columns: 210px 1fr; */
+        width: calc(100vw - 210px);
+        /*column-gap: 0.5rem;*/
+        background-color: var(--separatorColor);
+        height: 100vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding: 1rem;
+        height: calc(100vh - var(--TopBarHeight));
+        position: relative;
+    }
 }
 
 .bodyContent {
@@ -274,6 +323,7 @@ button.btn svg {
 
 *::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.164);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.164);
     background-color: #F5F5F5;
 }
 
@@ -284,11 +334,13 @@ button.btn svg {
 
 *::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #c5c5c5;
 }
 
 .table-responsive::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.164);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.164);
     background-color: #F5F5F5;
 }
 
@@ -299,5 +351,6 @@ button.btn svg {
 
 .table-responsive::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #c5c5c5;
 }

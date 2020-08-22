@@ -38,6 +38,37 @@ class adminModel
         $con = new conexion();
         return $con->SQ('CALL sp_addCategoriasPrecios(:descripcion,:factor,:iduser)', $datos);
     }
+    public static function AddCategoria($datos)
+    {
+        $con = new conexion();
+        return $con->SQ('CALL sp_addCategorias(:categoria)', $datos);
+    }
+    public static function AddTalla($datos)
+    {
+        $con = new conexion();
+        return $con->SQ('CALL sp_addTallas(:descripcion,:talla)', $datos);
+    }
+    public static function getCategorias()
+    {
+        $con = new conexion();
+        return $con->SPCALL('CALL sp_getCategorias()');
+    }
+    public static function getTallas()
+    {
+        $con = new conexion();
+        return $con->SPCALL('CALL sp_getTallas()');
+    }
+
+    public static function editTallas($datos)
+    {
+        $con = new conexion();
+        return $con->SQ('CALL sp_updateTalla(:descripcion,:talla,:id)', $datos);
+    }
+    public static function editCategorias($datos)
+    {
+        $con = new conexion();
+        return $con->SQ('CALL sp_updateCategoria(:categoria,:id)', $datos);
+    }
     public static function EditCategoriaPrecios($datos)
     {
         $con = new conexion();

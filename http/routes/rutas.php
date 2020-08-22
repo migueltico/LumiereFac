@@ -21,29 +21,45 @@ route::post('/sucursal/getSucursalById', 'sucursalController@getSucursalById');
 route::post('/sucursal/refresh/sucursaltable', 'sucursalController@sucursaltable');
 route::post('/sucursal/deleteSucursal', 'sucursalController@deleteSucursal');
 //+++++++++++ ADMIN +++++++++++//
-route::post('/admin/gastos', 'adminController@indexGastos', ['loginMiddleware@auth']);
-route::post('/admin/gastos/saveGastos', 'adminController@saveGastos');
-route::post('/admin/categoriaprecios', 'adminController@indexCategoriaPrecios', ['loginMiddleware@auth']);
-route::post('/admin/categoriaprecios/table', 'adminController@tableCategoriaPrecios');
-route::post('/admin/categoriaprecios/add', 'adminController@AddCategoriaPrecios');
-route::post('/admin/categoriaprecios/edit', 'adminController@EditCategoriaPrecios');
-route::post('/admin/categoriaprecios/delete', 'adminController@DeleteCategoriaPrecios');
+route::group('admin', function () {
+    route::post('/gastos', 'adminController@indexGastos', ['loginMiddleware@auth']);
+    route::post('/gastos/saveGastos', 'adminController@saveGastos');
+    route::post('/categoriaprecios', 'adminController@indexCategoriaPrecios', ['loginMiddleware@auth']);
+    route::post('/categoriastallas', 'adminController@indexCategoriasTallas', ['loginMiddleware@auth']);
+    route::post('/categoriastallas/AddCategoria', 'adminController@AddCategoria');
+    route::post('/categoriastallas/AddTalla', 'adminController@AddTalla');
+    route::post('/categoriastallas/table', 'adminController@tableCategoriaTallas');
+    route::post('/categoriastallas/editCategoria', 'adminController@editCategorias');
+    route::post('/categoriastallas/editTallas', 'adminController@editTallas');
+    route::post('/categoriaprecios/table', 'adminController@tableCategoriaPrecios');
+    route::post('/categoriaprecios/add', 'adminController@AddCategoriaPrecios');
+    route::post('/categoriaprecios/edit', 'adminController@EditCategoriaPrecios');
+    route::post('/categoriaprecios/delete', 'adminController@DeleteCategoriaPrecios');
+});
 //+++++++++++ INVENTARIO +++++++++++//
-route::post('/inventario/listarproductos', 'inventarioController@index', ['loginMiddleware@auth']);
-route::post('/inventario/addproduct', 'inventarioController@addproduct');
-route::post('/inventario/updateProduct', 'inventarioController@updateProduct');
-route::post('/inventario/getProductById', 'inventarioController@getProductById');
-route::post('/inventario/refresh/producttable', 'inventarioController@producttable');
-route::post('/inventario/refresh/RefreshBySucursalTableProduct', 'inventarioController@RefreshBySucursalTableProduct');
-route::post('/inventario/generar/codigobarras', 'inventarioController@generarCodigo');
-route::post('/inventario/search', 'inventarioController@searchProduct');
-route::post('/inventario/search/stock', 'inventarioController@searchProductstock');
-route::post('/inventario/addstock', 'inventarioController@addstock');
-route::post('/inventario/refreshProductstock', 'inventarioController@refreshProductstock');
-route::post('/inventario/saveProductPrice', 'inventarioController@saveProductPrice');
-route::post('/inventario/updateStock', 'inventarioController@updateStock');
-route::post('/inventario/updateMinStock', 'inventarioController@updateMinStock');
-route::post('/inventario/calcular/sugerido', 'inventarioController@calcular_sugerido');
+route::group('inventario', function () {
+    route::post('/listarproductos', 'inventarioController@index', ['loginMiddleware@auth']);
+    route::post('/addproduct', 'inventarioController@addproduct');
+    route::post('/updateProduct', 'inventarioController@updateProduct');
+    route::post('/getProductById', 'inventarioController@getProductById');
+    route::post('/refresh/producttable', 'inventarioController@producttable');
+    route::post('/refresh/RefreshBySucursalTableProduct', 'inventarioController@RefreshBySucursalTableProduct');
+    route::post('/generar/codigobarras', 'inventarioController@generarCodigo');
+    route::post('/search', 'inventarioController@searchProduct');
+    route::post('/search/stock', 'inventarioController@searchProductstock');
+    route::post('/addstock', 'inventarioController@addstock');
+    route::post('/refreshProductstock', 'inventarioController@refreshProductstock');
+    route::post('/saveProductPrice', 'inventarioController@saveProductPrice');
+    route::post('/updateStock', 'inventarioController@updateStock');
+    route::post('/updateMinStock', 'inventarioController@updateMinStock');
+    route::post('/calcular/sugerido', 'inventarioController@calcular_sugerido');
+});
+//+++++++++++ FACTURACION +++++++++++//
+route::group('facturacion', function () {
+    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth']);
+    route::post('/search/product', 'facturacionController@searchProduct');
+    route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
+});
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');
 route::post('/remove/img', 'uploadsController@removeImgAdd');

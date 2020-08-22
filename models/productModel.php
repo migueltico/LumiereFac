@@ -4,6 +4,7 @@ namespace models;
 
 use Config\helper as h;
 use config\conexion;
+use config\helper;
 
 class productModel
 {
@@ -25,6 +26,17 @@ class productModel
         } else {
             return array("data" => null, "error" => 1,   "errorData" => $mainProduct, "msg" => "Error al Registras los datos");
         }
+    }
+    /**
+     * obtiene todas las categorias
+     *
+     * @return void
+     */
+    public static function getDescuentos()
+    {
+        $con = new conexion();
+
+        return $con->SQND('SELECT * FROM descuentos');
     }
     /**
      * obtiene todos los productos
@@ -73,6 +85,41 @@ class productModel
         }
     }
     /**
+     * obtiene todos los productos segun el resultado
+     *
+     * @return void
+     */
+    public static function searchCodeProduct($data)
+    {
+        $con = new conexion();
+        $result = $con->SQR_ONEROW("CALL sp_searchCodeProduct('$data')");
+
+        if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 0, "msg" => "Se encontro resultado");
+        } else if ($result['error'] !== '00000' || $result['data'] == false) {
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
+        }
+    }
+    /**
+     * obtiene todos los productos segun el resultado
+     *
+     * @return void
+     */
+    public static function searchCodeProductCtrlQ($data, $initLimit)
+    {
+        $con = new conexion();
+        $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.estado = 1");
+        $totalRows = $totalRows['data']['cantidad'];
+        $paginacion = helper::paginacion($totalRows, 2, 1);
+        $result = $con->SPCALL("CALL sp_searchCodeProductCtrlQ('%$data%')");
+
+        if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => $paginacion, "error" => 0, "msg" => "Se encontro resultado");
+        } else if ($result['error'] !== '00000' || $result['data'] == false) {
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
+        }
+    }
+    /**
      * obtiene todos los productos
      *
      * @return void
@@ -118,7 +165,7 @@ class productModel
     public static function updateProduct($datos)
     {
         $con = new conexion();
-        $setData = ':descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:modificado_por,:urls,:estado,:categoriaPrecio,:idproducto';
+        $setData = ':descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:modificado_por,:urls,:estado,:categoriaPrecio,:descuento,:idproducto';
         $sql = "CALL sp_updateProduct($setData)";
         return $result = $con->SPCALLNR($sql, $datos);
     }

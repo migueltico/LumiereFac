@@ -65,6 +65,21 @@
             <div class="col-12">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
+                  <label class="input-group-text" for="EditProduct_cbDescuento">Descuento</label>
+                </div>
+                <select name="descuento" class="custom-select" id="EditProduct_cbDescuento">
+                  <option selected value="0">N/A</option>
+                  <?php foreach ($descuentos as $descuento) : ?>
+                    <?php if ($descuento['iddescuento'] !== 0) : ?>
+                      <option value="<?= $descuento['iddescuento'] ?>"><?= $descuento['descripcion'] ?> (<?= $descuento['descuento'] ?>%)</option>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
                   <label class="input-group-text" for="EditProduct_cbTalla">Talla</label>
                 </div>
                 <select name="talla" class="custom-select" id="EditProduct_cbTalla">

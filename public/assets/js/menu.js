@@ -48,7 +48,7 @@ function loadPage2() {
     $(".bodyContent").html('')
     $(".bodyContent").append(img)
    // let url = '/inventario/listarproductos';
-    let url = '/inventario/addstock';
+    let url = '/facturacion/facturar';
     fetch(url, {
             method: 'POST'
         })

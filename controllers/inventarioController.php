@@ -23,6 +23,8 @@ class inventarioController extends view
     //$categorias = product::getCategory();
     $tallas = product::getTallas();
     $products = product::getProducts();
+    $descuentos = product::getDescuentos();
+    $data["descuentos"] = $descuentos['data'];
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
     $data["products"] = $products['data'];
@@ -66,7 +68,7 @@ class inventarioController extends view
     $datos = json_encode($data);
     if ($stock['error'] == '00000') {
       admin::saveLog("Actualizar", "Inventario",  "Se actualizo el Stock del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
-    } 
+    }
     header('Content-Type: application/json');
     echo json_encode($stock);
   }
@@ -80,7 +82,7 @@ class inventarioController extends view
     $datos = json_encode($data);
     if ($stock['error'] == '00000') {
       admin::saveLog("Actualizar", "Inventario",  "Se actualizo el Stock Minimo del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
-    } 
+    }
     header('Content-Type: application/json');
     echo json_encode($stock);
   }
@@ -110,6 +112,8 @@ class inventarioController extends view
     $tallas = product::getTallas();
     $products = product::getProducts();
     $cat_precios = admin::getCategoriaPrecios();
+    $descuentos = product::getDescuentos();
+    $data["descuentos"] = $descuentos['data'];
     $data["cat_precios"] = $cat_precios['data'];
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
@@ -133,6 +137,8 @@ class inventarioController extends view
     $categorias = product::getCategory();
     $tallas = product::getTallas();
     $cat_precios = admin::getCategoriaPrecios();
+    $descuentos = product::getDescuentos();
+    $data["descuentos"] = $descuentos['data'];
     $data["cat_precios"] = $cat_precios['data'];
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
@@ -198,6 +204,7 @@ class inventarioController extends view
       ":urls" => $urls,
       ":idproducto" => (int) $_POST["idproducto"],
       ":categoriaPrecio" => $_POST["categoriaPrecio"],
+      ":descuento" => $_POST["descuento"],
       ":estado" => (isset($_POST["estado"]) ? 1 : 0),
     );
 

@@ -25,6 +25,7 @@ $('#bodyContent').on("click", "#newProduct", function (e) {
 $('#bodyContent').on("keypress", "#productSearch", function (e) {
     if (e.charCode == 13) {
         let toSearch = document.getElementById('productSearch').value
+        let element = document.getElementById('productSearch')
         let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
         $(".loadTable").html('')
         $(".loadTable").append(img)
@@ -36,16 +37,23 @@ $('#bodyContent').on("keypress", "#productSearch", function (e) {
                 body: formData
             }).then(resp => resp.text())
             .then(resp => {
+
+                selectText(toSearch, element)
                 $(".loadTable").html(resp)
-                //console.log(resp);
             })
     }
 
 })
+
+function selectText(text, element) {
+    element.focus();
+    element.setSelectionRange(0, text.length);
+}
 //SE EJECUTA AL PRESIONAR ENTER EN EL INPUT DE BUSQUEDA EN INVENTARIO
 $('#bodyContent').on("keypress", "#productSearchStock", function (e) {
     if (e.charCode == 13) {
         let toSearch = document.getElementById('productSearchStock').value
+        let element = document.getElementById('productSearchStock')
         let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
         $(".loadTable").html('')
         $(".loadTable").append(img)
@@ -58,7 +66,7 @@ $('#bodyContent').on("keypress", "#productSearchStock", function (e) {
             }).then(resp => resp.text())
             .then(resp => {
                 $(".loadTable").html(resp)
-                //console.log(resp);
+                selectText(toSearch, element)
             })
     }
 
@@ -372,11 +380,7 @@ function generarCodigo(e, modalId) {
         })
         .then((result) => result.json())
         .then((resp) => {
-            $(`
-                            $ {
-                                modalId
-                            }
-                            _txtcodigoBarra `).val(resp.codigo)
+            $(`${modalId}_txtcodigoBarra `).val(resp.codigo)
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
@@ -416,6 +420,7 @@ function validarFormADD(modalId) {
     let cbTalla = $(modalId + "_cbTalla").children("option:selected").val()
     let cbCategoria = $(modalId + "_cbCategoria").children("option:selected").val()
     let cbCategoriaPrecio = $(modalId + "_cbCategoriaPrecio").children("option:selected").val()
+    let cbDescuento = $(modalId + "_cbDescuento").children("option:selected").val()
     let iva = $(modalId + "_iva").prop("checked")
     let iva_valor = $(modalId + "_iva_valor").val()
     let validate = 0
@@ -427,6 +432,7 @@ function validarFormADD(modalId) {
     $(modalId + "_cbTalla").removeClass('is-invalid')
     $(modalId + "_cbCategoria").removeClass('is-invalid')
     $(modalId + "_cbCategoriaPrecio").removeClass('is-invalid')
+    $(modalId + "_cbDescuento").removeClass('is-invalid')
 
     if (iva && iva_valor == '') {
         $(modalId + "_iva_valor").addClass('is-invalid')
@@ -460,6 +466,10 @@ function validarFormADD(modalId) {
         $(modalId + "_cbCategoriaPrecio").addClass('is-invalid')
         validate = 1
     }
+    // if (cbDescuento == '0') {
+    //     $(modalId + "_cbDescuento").addClass('is-invalid')
+    //     validate = 1
+    // }
     return validate
 
 }
@@ -576,6 +586,7 @@ function loadDataEditModal(e, modalId) {
                 $(`${modalId}_marca`).val(datos.marca)
                 $(`${modalId}_estilo`).val(datos.estilo)
                 $(`${modalId}_txtcodigoBarra`).val(datos.codigo)
+                $(`${modalId}_editEstadoCheck`).prop('checked', (datos.estado == 1 ? true : false))
 
                 if (datos.activado_iva == '1') {
                     $(`${modalId}_iva`).prop('checked', true)
@@ -597,6 +608,11 @@ function loadDataEditModal(e, modalId) {
                         $(option).prop("selected", true)
                     }
                 })
+                $(`${modalId}_cbDescuento option`).each((i, option) => {
+                    if ($(option).val() == datos.iddescuento) {
+                        $(option).prop("selected", true)
+                    }
+                })
 
 
                 makeBlobFile(urls, modalId)
@@ -611,42 +627,44 @@ function loadDataEditModal(e, modalId) {
 }
 
 function UpdateEditModal(e, modalId) {
-    let form = $(`${modalId} #EditProductForm`)[0]
-    //let form = document.getElementById('EditProductForm')
-    let formData = new FormData(form)
-    let urlsToDelete = localStorage.getItem('deleteUrls')
-    formData.append("urlsToDelete", urlsToDelete)
-    //  for (var value of formData.values()) {
-    //      console.log(value);
-    //  }
+    if (!validarFormADD(modalId)) {
+        let form = $(`${modalId} #EditProductForm`)[0]
+        //let form = document.getElementById('EditProductForm')
+        let formData = new FormData(form)
+        let urlsToDelete = localStorage.getItem('deleteUrls')
+        formData.append("urlsToDelete", urlsToDelete)
+        //  for (var value of formData.values()) {
+        //      console.log(value);
+        //  }
 
-    fetch("/inventario/updateProduct", {
-            method: 'POST',
-            body: formData
-        }).then(resp => resp.json())
-        .then(resp => {
-            if (resp.error == "00000") {
-                // Swal.fire({
-                //     position: 'top',
-                //     title: 'Producto Actualizado',
-                //     icon: 'success',
-                //     confirmButtonText: 'OK'
-                // })
-            } else {
-                Swal.fire({
-                    position: 'top',
-                    title: 'Error al actualizar el Producto',
-                    text: resp.error,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-            $(`#EditProduct`).modal('toggle')
-            loadTable(e)
-        }).catch((err) => {
-            console.log('error en FETCH:', err);
-            loadTable(e)
-        });
+        fetch("/inventario/updateProduct", {
+                method: 'POST',
+                body: formData
+            }).then(resp => resp.json())
+            .then(resp => {
+                if (resp.error == "00000") {
+                    // Swal.fire({
+                    //     position: 'top',
+                    //     title: 'Producto Actualizado',
+                    //     icon: 'success',
+                    //     confirmButtonText: 'OK'
+                    // })
+                } else {
+                    Swal.fire({
+                        position: 'top',
+                        title: 'Error al actualizar el Producto',
+                        text: resp.error,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+                $(`#EditProduct`).modal('toggle')
+                loadTable(e)
+            }).catch((err) => {
+                console.log('error en FETCH:', err);
+                loadTable(e)
+            });
+    }
 }
 
 //************END GROUP EDIT **********************************************************/

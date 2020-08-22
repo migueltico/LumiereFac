@@ -10,7 +10,7 @@
     z-index: 100;
 }
 .table tbody tr td {
-    border-top:none;
+    /* border-top:none; */
     vertical-align: middle;
 }
 

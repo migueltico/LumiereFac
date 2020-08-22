@@ -4,6 +4,7 @@
 <!-- <script src="https://unpkg.com/@popperjs/core@2"></script> -->
 <script src="public/assets/js/bootstrap.js"></script>
 <script src="public/assets/js/main.js"></script>
+<script src="public/assets/js/facturacion.js"></script>
 <script src="public/assets/js/inventario.js"></script>
 <script src="public/assets/js/admin.js"></script>
 <script src="public/assets/js/menu.js"></script>

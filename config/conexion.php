@@ -148,7 +148,7 @@ class conexion
 		//return array("rows" => $cuenta, "data" => $row);
 	}
 	/**
-	 * SIMPLE RETURN QUERY, SI RETORNA DATOS, LA PRIMERA FILA ENCONTRADA, SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
+	 * SIMPLE RETURN QUERY, SI RETORNA DATOS, LA PRIMERA FILA ENCONTRADA
 	 *
 	 * @param [type] $sql
 	 * @param [type] $datos

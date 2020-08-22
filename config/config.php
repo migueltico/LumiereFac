@@ -19,21 +19,20 @@ $route_group_active = false;
 $middleware_array = [];
 $middleware_active = false;
 $error404 = false;
-//setlocale(LC_MONETARY, 'cr_CR');
-class Config  
+date_default_timezone_set('America/Costa_Rica');
+class Config
 {
-    
-   public function err()
+
+    public function err()
     {
         if (!$GLOBALS["error404"]) {
             echo "<h1>ERROR404</h1>";
-        }else{
-            $GLOBALS["error404"]=false;
+        } else {
+            $GLOBALS["error404"] = false;
         }
     }
-   public function route()
+    public function route()
     {
         require_once "http/routes/rutas.php";
     }
 }
-

@@ -1,0 +1,119 @@
+.totalFactAmount {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    font-size: 5.5rem;
+    text-align: center;
+    padding-left: 45px;
+    color: var(--ColorFact);
+    background-color: var(--BackColorFact);
+}
+
+.totalFactAmount::before {
+    position: absolute;
+    content: "₡";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5.5rem;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 45px;
+    color: var(--ColorFact);
+    margin-left: 20px;
+
+}
+
+@media only screen and (max-width : 768px) {
+    .totalFactAmount {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        font-size: 5rem;
+        text-align: center;
+        padding-left: 45px;
+        color: var(--ColorFact);
+        background-color: var(--BackColorFact);
+    }
+
+    .totalFactAmount::before {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        content: "₡";
+        font-size: 5rem;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        height: 100%;
+        width: 45px;
+        margin-left: 20px;
+        color: var(--ColorFact);
+    }
+}
+
+@media only screen and (max-width : 1200px) {
+    .totalFactAmount {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        font-size: 4rem;
+        text-align: center;
+        padding-left: 35px;
+        color: var(--ColorFact);
+        background-color: var(--BackColorFact);
+    }
+
+    .totalFactAmount::before {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        content: "₡";
+        font-size: 4rem;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        height: 100%;
+        width: 35px;
+        color: var(--ColorFact);
+        margin-left: 13px;
+    }
+}
+
+.responsiveTableHeigth {
+    max-height: 50vh;
+    min-height: 50vh;
+    overflow-y: scroll;
+}
+
+.productRowFac td:nth-child(6),
+.productRowFac td:nth-child(8),
+.productRowFac td:nth-child(9) {
+    font-size: 1.3rem;
+}
+
+.productRowFac td:nth-child(2) {
+    text-transform: uppercase;
+}
+
+.cardImgBody {
+    object-fit: cover;
+}
+
+.cardImgBody img {
+    height: 150px;
+    object-fit: cover;
+}

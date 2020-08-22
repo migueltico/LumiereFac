@@ -127,6 +127,20 @@ class helper
     // $newstr = substr_replace($key, $str_to_insert, $pos[rand(0,2)], 0);
     return strtoupper($key);
   }
+  /**
+   * Crea la informacion para generar la paginacion
+   *
+   * @param Int $cantidadRows Total de Rows en la tabla
+   * @param Int $maxPerPage Max items a mostrar por pagina
+   * @param Int $nowPage Pagina actual
+   * @return void
+   */
+  public static function paginacion($cantidadRows, $maxPerPage, $nowPage)
+  {
+    $InitLimit = ($nowPage - 1) * $maxPerPage;
+    $paginas = ceil($cantidadRows / $maxPerPage);
+    return array('paginas' => $paginas, 'InitLimit' => $InitLimit);
+  }
   public static function uploadImage($index)
   {
     $target_dir = "./uploads/products/";
