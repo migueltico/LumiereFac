@@ -388,7 +388,7 @@ function generarCodigo(e, modalId) {
 }
 
 function loadTable(e) {
-    let img = ` < div class = "loading" > < img src = "/public/assets/img/loading.gif" > < /div>`;
+    let img = ` <div class = "loading"><img src ="/public/assets/img/loading.gif" ></div>`;
     $(".loadTable").html('')
     $(".loadTable").append(img)
     fetch('/inventario/refresh/producttable', {
@@ -653,7 +653,7 @@ function UpdateEditModal(e, modalId) {
                     Swal.fire({
                         position: 'top',
                         title: 'Error al actualizar el Producto',
-                        text: resp.error,
+                        text: resp.error+": Codigo de barra duplicado",
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })

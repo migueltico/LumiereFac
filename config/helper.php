@@ -116,15 +116,11 @@ class helper
   }
   public static function generarCodigo($longitud)
   {
-    // $str_to_insert = "-";
-    // $pos = [2,3,6,9,11];
-
     $key = '';
-    $pattern = '1234567890abcdefghijkl1234567890mnopqrstuvwxyz';
+    $pattern = '1234567890';
     $longitud = $longitud + 2;
     $max = strlen($pattern) - 1;
     for ($i = 0; $i < $longitud; $i++) $key .= $pattern[mt_rand(0, $max)];
-    // $newstr = substr_replace($key, $str_to_insert, $pos[rand(0,2)], 0);
     return strtoupper($key);
   }
   /**
@@ -133,7 +129,7 @@ class helper
    * @param Int $cantidadRows Total de Rows en la tabla
    * @param Int $maxPerPage Max items a mostrar por pagina
    * @param Int $nowPage Pagina actual
-   * @return void
+   * @return array paginas, InitLimit
    */
   public static function paginacion($cantidadRows, $maxPerPage, $nowPage)
   {

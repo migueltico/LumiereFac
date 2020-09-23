@@ -12,4 +12,3 @@
 	<link rel="icon" type="image/png" href="public/assets/img/favicon.ico" />
 	<title>dashboard</title>
 </head>
-

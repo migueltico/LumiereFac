@@ -9,7 +9,7 @@ use models\sucursalModel as sucursal;
 use models\adminModel as admin;
 use controllers\uploadsController as upload;
 //Funciones de ayuda
-use Config\helper as help;
+use config\helper as help;
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class facturacionController extends view
 
@@ -28,6 +28,7 @@ class facturacionController extends view
         // $data["products"] = $products['data'];
         // $data["cat_precios"] = $cat_precios['data'];
         // $data["icons"] =  $icon['icons'];
+        
         echo view::renderElement('facturacion/facturacion');
     }
     public function addstock($var)
@@ -46,10 +47,12 @@ class facturacionController extends view
         header('Content-Type: application/json');
         echo json_encode($product);
     }
+
     public function searchProductCtrlQ($var)
     {
         $product = product::searchCodeProductCtrlQ($_POST['toSearch'], $_POST['initLimit']);
         header('Content-Type: application/json');
         echo json_encode($product);
+        
     }
 }

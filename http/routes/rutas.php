@@ -59,6 +59,16 @@ route::group('facturacion', function () {
     route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth']);
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
+    route::post('/facturaVenta', 'inventarioController@getFact');
+});
+//+++++++++++ CLIENTES +++++++++++//
+route::group('clientes', function () {
+    route::post('/lista', 'clientesController@index', ['loginMiddleware@auth']);
+    route::post('/addcliente', 'clientesController@addNewClient');
+    route::post('/getClienteById', 'clientesController@getClienteById');
+    route::post('/updateClienteById', 'clientesController@updateClienteById');
+    route::post('/refreshClients', 'clientesController@refreshClients');
+    route::post('/search/searchclient', 'clientesController@searchClient');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

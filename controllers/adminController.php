@@ -6,7 +6,7 @@ use config\view;
 // manda a llamar al controlador de conexiones a bases de datos
 use models\adminModel as admin;
 //Funciones de ayuda
-use Config\helper as help;
+use config\helper as help;
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class adminController extends view
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Config;
+namespace config;
 
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', realpath(dirname(__FILE__)) . DS);

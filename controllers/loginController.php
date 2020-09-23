@@ -2,10 +2,10 @@
 
 namespace controllers;
 // manda a llamar al controlador de vistas
-use Config\view;
+use config\view;
 use models\userModel as user;
 //Funciones de ayuda
-use Config\helper as help;
+use config\helper as help;
 // manda a llamar al controlador de conexiones a bases de datos
 
 // la clase debe llamarse igual que el controlador respetando mayusculas

@@ -9,12 +9,20 @@ use models\sucursalModel as sucursal;
 use models\adminModel as admin;
 use controllers\uploadsController as upload;
 //Funciones de ayuda
-use Config\helper as help;
+use config\helper as help;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+// new Picqer\Barcode\BarcodeGeneratorPNG();
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class inventarioController extends view
 
 {
 
+  public function getFact($var)
+  {
+
+    echo view::renderElement('facturas/facturaVenta');
+  }
   public function index($var)
   {
     $icon = help::icon();
@@ -98,7 +106,7 @@ class inventarioController extends view
   public function generarCodigo($var)
   {
     try {
-      $codigo = help::generarCodigo(11);
+      $codigo = help::generarCodigo(7);
       header('Content-type: application/json');
       echo json_encode(array("codigo" => $codigo));
     } catch (\Throwable $th) {
@@ -146,7 +154,6 @@ class inventarioController extends view
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/productosTable', $data);
   }
-
 
   public function searchProductstock($var)
   {

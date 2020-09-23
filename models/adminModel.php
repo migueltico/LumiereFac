@@ -2,7 +2,7 @@
 
 namespace models;
 
-use Config\helper as h;
+use config\helper as h;
 use config\conexion;
 
 class adminModel

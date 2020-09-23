@@ -1,6 +1,10 @@
-<?php namespace models;
- use Config\helper as h;
+<?php
+
+namespace models;
+
+use config\helper as h;
 use config\conexion;
+
 class userModel
 {
     /**
@@ -21,5 +25,4 @@ class userModel
         );
         return $con->SRQ('SELECT U.*, S.descripcion AS sucursal FROM  usuario AS U INNER JOIN sucursal AS S ON U.idsucursal = S.idsucursal WHERE usuario = :usuario AND password = :pass', $datos);
     }
-  
 }

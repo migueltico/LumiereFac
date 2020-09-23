@@ -4,7 +4,7 @@ namespace controllers;
 // manda a llamar al controlador de vistas
 use config\view;
 //Funciones de ayuda
-use Config\helper as help;
+use config\helper as help;
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class uploadsController extends view
 

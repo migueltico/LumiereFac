@@ -41,7 +41,7 @@
                     </td>
                     <td scope="row"><?= $product["descripcion"] ?></td>
                     <td scope="row" style="text-align: center;"><strong><?= $product["talla"] ?></strong></td>
-                    <td scope="row" style="text-align: center;margin:0 auto;min-width: 175px !important;">
+                    <td scope="row" style="text-align: center;margin:0 auto;min-width: 175px !important;" data-value="<?= $product["precio_unitario"] ?>">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text inputWithStockBtn2">₡</span>
@@ -49,7 +49,7 @@
                             <input type="text" class="form-control inputWithStock" data-number="<?= $product['precio_unitario'] ?>" id="unitario_<?= $product["idproducto"] ?>" value="<?= $product["precio_unitario"] ?>">
                         </div>
                     </td>
-                    <td scope="row" style="text-align: center;margin:0 auto;min-width: 175px !important;">
+                    <td scope="row" style="text-align: center;margin:0 auto;min-width: 175px !important;" data-value="<?= $product["precio_costo"] ?>">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text inputWithStockBtn2">$</span>
@@ -57,7 +57,7 @@
                             <input type="text" class="form-control inputWithStock" data-number="<?= $product['precio_costo'] ?>" id="costo_<?= $product["idproducto"] ?>" value="<?= $product["precio_costo"] ?>">
                         </div>
                     </td>
-                    <td scope="row" class="strongSugerido">
+                    <td scope="row" class="strongSugerido" data-value="<?= $product["precio_sugerido"] ?>">
                         <div id="sugerido_<?= $product["idproducto"] ?>" class="border-info" data-value="<?= $product["precio_sugerido"] ?>">
                             <?= $product["precio_sugerido"] ?>
                         </div>

@@ -41,8 +41,7 @@
         <li>
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['clients'] ?></span><span>Clientes</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
-                <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Agregar Cliente</span><span></span></li>
-                <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Lista de Clientes</span><span></span></li>
+                <li data-linkto="/clientes/lista" class="dataLink"><span class="spanStyleMenu"></span><span>Lista de Clientes</span><span></span></li>
                 <li data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>

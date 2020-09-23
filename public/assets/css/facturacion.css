@@ -109,6 +109,14 @@
     text-transform: uppercase;
 }
 
+.page-link {
+    cursor: pointer;
+}
+
+.pre_nex.disabled {
+    pointer-events: none;
+}
+
 .cardImgBody {
     object-fit: cover;
 }
@@ -116,4 +124,79 @@
 .cardImgBody img {
     height: 150px;
     object-fit: cover;
+}
+
+.codeToAddInputSearch {
+    font-weight: 600;
+    cursor: pointer;
+    padding-left: 20px;
+    padding-bottom: 5px;
+}
+
+.icon_codeToAddInputSearch {
+    position: relative;
+}
+
+.codeToAddInputSearchClient {
+    margin-left: 20px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.icon_codeToAddInputSearch::before {
+    content: url('../img/add.png');
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 1px;
+}
+
+
+
+
+@media only print {
+    html * {
+        visibility: hidden;
+    }
+
+    .printContainer,
+    .printContainer * {
+        visibility: visible;
+    }
+
+    .printContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 302px !important;
+        max-width: 302px !important;
+        background-color: white;
+    }
+}
+
+.cardHeaderSwitch {
+    background-color: #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.inputGroupFact {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+}
+
+.cardHeaderSwitch h5 {
+    margin-top: 2px;
+}
+
+.fact_switchBtns {
+    display: none;
+}
+
+.fact_rbRadiosBtns {
+    cursor: pointer;
 }

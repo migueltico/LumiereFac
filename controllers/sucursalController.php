@@ -7,7 +7,7 @@ use config\view;
 use models\productModel as product;
 use models\sucursalModel as sucursal;
 //Funciones de ayuda
-use Config\helper as help;
+use config\helper as help;
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class sucursalController extends view
 

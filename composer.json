@@ -1,0 +1,22 @@
+{
+    "name": "miguel/facturacion",
+    "description": "Sistema de facturacion",
+    "require": {
+        "dompdf/dompdf": "^0.8.5",
+        "picqer/php-barcode-generator": "^2.0"
+    },
+    "authors": [{
+        "name": "Miguel Esquivel Castrillo",
+        "email": "miguel.gesquivel@gmail.com"
+    }],
+    "autoload": {
+        "psr-4": {
+            "config\\": "config/",
+            "controllers\\": "controllers/",
+            "models\\": "models/",
+            "http\\": "http/",
+            "middleware\\": "middleware/",
+            "views\\": "views/"
+        }
+    }
+}

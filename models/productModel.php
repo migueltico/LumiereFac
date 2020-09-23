@@ -2,7 +2,7 @@
 
 namespace models;
 
-use Config\helper as h;
+use config\helper as h;
 use config\conexion;
 use config\helper;
 
@@ -105,16 +105,17 @@ class productModel
      *
      * @return void
      */
-    public static function searchCodeProductCtrlQ($data, $initLimit)
+    public static function searchCodeProductCtrlQ($data, $nowPage)
     {
         $con = new conexion();
-        $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.estado = 1");
+        $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.descripcion LIKE '%$data%' OR p.marca LIKE '%$data%' AND p.estado = 1");
         $totalRows = $totalRows['data']['cantidad'];
-        $paginacion = helper::paginacion($totalRows, 2, 1);
-        $result = $con->SPCALL("CALL sp_searchCodeProductCtrlQ('%$data%')");
+        $paginacion = helper::paginacion($totalRows, 10, $nowPage);
+        $init = $paginacion['InitLimit'];
+        $result = $con->SPCALL("CALL sp_searchCodeProductCtrlQ('%$data%',$init ,10)");
 
         if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => $paginacion, "error" => 0, "msg" => "Se encontro resultado");
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
         } else if ($result['error'] !== '00000' || $result['data'] == false) {
             return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
         }

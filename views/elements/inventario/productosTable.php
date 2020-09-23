@@ -23,6 +23,8 @@
       <?php
       $gravado = array("noGravado", "gravado");
       $estado = array("inhabilitado", "habilitado");
+      $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+
       ?>
       <!-- <span class="mr-2"><?php //echo$icons["codebar"] 
                               ?></span> -->
@@ -43,7 +45,11 @@
             </div>
           </td>
           <td scope="row"><?= $product["descripcion"] ?></td>
-          <td scope="row" style="text-align: center;"><?= $product["codigo"] ?></td>
+          <!-- <td scope="row" style="text-align: center;"><?// $product["codigo"] ?></td> -->
+          <td scope="row" style="text-align: center;">
+            <?= '<img width="150px" src="data:image/png;base64,' . base64_encode($generator->getBarcode($product["codigo"], $generator::TYPE_CODE_128)) . '">' ?>
+            <p><?= $product["codigo"] ?></p>
+          </td>
           <td scope="row"><?= $product["categoria"] ?></td>
           <td scope="row"><?= $product["marca"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["estilo"] ?></td>
@@ -60,7 +66,7 @@
           <td scope="row">
             <div class="btn-group Editbuttons" aria-label="Grupo edicion">
               <button type="button" class="btn btn-success EditProductBtn" data-toggle="modal" data-target="#EditProduct" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['edit'] ?></button>
-              <button type="button" class="btn btn-primary pl-3 pr-3 SeeImgProduct" data-urls="<?= $product["image_url"] ?>" data-toggle="modal" data-target="#galleryShow" data-name="<?=$product["descripcion"]?>"  data-idProductEdit='<?=$product["idproducto"]?>'><?= $icons['eye'] ?></button>
+              <button type="button" class="btn btn-primary pl-3 pr-3 SeeImgProduct" data-urls="<?= $product["image_url"] ?>" data-toggle="modal" data-target="#galleryShow" data-name="<?= $product["descripcion"] ?>" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['eye'] ?></button>
               <button type="button" class="btn btn-danger" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['trash'] ?></button>
             </div>
           </td>

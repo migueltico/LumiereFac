@@ -6,7 +6,7 @@ namespace controllers;
 // manda a llamar al controlador de conexiones a bases de datos
 use models\conexion;
 //Funciones de ayuda
-use Config\helper as help;
+use config\helper as help;
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class indexController extends view
 

@@ -1,5 +1,5 @@
 <?php namespace middleware;
- use Config\helper as h;
+ use config\helper as h;
 class loginMiddleware
 {
     public function auth($request = '', $next = '')
