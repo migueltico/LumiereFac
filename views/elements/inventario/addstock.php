@@ -4,7 +4,7 @@
         <div class="row">
             <div class="input-group mb-3 col-lg-6 col-md-8 col-sm-12 mt-3">
                 
-                    <input autocomplete="off" type="text" class="form-control" id="productSearchStock" placeholder="Buscar Producto">
+                    <input autocomplete="off" type="text" class="form-control" id="productSearchStockInventario" placeholder="Buscar Producto">
                
                 <div class="input-group-append">
                     <!-- <button class="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button> -->

@@ -19,6 +19,14 @@
                 <input type="text" id="EditProduct_descripcion" name="descripcion" class="form-control  p-3">
               </div>
             </div>
+            <div class="col-12">
+              <div class="input-group input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm">Descripcion Corta</span>
+                </div>
+                <input type="text" id="EditProduct_descripcion_short" maxlength="30"  placeholder="Max. 30 Caracteres"  name="descripcion_short" class="form-control  p-3">
+              </div>
+            </div>
             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
               <div class="input-group input-group mb-3">
                 <div class="input-group-prepend">

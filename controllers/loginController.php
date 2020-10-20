@@ -4,6 +4,7 @@ namespace controllers;
 // manda a llamar al controlador de vistas
 use config\view;
 use models\userModel as user;
+use models\adminModel as admin;
 //Funciones de ayuda
 use config\helper as help;
 // manda a llamar al controlador de conexiones a bases de datos
@@ -24,19 +25,25 @@ class loginController extends view
     public function validar($var)
     {
         $post =  $var['post'];
+        $_SESSION["db"] = $post["db"];
         $data = user::getUser($post['usuario'], $post['pass']);
+        $info = admin::infoSucursal();
+        $info = $info['data'];
         if ($data['rows'] == 1) {
             $data = $data['data'];
             $_SESSION["id"] = $data["idusuario"];
             $_SESSION["usuario"] = $data["usuario"];
             $_SESSION["nombre"] = $data["nombre"];
             $_SESSION["rol"] = $data["rol"];
-            $_SESSION["sucursal"] = $data["sucursal"];
-            $_SESSION["idsucursal"] = $data["idsucursal"];
+            //$_SESSION["sucursal"] = $data["sucursal"];
+            //$_SESSION["idsucursal"] = $data["idsucursal"];
+
+            $_SESSION["info"] = $info;
+
             //return json_encode(array("estado" => 200, "session" => $_SESSION));
             help::redirect("/dashboard");
         } else {
-            
+
             //return json_encode(array("estado" => 400, "error" =>"No coincide con ningun usuario"));
             help::redirect("/");
         }

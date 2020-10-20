@@ -17,8 +17,8 @@ class productModel
     {
         $con = new conexion();
         $mainProduct = $con->SQ(
-            'INSERT INTO producto (descripcion,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
-            VALUES (:descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
+            'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
+            VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
             $datos
         );
         if ($mainProduct['error'] == '00000') {
@@ -112,7 +112,19 @@ class productModel
         $totalRows = $totalRows['data']['cantidad'];
         $paginacion = helper::paginacion($totalRows, 10, $nowPage);
         $init = $paginacion['InitLimit'];
-        $result = $con->SPCALL("CALL sp_searchCodeProductCtrlQ('%$data%',$init ,10)");
+        
+        if (strpos($data, '%') !== false) {
+            $dataArray = explode("%",$data);
+            $string = "";
+            foreach ($dataArray as $value) {
+                $string .=$value ."%";
+            }
+            $SqlMultiParam = "CALL sp_searchCodeProductCtrlQ('%$string',$init ,10)";
+            $result = $con->SPCALL($SqlMultiParam);
+        } else {
+            $SqlOneParam = "CALL sp_searchCodeProductCtrlQ('%$data%',$init ,10)";
+            $result = $con->SPCALL($SqlOneParam);
+        }
 
         if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
             return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
@@ -166,7 +178,7 @@ class productModel
     public static function updateProduct($datos)
     {
         $con = new conexion();
-        $setData = ':descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:modificado_por,:urls,:estado,:categoriaPrecio,:descuento,:idproducto';
+        $setData = ':descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:modificado_por,:urls,:estado,:categoriaPrecio,:descuento,:idproducto,:descripcion_short';
         $sql = "CALL sp_updateProduct($setData)";
         return $result = $con->SPCALLNR($sql, $datos);
     }

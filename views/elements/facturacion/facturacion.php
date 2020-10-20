@@ -8,9 +8,9 @@
                     <div class="col-lg-3">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" type="button" id="fac_vendedor">Vendedor</button>
+                                <button class="btn btn-outline-secondary" type="button" id="fac_vendedor">Cajero</button>
                             </div>
-                            <input type="text" disabled class="form-control text-right" data-vendedor="<?= $_SESSION['id'] ?>" value="<?= $_SESSION['nombre'] ?>">
+                            <input type="text" id="InputVendedorFact" disabled class="form-control text-right" data-vendedor="<?= $_SESSION['id'] ?>" value="<?= $_SESSION['nombre'] ?>">
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
@@ -27,16 +27,17 @@
                     </div>
                     <div class="col-lg-3">
 
-                        <div class="mb-3" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-primary">ENVIO</button>
+                        <div class="btn-group " role="group" id="group_type_fac">
+                            <button type="button" data-tipo="1" class="btn active btn-primary">Local</button>
+                            <button type="button" data-tipo="2" class="btn btn-info">Envio</button>
+                            <button type="button" data-tipo="3" class="btn btn-info">Apartado</button>
                         </div>
-
 
 
                     </div>
                     <div class="col-lg-6">
 
-                        <div class="totalFactAmount" id="totalFactAmount">0.00</div>
+                        <div class="totalFactAmount" data-amount="0.00" id="totalFactAmount">0.00</div>
 
                     </div>
 
@@ -47,8 +48,8 @@
                         <div class="input-group-prepend">
                             <label class="btn btn-outline-secondary" id="btnCodigoBarrasModal" type="button">Buscar</label>
                         </div>
-                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" data-cliente="1" autofocus="on" placeholder="Escanea o Digita el codigo" value="094738581">
-                        <input type="hidden" name="" id="bodyFactMain" value="1">
+                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" autofocus="on" placeholder="Escanea o Digita el codigo" value="094738581">
+                        <input type="hidden" name="" id="bodyFactMain" data-number="1">
                     </div>
 
                     <div class="input-group mb-3 col-lg-6 col-md-6 col-sm-4">
@@ -67,15 +68,16 @@
                     <table class="table table-striped">
                         <thead class="bg-primary text-white">
                             <tr>
-                                <th scope="col">Codigo</th>
-                                <th scope="col">Descripcion</th>
-                                <th scope="col">Talla</th>
-                                <th scope="col">IVA</th>
-                                <th scope="col">Cantidad</th>
-                                <th scope="col">Precio</th>
-                                <th scope="col">Descuento</th>
-                                <th scope="col">SubTotal</th>
-                                <th scope="col">Total IVA</th>
+                                <th scope="col">Codigo 0</th>
+                                <th scope="col">Descripcion 1</th>
+                                <th scope="col">Talla 2</th>
+                                <th scope="col">IVA 3</th>
+                                <th scope="col">Cantidad 4</th>
+                                <th scope="col">Stock 5</th>
+                                <th scope="col">Precio 6</th>
+                                <th scope="col">Descuento 7</th>
+                                <th scope="col">SubTotal 8</th>
+                                <th scope="col">Total IVA 9</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>

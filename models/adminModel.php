@@ -23,10 +23,32 @@ class adminModel
         INNER JOIN usuario AS u ON u.idusuario = g.modificado_por
         WHERE g.idgastos=1');
     }
+    public static function  infoSucursal()
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW('SELECT * FROM generalinfo WHERE idgeneral = 1');
+    }
+    public static function consecutivo()
+    {
+        $con = new conexion();
+        return ["Saludo" => 'Hola'];
+        //return $con->TRANSACTION('call test()');
+    }
     public static function setGastos($datos)
     {
         $con = new conexion();
         return $con->SQ('CALL sp_addGastos(:gastos,:total,:iduser)', $datos);
+    }
+    public static function addGeneralInfo($datos)
+    {
+        $params = h::coverToSqlparams($datos);
+        $con = new conexion();
+        return $con->SQ("CALL sp_addGeneralInfo($params)", $datos);
+    }
+    public static function getGeneralInfo()
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW("CALL getGeneralInfo()");
     }
     public static function getCategoriaPrecios()
     {

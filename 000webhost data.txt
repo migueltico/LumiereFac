@@ -1,0 +1,9 @@
+Proyecto password: DxS(c*KZnAD4G1vutAle
+
+Name Proyecto: FacturacionTiendaRopaCr
+
+BDpassword:  [Upy~9ya\OYMh^XH
+
+
+DB Name         	    DB User	DB           DB password                  Host	 
+id14989780_fact	    id14989780_admin	   [Upy~9ya\OYMh^XH            localhost

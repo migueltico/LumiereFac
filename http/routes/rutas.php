@@ -13,6 +13,7 @@ route::get('/logout', 'loginController@logout');
 route::get('/', 'loginController@index', ['loginMiddleware@auth']);
 //+++++++++++ DASHBOARD +++++++++++//
 route::get('/dashboard', 'dashboardController@index', ['loginMiddleware@auth']);
+route::post('/dashboard/general', 'dashboardController@general', ['loginMiddleware@auth']);
 //+++++++++++ SUCURSAL +++++++++++//
 route::post('/sucursal', 'sucursalController@index', ['loginMiddleware@auth']);
 route::post('/sucursal/addSucursal', 'sucursalController@addSucursal');
@@ -24,6 +25,10 @@ route::post('/sucursal/deleteSucursal', 'sucursalController@deleteSucursal');
 route::group('admin', function () {
     route::post('/gastos', 'adminController@indexGastos', ['loginMiddleware@auth']);
     route::post('/gastos/saveGastos', 'adminController@saveGastos');
+    route::post('/general', 'adminController@general', ['loginMiddleware@auth']);
+
+    route::post('/general/SaveGeneralInfo', 'adminController@SaveGeneralInfo', ['loginMiddleware@auth']);
+
     route::post('/categoriaprecios', 'adminController@indexCategoriaPrecios', ['loginMiddleware@auth']);
     route::post('/categoriastallas', 'adminController@indexCategoriasTallas', ['loginMiddleware@auth']);
     route::post('/categoriastallas/AddCategoria', 'adminController@AddCategoria');
@@ -59,7 +64,7 @@ route::group('facturacion', function () {
     route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth']);
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
-    route::post('/facturaVenta', 'inventarioController@getFact');
+    route::post('/facturaVenta', 'facturacionController@getFact');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
@@ -69,6 +74,11 @@ route::group('clientes', function () {
     route::post('/updateClienteById', 'clientesController@updateClienteById');
     route::post('/refreshClients', 'clientesController@refreshClients');
     route::post('/search/searchclient', 'clientesController@searchClient');
+});
+//+++++++++++ USUARIOS +++++++++++//
+route::group('usuarios', function () {
+    route::post('/', 'usuariosController@index', ['loginMiddleware@auth']);
+    route::post('/setUser', 'usuariosController@setUser');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

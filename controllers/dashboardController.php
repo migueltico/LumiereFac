@@ -18,4 +18,14 @@ class dashboardController extends view
         $block = array("dashboard/body");
         view::renderT("main",  $block, help::icon());
     }
+    public function general($var)
+    {
+        // $icon = help::icon();
+        // $users = users::getUsers();
+        // $rols = users::getRols();
+        // $data["icons"] =  $icon['icons'];
+        // $data["users"] =  $users['data'];
+        // $data["rols"] =  $rols['data'];
+        echo view::renderElement('dashboard/dashboard');
+    }
 }

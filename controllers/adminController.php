@@ -26,6 +26,29 @@ class adminController extends view
         $data['categorias_precios'] = $cat_precios['data'];
         view::renderElement('categoriaPrecios/categoriaPrecios', $data);
     }
+    public function general($var)
+    {
+        $cat_precios = admin::getCategoriaPrecios();
+        $general = admin::getGeneralInfo();
+        $icon = help::icon();
+        $data = $general['data']; // se pone de primero para que las variables se creen en el primer nivel
+        $data["icons"] =  $icon['icons'];//las segundas se agregan despues para evitar ser borradas
+        view::renderElement('general/general', $data);
+    }
+    public function SaveGeneralInfo($var)
+    {
+        $general = admin::addGeneralInfo($_POST);
+        //$array = array($_POST,$general);
+        header('Content-Type: application/json');
+        echo json_encode($general);
+    }
+  
+    public function consecutivo($var)
+    {
+        $consecutivo = admin::consecutivo();
+        header('Content-Type: application/json');
+        echo json_encode($consecutivo);
+    }  
     public function indexCategoriasTallas($var)
     {
         $getTallas = admin::getTallas();

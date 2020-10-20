@@ -28,33 +28,39 @@ $("li.dataLink").click((e) => {
 
 function loadPage(e) {
     let url = $(e.target).data('linkto');
+    let functionName = $(e.target).data('functionName');
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
     $(".bodyContent").html('')
     $(".bodyContent").append(img)
     fetch(url, {
-            method: 'POST'
+            method: "POST"
         })
         .then((result) => result.text())
         .then((html) => {
             $(".bodyContent").html(html)
+        }).then((e) => {
+            if (functionName !== '0') {
+                window['startChars']()
+            }
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
         });
 }
 //BORRAR ES TEMPORAL
-function loadPage2() {
+function loadPage2(e) {
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif" alt="Loading..."></div>';
     $(".bodyContent").html('')
     $(".bodyContent").append(img)
-   // let url = '/inventario/listarproductos';
-    let url = '/facturacion/facturar';
+    // let url = '/inventario/listarproductos';
+    let url = '/dashboard/general';
     fetch(url, {
             method: 'POST'
         })
         .then((result) => result.text())
         .then((html) => {
             $(".bodyContent").html(html)
+            window['startChars']()
         })
         .catch((err) => {
             console.log('error en FETCH:', err);

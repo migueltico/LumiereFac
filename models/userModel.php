@@ -23,6 +23,6 @@ class userModel
             ":usuario" => $usuario,
             ":pass" => $pass
         );
-        return $con->SRQ('SELECT U.*, S.descripcion AS sucursal FROM  usuario AS U INNER JOIN sucursal AS S ON U.idsucursal = S.idsucursal WHERE usuario = :usuario AND password = :pass', $datos);
+        return $con->SRQ('SELECT * FROM  usuario  WHERE usuario = :usuario AND password = :pass', $datos);
     }
 }

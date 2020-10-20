@@ -36,8 +36,9 @@ class view
     {
         if ($parameters !== null) {
             foreach ($parameters as $property => $value) {
-                $$property = $value;
+                $$property = $value;              
             }
+            
         }
         if (!empty($parameters['get'])) {
             // echo 'Si tiene datos el get';

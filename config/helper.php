@@ -24,6 +24,17 @@ class helper
     $clear = strtolower($clear);
     return $clear;
   }
+  public static function coverToSqlparams($asoccArray){
+    $StringParams="";
+    $ArrayParams = array_keys($asoccArray);
+    foreach ($ArrayParams as $value) {
+      $StringParams.=$value.",";
+    }
+    return rtrim($StringParams,",");
+  }
+  public static function errorMsg($code, $msg){
+    return  array('estado' => 0, 'error' => $code, 'errorMsg' =>$msg);
+  }
   public static function StringExplode($string, $delimiter, $indexId)
   {
     $delimiter = trim($delimiter);
@@ -153,7 +164,6 @@ class helper
       $response["checkMIME"] = "File is not an image.";
       $uploadOk = 1;
     }
-
 
     // Check if file already exists
     if (file_exists($target_file)) {

@@ -41,9 +41,13 @@ class clientesController extends view
         $datos[':email'] = $_POST['email'];
         $datos[':direccion'] = $_POST['direccion2'] == '' ? $_POST['direccion'] : $_POST['direccion'] . ';' . $_POST['direccion2'];
         $datos[':id'] = $_SESSION['id'];
-        $clientes = cliente::addNewClient($datos);
-        header('Content-Type: application/json');
-        echo json_encode($clientes);
+        if($datos[":nombre"] !==""){
+            $clientes = cliente::addNewClient($datos);
+            header('Content-Type: application/json');
+            echo json_encode($clientes);
+        }else{
+            echo json_encode(help::errorMsg("CLIENTE00002","El cliente debe llevar almenos un nombre",));
+        }
     }
     public function updateClienteById()
     {

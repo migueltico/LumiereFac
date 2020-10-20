@@ -50,10 +50,10 @@ function selectText(text, element) {
     element.setSelectionRange(0, text.length);
 }
 //SE EJECUTA AL PRESIONAR ENTER EN EL INPUT DE BUSQUEDA EN INVENTARIO
-$('#bodyContent').on("keypress", "#productSearchStock", function (e) {
+$('#bodyContent').on("keypress", "#productSearchStockInventario", function (e) {
     if (e.charCode == 13) {
-        let toSearch = document.getElementById('productSearchStock').value
-        let element = document.getElementById('productSearchStock')
+        let toSearch = document.getElementById('productSearchStockInventario').value
+        let element = document.getElementById('productSearchStockInventario')
         let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
         $(".loadTable").html('')
         $(".loadTable").append(img)
@@ -143,7 +143,7 @@ $("#bodyContent").on('click', '.addMinStockBtn', function (e) {
 
 function refreshStock() {
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif" alt="Loading..."></div>';
-    let toSearch = document.getElementById('productSearchStock')
+    let toSearch = document.getElementById('productSearchStockInventario')
     let formData = new FormData()
     console.log(toSearch);
     formData.append('toSearch', toSearch.value)
@@ -414,6 +414,7 @@ function removeImgAdd2({
 
 function validarFormADD(modalId) {
     let descripcion = $(modalId + "_descripcion").val()
+    let descripcion_short = $(modalId + "_descripcion_short").val()
     let estilo = $(modalId + "_estilo").val()
     let marca = $(modalId + "_marca").val()
     let codigo = $(modalId + "_txtcodigoBarra").val()
@@ -426,6 +427,7 @@ function validarFormADD(modalId) {
     let validate = 0
     $(modalId + "_iva_valor").removeClass('is-invalid')
     $(modalId + "_descripcion").removeClass('is-invalid')
+    $(modalId + "_descripcion_short").removeClass('is-invalid')
     $(modalId + "_estilo").removeClass('is-invalid')
     $(modalId + "_marca").removeClass('is-invalid')
     $(modalId + "_txtcodigoBarra").removeClass('is-invalid')
@@ -440,6 +442,10 @@ function validarFormADD(modalId) {
     }
     if (descripcion == '') {
         $(modalId + "_descripcion").addClass('is-invalid')
+        validate = 1
+    }
+    if (descripcion_short == '') {
+        $(modalId + "_descripcion_short").addClass('is-invalid')
         validate = 1
     }
     if (estilo == '') {
@@ -583,6 +589,7 @@ function loadDataEditModal(e, modalId) {
                     })
                 }
                 $(`${modalId}_descripcion`).val(datos.descripcion)
+                $(`${modalId}_descripcion_short`).val(datos.descripcion_short)
                 $(`${modalId}_marca`).val(datos.marca)
                 $(`${modalId}_estilo`).val(datos.estilo)
                 $(`${modalId}_txtcodigoBarra`).val(datos.codigo)

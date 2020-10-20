@@ -8,7 +8,11 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
     const cb = document.getElementById('MultiTipoPagoFact');
     const InputSwitch = document.getElementsByClassName('fact_switchBtns');
     const InputRadio = document.getElementsByClassName('fact_rbRadiosBtns');
+
+    $(".cardHeaderSwitch").removeClass('selectedMethodPay')
     if (cb.checked) {
+        $('.lbMontoToPay').prop('disabled', false)
+        $(".lbMontoToPay").val('0.00')
         for (let i = 0; i < InputSwitch.length; i++) {
             InputSwitch[i].checked = false
             InputSwitch[i].style.display = "block"
@@ -16,6 +20,11 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
 
         }
     } else {
+        let amounts = document.getElementById('totalFactAmount')
+        $(".lbMontoToPay").val(amounts.dataset.amount)
+        $(".cardHeaderSwitch").first().addClass('selectedMethodPay')
+        $(".fact_switchBtns input[type='checkbox").prop("checked", false)
+        $('.lbMontoToPay').prop('disabled', true)
         InputRadio[0].checked = true
         for (let i = 0; i < InputSwitch.length; i++) {
             InputSwitch[i].checked = false
@@ -27,8 +36,370 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
 
 
 })
+$("#bodyContent").on("click", "#PrintFactBtn", function (e) {
+    $('.lbMontoToPay').prop('disabled', true)
+    $(".tarjertaInputs_tarjeta").val('')
+    $(".transferenciaInputs_referencia").val('')
+    $(".transferenciaInputs_banco").val(0)
+    let amount = document.getElementsByClassName("totalFactAmount")[0]
+    let btn = document.getElementById('btnMakeFact')
+    let amountFloat = parseFloat(amount.dataset.amount.replace(",", ""))
+    if (amountFloat > 0.00) {
+        $(btn).prop("disabled", false)
+    } else {
+        $(btn).prop("disabled", true)
+    }
+
+})
+$("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
+    console.log("CLICK");
+    $("#group_type_fac .btn").removeClass("active")
+    $("#group_type_fac .btn").removeClass("btn-primary")
+    $("#group_type_fac .btn").addClass("btn-info")
+    $(this).removeClass("btn-info")
+    $(this).addClass("btn-primary")
+    $(this).addClass("active")
+})
+
+function resetFactScreen() {
+    //Resetea los botones de local envio o apartado
+    $("#group_type_fac .btn").removeClass("active")
+    $("#group_type_fac .btn").removeClass("btn-primary")
+    $("#group_type_fac .btn").addClass("btn-info")
+    $("#group_type_fac .btn").first().addClass("btn-primary")
+    $("#group_type_fac .btn").first().removeClass("btn-info")
+    $("#group_type_fac .btn").first().addClass("active")
+}
+$('#bodyContent').on("click", "#btnMakeFact", function (e) {
+    //ANCLA
+    e.preventDefault();
+
+    const cb = document.getElementById('MultiTipoPagoFact');
+    if (cb.checked) {
+        // printFact()
+        let method = PagoMultipleFac()
+        console.log("JSON", method);
+        if (method.state) {
+            getProductsRowsForFac(method.methodsArray)
+        }
+    } else {
+        let method = PagoUnicoFac()
+        //let isOk = true
+        console.log("JSON", method);
+        // method.map(e => (e.state == false ? isOk = true : isOk = false))
+        if (method[0].state) {
+            getProductsRowsForFac(method)
+        }
+
+    }
+})
+
+function convertToFacNumber() {
+    ConvertLabelFormat(111)
+}
+
+function getProductsRowsForFac(method) {
+    let rows = document.getElementsByClassName('productRowFac')
+    let amounts = document.getElementById('totalFactAmount').dataset.amount
+    let idCliente = document.getElementById('fac_cliente_input').dataset.cliente
+    let nameCliente = document.getElementById('fac_cliente_input').value
+    let idVendedor = document.getElementById('InputVendedorFact').dataset.vendedor
+    let nameVendedor = document.getElementById('InputVendedorFact').value
+    let itemsFac = []
+    let gran_subtotal = 0.00
+    let gran_subtotal_descuento = 0.00
+    let methodPay = method
+    let cantidadArticulos = 0
+    let ivaMonto = 0.00
+    for (let row of rows) {
+        let id = row.children[0].dataset.id
+        let descripcion = row.children[1].textContent
+        let talla = row.children[2].textContent
+        let cantidad = parseInt(row.children[4].children[0].value)
+        let iva = (row.children[3].textContent > 0 ? row.children[3].textContent : 0)
+        let precio = ConvertLabelFormat(parseFloat(row.children[6].textContent))
+        let subtotal = ConvertLabelFormat(parseFloat(row.children[8].textContent))
+        let total_iva = ConvertLabelFormat(parseFloat(row.children[9].textContent))
+
+        let descuento = (row.children[7].textContent !== "N/A" ? row.children[7].textContent : 0)
+        cantidadArticulos += cantidad
+        let json = {
+            id,
+            descripcion,
+            talla,
+            cantidad,
+            iva: iva,
+            descuento,
+            precio,
+            subtotal,
+            total_iva
+        }
+        gran_subtotal_descuento += parseFloat(row.children[8].textContent)
+        gran_subtotal += parseFloat(row.children[6].textContent) * parseInt(cantidad)
+        itemsFac.push(json)
+
+    }
+    if (itemsFac.length == 0) {
+
+        itemsFac = 0
+    }
+    let Okprint = document.getElementById('SendFactBoolean');
+    let tipoVenta = parseInt($("#group_type_fac .active").data("tipo"))
+    let finalJson = {
+        items: itemsFac,
+        total: amounts,
+        subtotal_descuento: ConvertLabelFormat(gran_subtotal_descuento),
+        descuento: ConvertLabelFormat((gran_subtotal - gran_subtotal_descuento)), // precio sin descuento menos precio con descuento
+        iva: ConvertLabelFormat((parseFloat(amounts.replace(",", "")) - gran_subtotal_descuento)),
+        idCliente,
+        nameCliente,
+        idVendedor,
+        nameVendedor,
+        methodPay,
+        cantidadArticulos,
+        tipoVenta,
+        sendFac: (Okprint.checked ? 1 : 0),
+        estado: (tipoVenta == 1 ? 1 : 0)
+    }
+    console.log(finalJson);
+    printFact(finalJson)
+}
+
+
+function PagoUnicoFac() {
+    let InputsRadio = document.querySelectorAll(".fact_rbRadiosBtns")
+
+    for (let input of InputsRadio) {
+        if (input.checked) {
+            let inputClass = input.dataset.inputval
+            let result = verificaCamposPago(inputClass)
+            if (result.state) {
+                return [result]
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: 'Campos Incompletos',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500
+                })
+                return [result]
+            }
+        }
+    }
+}
+
+function PagoMultipleFac() {
+    let montoToPay = document.getElementsByClassName("lbMontoToPay")
+    let amounts = document.getElementById('totalFactAmount').dataset.amount
+    let Allswitch = document.getElementsByClassName('switchGroupAmount')
+    let finalAmount = 0.00
+    let result;
+    let methodsArray = []
+    for (let switchItem of Allswitch) {
+        if (switchItem.checked) {
+            let itemId = switchItem.dataset.inputval
+            result = verificaCamposPago(itemId)
+            if (result.state) {
+                let monto = document.getElementsByClassName(`${itemId}_monto`)[0].value
+                //console.log(monto);
+                let valor = monto
+                //console.log(valor);
+                valor = valor.replace(',', "");
+                finalAmount = parseInt(finalAmount) + parseInt(valor)
+                methodsArray.push(result)
+            } else {
+                methodsArray.push(result)
+                Swal.fire({
+                    position: 'top',
+                    title: 'Campos Incompletos',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500
+                })
+                return methodsArray
+            }
+        }
+    }
+    if (parseInt(finalAmount) == parseInt(amounts.replace(',', ""))) {
+        return {
+            state: true,
+            methodsArray
+        }
+    } else {
+        methodsArray = {
+            state: false,
+            methodsArray
+        }
+        Swal.fire({
+            position: 'top',
+            title: 'Monto Incorrecto',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            timer: 2500
+        })
+        return methodsArray
+    }
+}
+
+function verificaCamposPago(inputClass) {
+    switch (inputClass) {
+        case 'efectivoInputs':
+            let Emonto = document.getElementsByClassName(`${inputClass}_monto`)[0].value
+            if (Emonto.length > 0) {
+                let methods = {
+                    tipo: "efectivo",
+                    monto: parseFloat(Emonto.replace(",", "")).toFixed(2),
+                    montoWithFormat: Emonto
+                }
+                return {
+                    state: true,
+                    methods
+                }
+            } else {
+                return {
+                    state: false
+                }
+            }
+            break;
+        case 'tarjertaInputs':
+            let Tmonto = document.getElementsByClassName(`${inputClass}_monto`)[0].value
+            let tarjeta = document.getElementsByClassName(`${inputClass}_tarjeta`)[0].value
+            if (Tmonto.length > 0 && tarjeta.length > 0) {
+                let methods = {
+                    tipo: "tarjeta",
+                    monto: parseFloat(Tmonto.replace(",", "")).toFixed(2),
+                    tarjeta,
+                    montoWithFormat: Tmonto
+                }
+                return {
+                    state: true,
+                    methods
+                }
+            } else {
+                return {
+                    state: false
+                }
+            }
+            break;
+        case 'transferenciaInputs':
+            let BnSelected = document.getElementsByClassName(`transferenciaInputs_banco`)[0].selectedIndex
+            let banco = document.getElementsByClassName(`transferenciaInputs_banco`)[0].options[BnSelected].text
+            let referencia = document.getElementsByClassName(`${inputClass}_referencia`)[0].value
+            let Trmonto = document.getElementsByClassName(`${inputClass}_monto`)[0].value
+            if (banco.length > 0 && banco !== "Seleccione" && referencia.length > 0 && Trmonto.length > 0) {
+                let methods = {
+                    tipo: "transferencia",
+                    monto: parseFloat(Trmonto.replace(",", "")).toFixed(2),
+                    banco,
+                    referencia,
+                    montoWithFormat: Trmonto
+                }
+                return {
+                    state: true,
+                    methods
+                }
+            } else {
+                return {
+                    state: false
+                }
+            }
+            break;
+    }
+}
+
+function printFact(datos) {
+    let body = ''
+    let headers = {
+        "Content-Type": "application/json"
+    }
+
+    let Okprint = document.getElementById('SendFactBoolean');
+    // let formData = new FormData()
+    // formData.append("datos", JSON.stringify(datos))
+    fetch("/facturacion/facturaVenta", {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(datos)
+        }).then(resp => resp.text())
+        .then(resp => {
+            //console.log(resp);
+            if (Okprint.checked) {
+               // $(`#FacSendModal`).modal('toggle')
+                //$('#printContainer').html(resp)
+                let h = resp;
+                let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
+                window.print();
+                d.remove();
+            } else {
+                //$(`#FacSendModal`).modal('toggle')
+                Swal.fire({
+                    position: 'top',
+                    title: "Factura",
+                    text: "Factura generada correctamente",
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+                Okprint.checked = true
+            }
+            resetFactScreen()
+        })
+
+}
+$('#bodyContent').on("change", ".fact_switchBtns input[type='checkbox']", function (e) {
+    let check = e.target.checked
+    if (check) {
+
+        $(this).parent().parent().parent().addClass('selectedMethodPay')
+    } else {
+        $(this).parent().parent().parent().removeClass('selectedMethodPay')
+    }
+})
+
+$('#bodyContent').on("blur", ".lbMontoToPay", function (e) {
+    if (this.value == '') this.value = 0.00
+    e.preventDefault();
+    this.value = parseFloat(this.value.replace(/,/g, ""))
+        .toFixed(2)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    totalGastosLabel()
+    //document.getElementById("display").value = this.value.replace(/,/g, "")
+})
+
+/////////Cambia el color del titulo del metodo de pago
+$('#bodyContent').on("change", ".fact_rbRadiosBtns", function (e) {
+    $(".fact_rbRadiosBtns").removeClass('selectedMethodPay')
+    $(this).parent().parent().addClass('selectedMethodPay')
+
+})
+
+$('#bodyContent').on("click", ".cardHeaderSwitch", function (e) {
+    const cb = document.getElementById('MultiTipoPagoFact');
+    if (!cb.checked) {
+        $(".cardHeaderSwitch").removeClass('selectedMethodPay')
+        $(this).children().children().prop("checked", true)
+        $(this).addClass('selectedMethodPay')
+    } else {
+        let label = $(this).children('div').find('label');
+        if ($(this).hasClass('selectedMethodPay')) {
+            $(this).removeClass('selectedMethodPay')
+        } else {
+            $(this).addClass('selectedMethodPay')
+        }
+        let check = $(this).find('.fact_switchBtns').find('input')[0];
+        check.checked = !check.checked
+    }
+
+
+})
+
+////////////////
 $(window).keypress(function (e) {
-    if (e.charCode == 17 && e.ctrlKey == true && $("#bodyFactMain").val() == 1) {
+    let FactMain = document.getElementById("bodyFactMain")
+    if (e.charCode == 17 && e.ctrlKey == true && FactMain) {
         $('#paginationModal').html('')
         $('#contentSearchFac').html('')
         $("#SearchProductModal").modal('toggle')
@@ -85,28 +456,7 @@ $('#bodyContent').on("keypress", "#ScanCode", function (e) {
     }
 
 })
-$('#bodyContent').on("click", "#PrintFactBtn2", function (e) {
 
-    let body = ''
-    console.log("imprimir 1");
-    fetch("/facturacion/facturaVenta", {
-            method: "POST",
-        }).then(resp => resp.text())
-        .then(resp => {
-            //$('#printContainer').html(resp)
-            console.log("imprimir 2");
-            let h = resp;
-            let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
-            window.print();
-            d.remove();
-            console.log("imprimir 3");
-        })
-
-
-
-
-
-})
 
 function getProductFact(e) {
     let element = document.getElementById('ScanCode')
@@ -131,10 +481,11 @@ function getProductFact(e) {
                     let row = /*html*/ `
                         <tr class="productRowFac" id="itemRowProduct_${data.idproducto}">
                             <td scope="row" data-id="${data.idproducto}" data-toggle="tooltip"data-placement="bottom" title="${data.idproducto}">${data.codigo}</td>
-                            <td scope="row">${data.descripcion} | ${data.marca}</td>
+                            <td scope="row">${data.descripcion_short} | ${data.marca}</td>
                             <td scope="row">${data.talla}</td>
                             <td scope="row">${(data.activado_iva == 0 ? 0 : data.iva)}</td>
                             <td scope="row"><input type="number" min="1" class="cantInputFact" id="id_${data.idproducto}" style="width: 43px !important;text-align:center" name="" id="" value="1"></td>
+                            <td scope="row">${data.stock}</td>
                             <td scope="row">${data.precio_venta}</td>
                             <td scope="row" data-toggle="tooltip" data-descuento="${(data.descuento == null ? 0 : data.descuento)}" data-placement="bottom" title="${des_descuento}">${descuento}</td>
                             <td scope="row" class="productRowFac_subtotal">${precios[0]}</td>
@@ -175,7 +526,8 @@ function ConvertLabelFormat(amount) {
 }
 
 function roundHundred(value, rd1, rd2) {
-    return Math.round(value / rd1) * rd2
+    // return Math.round(value / rd1) * rd2
+    return value
 }
 $("#bodyContent").on("click", ".removeItemProductBtn", function (e) {
     console.log(e.target.dataset.id);
@@ -188,7 +540,7 @@ function removeItemProduct(id) {
 }
 
 function getSubTotalAndTotal() {
-    let total = 1.00
+    let total = 0.00
     let cantRow = 0
     $(".productRowFac .productRowFac_total").each((i, element) => {
         let amount = $(element).text()
@@ -200,8 +552,9 @@ function getSubTotalAndTotal() {
     let newFormat = ConvertLabelFormat(numRound)
     //console.log(newFormat);
     $("#totalFactAmount").text(newFormat)
-    $("#lbMonto").val(newFormat)
-    $("#lbMontoCard").val(newFormat)
+    $("#totalFactAmount").attr("data-amount", newFormat)
+    $(".lbMontoToPay").val(newFormat)
+    $("#amountModalTitle").text(newFormat)
 }
 
 function calcTotalRowPrice(precio, descuento, iva) {
@@ -272,6 +625,10 @@ $('#bodyContent').on("keypress", "#SearchProductInputCtrlQ", function (e) {
     }
 
 })
+$('#bodyContent').on("click", "#SearchProductInputCtrlQBtn", function (e) {
+    SearchProductModalFact("", 1)
+
+})
 $('#bodyContent').on("click", "#paginationModal .paginationBtn", function (e) {
     let valueInput = document.getElementById('SearchProductInputCtrlQ').value
     SearchProductModalFact(valueInput, this.dataset.page)
@@ -303,9 +660,23 @@ $('#bodyContent').on("click", "#paginationModalCliente .pre_nexCliente", functio
 
 })
 $('#bodyContent').on("click", ".codeToAddInputSearch", function (e) {
+    $("#bodyContent #ScanCode").val("")
     $("#bodyContent #ScanCode").val(this.innerText)
     $("#SearchProductModal").modal('toggle')
 
+    let element = document.getElementById('ScanCode')
+    let toSearch = document.getElementById('ScanCode').value
+    element.focus();
+    element.setSelectionRange(0, toSearch.length);
+
+
+
+})
+$('#bodyContent').on("click", ".codeToAddInputSearchCard", function (e) {
+    let codigo = this.dataset.codebar
+    console.log(codigo);
+    $("#bodyContent #ScanCode").val(codigo)
+    $("#SearchProductModal").modal('toggle')
     let element = document.getElementById('ScanCode')
     let toSearch = document.getElementById('ScanCode').value
     element.focus();
@@ -329,6 +700,7 @@ $('#bodyContent').on("click", ".codeToAddInputSearchClient", function (e) {
 $('#bodyContent').on("click", "#fac_cliente", function (e) {
     clearBodySearchClient()
 })
+
 
 function clearBodySearchClient() {
     $('#contentSearchClient').html('')
@@ -358,18 +730,21 @@ function SearchProductModalFact(toSearch, page) {
             //console.log(resp);
             resp.data.map((el, i) => {
                 let url = el.image_url.split(',')
-                let producto = `    <div class="col-6">
-                                        <div class="card mb-3" style="width: 100%;">
+                let producto = `    <div class="col-6 ">
+                                        <div class="card mb-3 codeToAddInputSearchCard" style="width: 100%;" data-codebar="${el.codigo}">
                                         <div class="row no-gutters">
                                             <div class="col-md-4 cardImgBody">
                                             <img src="${url[0]}" class="card-img" alt="...">
                                             </div>
                                             <div class="col-md-8">
                                             <div class="card-body">
-                                                <h5 class="card-title">${el.descripcion}</h5>
-                                                <p class="card-text">₡ ${el.precio_venta}</p>
-                                                <div class="icon_codeToAddInputSearch"><p class="card-text codeToAddInputSearch">${el.codigo}</p></div>
-                                                <p class="card-text"><small class="text-muted">Marca: ${el.marca} | Categoria: ${el.categoria}</small></p>
+                                                <h6 class="card-title">${el.descripcion}</h6>
+                                                <p class="">₡ ${el.precio_venta} |  Stock:${el.stock} </p>
+                                                <span class="icon_codeToAddInputSearch"><span class="codeToAddInputSearch">${el.codigo}</span></span>
+                                                </br>
+                                                <span class=""><small class="text-muted">${(el.iva > 0 ?"<strong>IVA: </strong>"+el.iva +"%": "")}${(el.descuento > 0 ?" | <strong>Descuento: </strong>"+el.descuento +"%": "")}</small></span>
+                                                </br>
+                                                <span class=""><small class="text-muted">Marca: ${el.marca} | Categoria: ${el.categoria}</small></span>
                                             </div>
                                             </div>
                                         </div>
@@ -391,6 +766,11 @@ $('#bodyContent').on("keypress", "#SearchClient_input", function (e) {
     if (e.charCode == 13) {
         searchClient(this.value, 1);
     }
+
+})
+$('#bodyContent').on("click", "#SearchClient_inputBtn", function (e) {
+
+    searchClient('', 1);
 
 })
 
@@ -417,7 +797,7 @@ function searchClient(toSearch, page) {
             //console.log(resp);
             resp.data.map((el, i) => {
                 let cliente = `    <div class="col-6">
-                                        <div class="card mb-2" style="width: 100%;">
+                                        <div class="card mb-2 codeToAddInputSearchClientCard" style="width: 100%;">
                                         <div class="row no-gutters">                                           
                                             <div class="col-md-8">
                                             <div class="card-body">
@@ -425,6 +805,7 @@ function searchClient(toSearch, page) {
                                                     <div class="icon_codeToAddInputSearch"><p class="card-text codeToAddInputSearchClient" data-name="${el.nombre}"  data-id="${el.idcliente}">${el.nombre}</p></div>
                                                 </h5>
                                                 <p class="card-text">${el.email}</p>
+                                                <p class="card-text"><strong>Tel: </strong> ${el.telefono}</p>
                                             </div>
                                             </div>
                                         </div>

@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="btn btn-outline-secondary" type="button">Buscar</label>
+                        <label id="SearchClient_inputBtn" class="btn btn-outline-secondary" type="button">Buscar</label>
                     </div>
                     <input type="text" autocomplete="off" id="SearchClient_input" class="form-control text-left" data-cliente="1" autofocus="on" placeholder="Buscar Cliente">
                 </div>
@@ -25,7 +25,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-info" id="callModalAddClient" data-toggle="modal" data-target="#clientes_editCliente" data-dismiss="modal">Agregar Nuevo Cliente</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

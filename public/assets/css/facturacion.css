@@ -127,10 +127,28 @@
 }
 
 .codeToAddInputSearch {
-    font-weight: 600;
-    cursor: pointer;
+    font-weight: 400;
     padding-left: 20px;
     padding-bottom: 5px;
+}
+
+.codeToAddInputSearchCard {
+    box-sizing: border-box !important;
+}
+
+.codeToAddInputSearchCard:hover {
+    box-sizing: border-box!important;
+    box-shadow: 0 0px 0px 4px var(--primaryColor);
+    cursor: pointer;
+}
+.codeToAddInputSearchClientCard {
+    box-sizing: border-box !important;
+}
+
+.codeToAddInputSearchClientCard:hover {
+    box-sizing: border-box!important;
+    box-shadow: 0 0px 0px 4px var(--primaryColor);
+    cursor: pointer;
 }
 
 .icon_codeToAddInputSearch {
@@ -182,6 +200,11 @@
     padding: 10px;
 }
 
+.colFac {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
 .inputGroupFact {
     display: flex;
     justify-content: flex-end;
@@ -191,12 +214,26 @@
 
 .cardHeaderSwitch h5 {
     margin-top: 2px;
+    cursor: pointer;
+}
+
+.cardHeaderSwitch {
+    cursor: pointer;
 }
 
 .fact_switchBtns {
     display: none;
 }
 
-.fact_rbRadiosBtns {
-    cursor: pointer;
+.selectedMethodPay {
+    background-color: var(--primaryColor);
+    color: white;
+}
+
+.selectedMethodPay+div {
+    border: 1px solid var(--primaryColor);
+}
+
+.selectedMethodPay+div>input {
+    background-color: #eee;
 }

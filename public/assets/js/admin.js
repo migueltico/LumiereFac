@@ -66,7 +66,6 @@ $('#bodyContent').on("blur", ".inputGastos", function (e) {
 
 function addNewLineGasto(e) {
 	let nombre = $("#txtAddNewLineGasto").val()
-	console.log(nombre);
 	let inputRow = ` <div class="input-group mb-3 col-lg-12 col-md-12 col-sm-12">
                         <div class="input-group-prepend tagNameGastos">
                             <span class="input-group-text gastosLabel" data-toggle="tooltip" data-placement="bottom" title="Doble click para cambiar nombre" id="inputGroup-sizing-default">${nombre}</span>
@@ -89,7 +88,6 @@ function SaveGastos() {
 		let data = `${name.trim()}:${value}`
 		items.push(data.replace(',', ''))
 	})
-	// console.log(items);
 	let formData = new FormData()
 	formData.append("gastos", items)
 	fetch("/admin/gastos/saveGastos", {
@@ -116,7 +114,6 @@ function SaveGastos() {
 				})
 			}
 		})
-	//console.log(items);
 }
 
 function totalGastosLabel(amount) {
@@ -124,7 +121,6 @@ function totalGastosLabel(amount) {
 	$(".inputGastos").each((i, item) => {
 		let valor = $(item).val();
 		valor = parseFloat(valor.replace(',', ''))
-		// console.log(total, valor);
 		total = parseFloat(total + valor)
 	})
 	total = total
@@ -267,13 +263,10 @@ function LoadEditCategoriaPrecio(e) {
 	let descripcion = document.getElementById("editCategoriaPrecio_descripcion")
 	let factor = document.getElementById("editCategoriaPrecio_factor")
 	let id = document.getElementById("editCategoriaPrecio_id")
-	//console.log(descripcion, factor);
 	descripcion.value = e.target.dataset.descripcion
 	descripcionLabel.innerText = `Editar Categoria de precio #${e.target.dataset.id}`
 	factor.value = e.target.dataset.factor
 	id.value = e.target.dataset.id
-	//console.log(e.target.dataset.descripcion);
-	//console.log(e.target.dataset.factor);
 }
 
 function SaveEditLineCategoriaPrecio(e) {
@@ -348,7 +341,6 @@ $('#bodyContent').on("click", ".EditCategoriaBtn", function (e) {
 	let descripcion = e.target.dataset.descripcion
 	let inputId = document.getElementById('editCategoriasModal_id')
 	let inputCategoria = document.getElementById('editCategoriasModal_descripcion')
-	console.log(id);
 	inputId.value = id
 	inputCategoria.value = descripcion
 })
@@ -360,7 +352,6 @@ $('#bodyContent').on("click", ".EditTallasBtn", function (e) {
 	let inputId = document.getElementById('editTallasModal_id')
 	let inputDescripcion = document.getElementById('editTallasModal_descripcion')
 	let inputTalla = document.getElementById('editTallasModal_talla')
-	console.log(id);
 	inputId.value = id
 	inputDescripcion.value = descripcion
 	inputTalla.value = talla
@@ -369,65 +360,83 @@ $('#bodyContent').on("click", ".EditTallasBtn", function (e) {
 function addTalla() {
 	let descripcion = document.getElementById('txtDescripcionTalla').value
 	let talla = document.getElementById('txtTallaMedida').value
-
-	let formData = new FormData()
-	formData.append("talla", talla.toUpperCase())
-	formData.append("descripcion", descripcion)
-	fetch("/admin/categoriastallas/AddTalla", {
-			method: "POST",
-			body: formData
-		}).then(resp => resp.json())
-		.then(resp => {
-			if (resp.error == '00000') {
-				Swal.fire({
-					position: 'top',
-					icon: 'success',
-					title: 'Datos Guardados correctamente',
-					showConfirmButton: true,
-					timer: 1500
-				})
-				RefreshCategoriaTallas()
-			} else if (resp.errorMsg[1] == '1451') {
-				Swal.fire({
-					position: 'top',
-					icon: 'error',
-					title: 'Error al Ingresar la nueva talla',
-					text: "No se puede eliminar la categoria, por que existen productos dependientes de la misma.",
-					showConfirmButton: true,
-				})
-			}
+	if (descripcion.length > 0 && talla.length > 0) {
+		let formData = new FormData()
+		formData.append("talla", talla.toUpperCase())
+		formData.append("descripcion", descripcion)
+		fetch("/admin/categoriastallas/AddTalla", {
+				method: "POST",
+				body: formData
+			}).then(resp => resp.json())
+			.then(resp => {
+				if (resp.error == '00000') {
+					Swal.fire({
+						position: 'top',
+						icon: 'success',
+						title: 'Datos Guardados correctamente',
+						showConfirmButton: true,
+						timer: 1500
+					})
+					RefreshCategoriaTallas()
+				} else if (resp.errorMsg[1] == '1451') {
+					Swal.fire({
+						position: 'top',
+						icon: 'error',
+						title: 'Error al Ingresar la nueva talla',
+						text: "No se puede eliminar la categoria, por que existen productos dependientes de la misma.",
+						showConfirmButton: true,
+					})
+				}
+			})
+	} else {
+		Swal.fire({
+			position: 'top',
+			icon: 'error',
+			title: 'Error al Ingresar la Talla',
+			text: (descripcion.length > 0?"Debes Ingresar una talla":(talla.length > 0 ?"Debes ingresar una descripcion":"Debes ingresar una descripcion y talla")),
+			showConfirmButton: true,
 		})
+	}
 }
 
 function addCategoria() {
 	let categoria = document.getElementById('txtDescripcionCategoria').value
-
-	let formData = new FormData()
-	formData.append("categoria", categoria)
-	fetch("/admin/categoriastallas/AddCategoria", {
-			method: "POST",
-			body: formData
-		}).then(resp => resp.json())
-		.then(resp => {
-			if (resp.error == '00000') {
-				Swal.fire({
-					position: 'top',
-					icon: 'success',
-					title: 'Datos Guardados correctamente',
-					showConfirmButton: true,
-					timer: 1500
-				})
-				RefreshCategoriaTallas()
-			} else if (resp.errorMsg[1] == '1451') {
-				Swal.fire({
-					position: 'top',
-					icon: 'error',
-					title: 'Error al Ingresar la categoria',
-					text: "No se puede eliminar la categoria, por que existen productos dependientes de la misma.",
-					showConfirmButton: true,
-				})
-			}
+	if (categoria.length > 0) {
+		let formData = new FormData()
+		formData.append("categoria", categoria)
+		fetch("/admin/categoriastallas/AddCategoria", {
+				method: "POST",
+				body: formData
+			}).then(resp => resp.json())
+			.then(resp => {
+				if (resp.error == '00000') {
+					Swal.fire({
+						position: 'top',
+						icon: 'success',
+						title: 'Datos Guardados correctamente',
+						showConfirmButton: true,
+						timer: 1500
+					})
+					RefreshCategoriaTallas()
+				} else if (resp.errorMsg[1] == '1451') {
+					Swal.fire({
+						position: 'top',
+						icon: 'error',
+						title: 'Error al Ingresar la categoria',
+						text: "No se puede eliminar la categoria, por que existen productos dependientes de la misma.",
+						showConfirmButton: true,
+					})
+				}
+			})
+	} else {
+		Swal.fire({
+			position: 'top',
+			icon: 'error',
+			title: 'Error al Ingresar la categoria',
+			text: "Debes ingresar un nombre de categoria.",
+			showConfirmButton: true,
 		})
+	}
 }
 
 function editCategoriasModal_save() {
@@ -512,3 +521,38 @@ function RefreshCategoriaTallas() {
 /////////////////----END CATEGORIA Y TALLAS----///////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+////////////////////////----GENERAL----///////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+$("#bodyContent").on("click", "#btnSaveGeneralInfo", SaveGeneralInfo)
+
+function SaveGeneralInfo() {
+	let formData = new FormData(document.getElementById("generalData"))
+	fetch("/admin/general/SaveGeneralInfo", {
+			method: "POST",
+			body: formData
+		}).then(resp => resp.json())
+		.then(resp => {
+			if (resp.error == '00000') {
+				Swal.fire({
+					position: 'top',
+					icon: 'success',
+					title: 'Datos Guardados correctamente',
+					showConfirmButton: true,
+					timer: 1500
+				})
+
+			} else {
+				Swal.fire({
+					position: 'top',
+					icon: 'error',
+					title: 'Error al Guardar',
+					showConfirmButton: true,
+				})
+			}
+		})
+}

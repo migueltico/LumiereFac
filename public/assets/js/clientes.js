@@ -16,6 +16,15 @@ $("#bodyContent").on("click", "#clientes_add_btnAddCliente", function (e) {
                     confirmButtonText: 'OK',
                     timer: 2500
                 }, $("#clientes_addCliente").modal("toggle"))
+            } else if(resp.error ==="CLIENTE00002") {
+                Swal.fire({
+                    position: 'top',
+                    title: resp.msg,
+                    text: resp.errorMsg,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            
             } else {
                 Swal.fire({
                     position: 'top',

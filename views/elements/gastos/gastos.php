@@ -18,11 +18,18 @@
                             <?php
                             $gastoAll = explode(',', $gastos);
                             $totalGastos = 0;
+                            //print_r($gastoAll);
                             ?>
                             <?php foreach ($gastoAll as $value) : ?>
                                 <?php
+                               
                                 $gasto = explode(':', $value);
-                                $totalGastos +=  $gasto[1];
+                                if(is_numeric($gasto[1])){
+
+                                    $totalGastos +=  $gasto[1];
+                                }else{
+                                    $totalGastos += 0;
+                                }	
                                 ?>
                                 <div class="input-group mb-3 col-lg-12 col-md-12 col-sm-12">
                                     <div class="input-group-prepend tagNameGastos">

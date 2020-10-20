@@ -23,7 +23,7 @@
       <?php
       $gravado = array("noGravado", "gravado");
       $estado = array("inhabilitado", "habilitado");
-      $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
+      $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
 
       ?>
       <!-- <span class="mr-2"><?php //echo$icons["codebar"] 
@@ -47,9 +47,13 @@
           <td scope="row"><?= $product["descripcion"] ?></td>
           <!-- <td scope="row" style="text-align: center;"><?// $product["codigo"] ?></td> -->
           <td scope="row" style="text-align: center;">
-            <?= '<img width="150px" src="data:image/png;base64,' . base64_encode($generator->getBarcode($product["codigo"], $generator::TYPE_CODE_128)) . '">' ?>
+            <div class="codebarsHtml" style="text-align: center;">
+              <?php //echo '<img width="150px" src="data:image/png;base64,' . base64_encode($generator->getBarcode($product["codigo"], $generator::TYPE_CODE_128)) . '">' 
+              ?>
+              <?php echo $generator->getBarcode($product["codigo"], $generator::TYPE_CODE_128); ?>
+            </div>
             <p><?= $product["codigo"] ?></p>
-          </td>
+
           <td scope="row"><?= $product["categoria"] ?></td>
           <td scope="row"><?= $product["marca"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["estilo"] ?></td>

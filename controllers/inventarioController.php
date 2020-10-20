@@ -18,11 +18,6 @@ class inventarioController extends view
 
 {
 
-  public function getFact($var)
-  {
-
-    echo view::renderElement('facturas/facturaVenta');
-  }
   public function index($var)
   {
     $icon = help::icon();
@@ -169,6 +164,7 @@ class inventarioController extends view
   {
     $datos = array(
       ":descripcion" => $_POST["descripcion"],
+      ":descripcion_short" => $_POST["descripcion_short"],
       ":marca" => $_POST["marca"],
       ":estilo" => $_POST["estilo"],
       ":categoria" => (int) $_POST["categoria"],
@@ -200,6 +196,7 @@ class inventarioController extends view
     }
     $datos = array(
       ":descripcion" => $_POST["descripcion"],
+      ":descripcion_short" => $_POST["descripcion_short"],
       ":marca" => $_POST["marca"],
       ":estilo" => $_POST["estilo"],
       ":categoria" => (int) $_POST["categoria"],
