@@ -14,7 +14,7 @@
                             <div class="col-12">
                                 <div class="input-group input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-sm">Nombre Completo</span>
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Nombre Completo </span>
                                     </div>
                                     <input type="text" id="usuarios_add_nombre" name="nombre" class="form-control  p-3">
                                 </div>
