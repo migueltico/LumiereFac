@@ -45,6 +45,24 @@ $('#bodyContent').on("keypress", "#productSearch", function (e) {
 
 })
 
+function paginationSearch(toSearch, page) {
+    let formData = new FormData()
+    let initLimit = page
+
+    formData.append("toSearch", toSearch)
+    formData.append("initLimit", initLimit)
+    fetch("/clientes/search/searchclient", {
+            method: "POST",
+            body: formData
+        })
+        .then(resp => resp.text())
+        .then(resp => {
+            console.log(resp);
+        })
+
+
+}
+
 function selectText(text, element) {
     element.focus();
     element.setSelectionRange(0, text.length);
@@ -660,7 +678,7 @@ function UpdateEditModal(e, modalId) {
                     Swal.fire({
                         position: 'top',
                         title: 'Error al actualizar el Producto',
-                        text: resp.error+": Codigo de barra duplicado",
+                        text: resp.error + ": Codigo de barra duplicado",
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })

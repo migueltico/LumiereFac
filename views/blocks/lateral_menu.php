@@ -1,10 +1,15 @@
 <div class="menuContainer">
-    <p>Menu</p>
+    <div>
+        <div class="perfil mt-3 mb-1">
+            <img src="public/assets/img/perfil_no_found.jpg" alt="Perfil">
+            <p class="mt-1"><?= $_SESSION["nombre"]?></p>
+        </div>
+    </div>
     <ul class="main_menu" id="main_menu">
         <li>
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['dashboard'] ?></span><span>Dashboard</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
-                <li data-functionName="startChars" data-linkto="/dashboard/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>
+                <li data-functionName="startChars" data-linkto="/dashboard/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>             
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>General2</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Productos</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Vendedores</span><span></span></li>
@@ -16,8 +21,12 @@
             <ul class="listitems">
                 <li data-functionName="0" data-linkto="/admin/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>
                 <li data-functionName="0" data-linkto="/sucursal" class="dataLink"><span class="spanStyleMenu"></span><span>Sucursales</span><span></span></li>
+                <?php if($_SESSION["idrol"]==1): ?>
                 <li data-functionName="0" data-linkto="/admin/gastos" class="dataLink"><span class="spanStyleMenu"></span><span>Gastos</span><span></span></li>
+                <?php endif; ?>
+                <?php if($_SESSION["idrol"]==1): ?>
                 <li data-functionName="0" data-linkto="/admin/categoriaprecios" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias de precios</span><span></span></li>
+                <?php endif; ?>
                 <li data-functionName="0" data-linkto="/admin/categoriastallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>

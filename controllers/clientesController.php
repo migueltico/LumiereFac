@@ -46,7 +46,7 @@ class clientesController extends view
             header('Content-Type: application/json');
             echo json_encode($clientes);
         }else{
-            echo json_encode(help::errorMsg("CLIENTE00002","El cliente debe llevar almenos un nombre",));
+            echo json_encode(help::errorMsg("CLIENTE00002","El cliente debe llevar almenos un nombre"));
         }
     }
     public function updateClienteById()

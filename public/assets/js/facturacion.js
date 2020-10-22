@@ -734,7 +734,7 @@ function SearchProductModalFact(toSearch, page) {
                                         <div class="card mb-3 codeToAddInputSearchCard" style="width: 100%;" data-codebar="${el.codigo}">
                                         <div class="row no-gutters">
                                             <div class="col-md-4 cardImgBody">
-                                            <img src="${url[0]}" class="card-img" alt="...">
+                                            <img src="${(url[0]==""?"/public/assets/img/not-found.png":url[0])}" class="card-img" alt="...">
                                             </div>
                                             <div class="col-md-8">
                                             <div class="card-body">

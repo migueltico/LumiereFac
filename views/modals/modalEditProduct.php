@@ -65,7 +65,11 @@
                 <select name="categoriaPrecio" class="custom-select" id="EditProduct_cbCategoriaPrecio">
                   <option selected value="0">Seleccione una Categoria...</option>
                   <?php foreach ($cat_precios as $cat_precio) : ?>
-                    <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= $cat_precio['descripcion'] ?> ( <?= $cat_precio['factor'] ?> )</option>
+                    <?php if ($_SESSION["idrol"] == 1) : ?>
+                      <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= $cat_precio['descripcion'] ?> ( <?= $cat_precio['factor'] ?> )</option>
+                    <?php else : ?>
+                      <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= $cat_precio['descripcion'] ?></option>
+                    <?php endif; ?>
                   <?php endforeach; ?>
                 </select>
               </div>

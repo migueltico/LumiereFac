@@ -11,13 +11,13 @@
 <body>
   <div class="wrapper">
     <div class="container">
-      <h1>Sistema de Facturacion</h1>
+      <h1>Lumiere</h1>
       <?php
       use const config\DB_NAME;
       ?>
       <form class="form" action="/validateauth" method="POST">
-        <input type="text" name="usuario" placeholder="Username" value="admin">
-        <input type="password" name="pass" placeholder="Password" value="admin">
+        <input type="text" name="usuario" placeholder="Usuario" value="">
+        <input type="password" name="pass" placeholder="Contraseña" value="">
         <select id="selected" name="db" id="">
         <option value="0">Seleccione una Sucursal</option>
           <?php
@@ -203,7 +203,7 @@
     form input:focus {
       background-color: white;
       width: 300px;
-      color: #53e3a6;
+      color: #14a6ff;
     }
 
     form button {

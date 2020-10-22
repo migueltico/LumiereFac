@@ -60,7 +60,7 @@ function loadPage2(e) {
         .then((result) => result.text())
         .then((html) => {
             $(".bodyContent").html(html)
-            window['startChars']()
+           // window['startChars']()
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
