@@ -67,6 +67,8 @@ route::group('facturacion', function () {
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
     route::post('/pendientes', 'facturacionController@pendientes');
+    route::post('/cajas', 'facturacionController@cajas');
+    route::post('/cajas/abrirCaja', 'facturacionController@abrirCaja');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {

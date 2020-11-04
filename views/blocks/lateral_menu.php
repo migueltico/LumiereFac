@@ -34,7 +34,7 @@
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['calc'] ?></span><span>Facturacion</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
                 <li data-functionName="0" data-linkto="/facturacion/facturar" class="dataLink"><span class="spanStyleMenu"></span><span>Facturar</span><span></span></li>
-                <li data-functionName="0" data-linkto="/facturacion" class="dataLink"><span class="spanStyleMenu"></span><span>Cajas</span><span></span></li>
+                <li data-functionName="0" data-linkto="/facturacion/cajas" class="dataLink"><span class="spanStyleMenu"></span><span>Cajas</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion/pendientes" class="dataLink"><span class="spanStyleMenu"></span><span>Facturas Pendientes</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion" class="dataLink"><span class="spanStyleMenu"></span><span>Apartados</span><span></span></li>

@@ -31,7 +31,7 @@ class facturacionModel
                 foreach ($items['items'] as $item) {
                     array_push($itemsSql, array(
                         ":idfactura" => $result['data']['fac'],
-                        ":idproducto" =>(int) $item['id'],
+                        ":idproducto" => (int) $item['id'],
                         ":cantidad" => (int) $item['cantidad'],
                         ":precio" => (float) str_replace(",", "", $item['precio']),
                         ":descuento" => (int) (rtrim($item['descuento'], "%")),
@@ -51,6 +51,18 @@ class facturacionModel
     {
         $con = new conexion();
         $data = $con->SPCALL("SELECT *,f.estado AS fac_estado FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente WHERE f.estado = 0 AND f.tipo > 1");
+        return $data;
+    }
+    public static function setAbrirCaja($data)
+    {
+        $con = new conexion();
+        $data = $con->SQ("INSERT INTO cajas (idusuario_openbox, idvendedor, caja_base, fecha_init, estado) VALUES (:id, :userId, :monto,:fecha_init, 0)", $data);
+        return $data;
+    }
+    public static function getCajas()
+    {
+        $con = new conexion();
+        $data = $con->SQND("SELECT c.*,u.nombre, u2.nombre AS nombre_vendedor FROM  cajas AS c INNER JOIN usuario AS u ON u.idusuario = c.idusuario_openbox INNER JOIN usuario AS u2 ON u2.idusuario = c.idvendedor");
         return $data;
     }
 }

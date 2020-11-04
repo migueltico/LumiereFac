@@ -877,6 +877,38 @@ function searchClient(toSearch, page) {
         })
 
 }
+$('#bodyContent').on("click", "#btnAbrirCaja", function (e) {
+    abrirCaja();
+})
+
+function abrirCaja() {
+    let form = document.getElementById("cajas_form_addcaja")
+    let formData = new FormData(form)
+    let cb = document.getElementById("cbSelectuser")
+    let user = cb.options[cb.selectedIndex].textContent
+    fetch("/facturacion/cajas/abrirCaja", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.json())
+        .then(resp => {
+            console.log(resp);
+            
+            if (resp.error == "00000") {
+                $("#cajas_addcaja").modal("toggle")
+                loadPage(null, "/facturacion/cajas")
+                Swal.fire({
+                    position: 'top',
+                    title: `Rol agregado correctamente`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+
+
+            }
+        })
+}
 // $('#bodyContent').on('click', '.tabItem a', function (e) {
 //     console.log(e.target.dataset);
 //     e.preventDefault()

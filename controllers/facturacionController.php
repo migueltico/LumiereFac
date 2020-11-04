@@ -5,7 +5,7 @@ namespace controllers;
 use config\view;
 // manda a llamar al controlador de conexiones a bases de datos
 use models\productModel as product;
-use models\sucursalModel as sucursal;
+use models\usuariosModel as user;
 use models\adminModel as admin;
 use models\facturacionModel as fac;
 use Dompdf\Dompdf;
@@ -17,11 +17,21 @@ class facturacionController extends view
 
 {
 
-    public function index($var)
+    public function index()
     {
         echo view::renderElement('facturacion/facturacion');
     }
-    public function pendientes($var)
+    public function cajas()
+    {
+        $icon = help::icon();
+        $users = user::getUsers();
+        $result = fac::getCajas();
+        $data["users"] = $users['data'];
+        $data["icons"] =  $icon['icons'];
+        $data["cajas"] =  $result['data'];
+        echo view::renderElement('cajas/cajas', $data);
+    }
+    public function pendientes()
     {
         $icon = help::icon();
         $fac = fac::getPendingFac();
@@ -30,7 +40,18 @@ class facturacionController extends view
         echo view::renderElement('facturacion/facturas_pendientes', $data);
     }
 
-    public function searchProduct($var)
+    public function abrirCaja()
+    {
+        $data[':userId'] = (int) $_POST['userId'];
+        $data[':monto'] = (float) $_POST['monto'];
+        $data[':id'] = (int) $_SESSION['id'];
+        $data[':fecha_init'] = date('Y-m-d');;
+        $result = fac::setAbrirCaja($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    public function searchProduct()
     {
 
         $product = product::searchCodeProduct($_POST['toSearch']);
@@ -38,7 +59,7 @@ class facturacionController extends view
         echo json_encode($product);
     }
 
-    public function searchProductCtrlQ($var)
+    public function searchProductCtrlQ()
     {
         $product = product::searchCodeProductCtrlQ($_POST['toSearch'], $_POST['initLimit']);
         header('Content-Type: application/json');
