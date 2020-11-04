@@ -15,6 +15,7 @@ class uploadsController extends view
         $result = true;
         $data = '';
         $urls['urls'] = [];
+        $urls['error'] = [];
 
         for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
             $data = help::uploadImage($i);

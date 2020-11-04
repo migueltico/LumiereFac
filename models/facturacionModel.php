@@ -47,4 +47,10 @@ class facturacionModel
             }
         }
     }
+    public static function getPendingFac()
+    {
+        $con = new conexion();
+        $data = $con->SPCALL("SELECT *,f.estado AS fac_estado FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente WHERE f.estado = 0 AND f.tipo > 1");
+        return $data;
+    }
 }

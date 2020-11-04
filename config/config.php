@@ -11,12 +11,15 @@ define('CONTENTS', './views/contents/');
 define('ELEMENTS', './views/elements/');
 define('MODALS', './views/modals/');
 define('DB_HOST', 'localhost');
+// define('DB_USER', 'root');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 const DB_NAME = array(
-    "alajuela"=>"dbfac", 
-    "heredia"=>"BDA_HEREDIA",
-    "sanjose"=>"BDA_SAN_JOSE",
+    "alajuela" => "id14989780_lumiere",
+    "testMain" => "maindb",
+    "test" => "dbfac",
+    "heredia" => "BDA_HEREDIA",
+    "sanjose" => "BDA_SAN_JOSE",
 );
 //define('DB_NAME', 'dbfac');
 

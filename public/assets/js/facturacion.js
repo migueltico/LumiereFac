@@ -36,11 +36,45 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
 
 
 })
+$("#bodyContent").on("change", "#pagoContraEntrega", function (e) {
+    let tr = document.getElementById("appendItemRowProduct")
+    let count = tr.getElementsByTagName("tr")
+    if (this.checked && count > 0) {
+        $("#btnMakeFact").prop("disabled", false)
+    } else {
+        $("#btnMakeFact").prop("disabled", true)
+    }
+})
 $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
+    let tr = document.getElementById("appendItemRowProduct")
+    let count = tr.getElementsByTagName("tr")
+    if (count.length == 0) {
+        Swal.fire({
+            position: 'top',
+            title: '',
+            text: "Asegurese de tener algun producto a facturar",
+            icon: 'error',
+            confirmButtonText: 'OK',
+            timer: 2500,
+            timerProgressBar: true
+        })
+        $("#btnMakeFact").prop("disabled", true)
+    }
+    let btn_Envio = document.getElementById("btnTypeEnvio")
+    let btn_pagoContraEntrega = document.getElementById("pagoContraEntregaContainer")
+    let pagoContraEntrega = document.getElementById("pagoContraEntrega")
+    pagoContraEntrega.checked = false
     $('.lbMontoToPay').prop('disabled', true)
     $(".tarjertaInputs_tarjeta").val('')
     $(".transferenciaInputs_referencia").val('')
     $(".transferenciaInputs_banco").val(0)
+    console.log();
+    if (hasClass(btn_Envio, "active")) {
+        btn_pagoContraEntrega.style.display = "block"
+    } else {
+        btn_pagoContraEntrega.style.display = "none"
+    }
+
     let amount = document.getElementsByClassName("totalFactAmount")[0]
     let btn = document.getElementById('btnMakeFact')
     let amountFloat = parseFloat(amount.dataset.amount.replace(",", ""))
@@ -73,24 +107,31 @@ function resetFactScreen() {
 $('#bodyContent').on("click", "#btnMakeFact", function (e) {
     //ANCLA
     e.preventDefault();
-
     const cb = document.getElementById('MultiTipoPagoFact');
-    if (cb.checked) {
-        // printFact()
-        let method = PagoMultipleFac()
-        console.log("JSON", method);
-        if (method.state) {
-            getProductsRowsForFac(method.methodsArray)
+    let pagoContraEntrega = document.getElementById('pagoContraEntrega');
+    if (pagoContraEntrega.checked) {
+        let method = {
+            state: false
         }
+        getProductsRowsForFac(method, 0)
     } else {
-        let method = PagoUnicoFac()
-        //let isOk = true
-        console.log("JSON", method);
-        // method.map(e => (e.state == false ? isOk = true : isOk = false))
-        if (method[0].state) {
-            getProductsRowsForFac(method)
-        }
+        if (cb.checked) {
+            // printFact()
+            let method = PagoMultipleFac()
+            console.log("JSON", method);
+            if (method.state) {
+                getProductsRowsForFac(method.methodsArray, 1)
+            }
+        } else {
+            let method = PagoUnicoFac()
+            //let isOk = true
+            console.log("JSON", method);
+            // method.map(e => (e.state == false ? isOk = true : isOk = false))
+            if (method[0].state) {
+                getProductsRowsForFac(method, 1)
+            }
 
+        }
     }
 })
 
@@ -98,7 +139,7 @@ function convertToFacNumber() {
     ConvertLabelFormat(111)
 }
 
-function getProductsRowsForFac(method) {
+function getProductsRowsForFac(method, pago) {
     let rows = document.getElementsByClassName('productRowFac')
     let amounts = document.getElementById('totalFactAmount').dataset.amount
     let idCliente = document.getElementById('fac_cliente_input').dataset.cliente
@@ -159,7 +200,8 @@ function getProductsRowsForFac(method) {
         cantidadArticulos,
         tipoVenta,
         sendFac: (Okprint.checked ? 1 : 0),
-        estado: (tipoVenta == 1 ? 1 : 0)
+        estado: (tipoVenta == 1 ? 1 : 0),
+        hasPay: pago
     }
     console.log(finalJson);
     printFact(finalJson)
@@ -181,7 +223,8 @@ function PagoUnicoFac() {
                     title: 'Campos Incompletos',
                     icon: 'error',
                     confirmButtonText: 'OK',
-                    timer: 2500
+                    timer: 2500,
+                    timerProgressBar: true
                 })
                 return [result]
             }
@@ -215,7 +258,8 @@ function PagoMultipleFac() {
                     title: 'Campos Incompletos',
                     icon: 'error',
                     confirmButtonText: 'OK',
-                    timer: 2500
+                    timer: 2500,
+                    timerProgressBar: true
                 })
                 return methodsArray
             }
@@ -325,7 +369,7 @@ function printFact(datos) {
         .then(resp => {
             //console.log(resp);
             if (Okprint.checked) {
-               // $(`#FacSendModal`).modal('toggle')
+                // $(`#FacSendModal`).modal('toggle')
                 //$('#printContainer').html(resp)
                 let h = resp;
                 let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
@@ -452,7 +496,19 @@ $("#bodyContent").on("change", ".cantInputFact", function (e) {
 })
 $('#bodyContent').on("keypress", "#ScanCode", function (e) {
     if (e.charCode == 13) {
-        getProductFact(e)
+        if (e.target.value.length > 0) {
+            getProductFact(e)
+        } else {
+            Swal.fire({
+                position: 'top',
+                title: 'Falta codigo',
+                text: 'Debes ingresar el codigo de un producto',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 2500,
+                timerProgressBar: true
+            })
+        }
     }
 
 })
@@ -486,7 +542,7 @@ function getProductFact(e) {
                             <td scope="row">${(data.activado_iva == 0 ? 0 : data.iva)}</td>
                             <td scope="row"><input type="number" min="1" class="cantInputFact" id="id_${data.idproducto}" style="width: 43px !important;text-align:center" name="" id="" value="1"></td>
                             <td scope="row">${data.stock}</td>
-                            <td scope="row">${data.precio_venta}</td>
+                            <td scope="row" ${(data.precio_venta < 1 ?'style="color:red;"':"")}>${data.precio_venta}</td>
                             <td scope="row" data-toggle="tooltip" data-descuento="${(data.descuento == null ? 0 : data.descuento)}" data-placement="bottom" title="${des_descuento}">${descuento}</td>
                             <td scope="row" class="productRowFac_subtotal">${precios[0]}</td>
                             <td scope="row" class="productRowFac_total">${precios[1]}</td>
@@ -576,8 +632,8 @@ function calcTotalRowPrice(precio, descuento, iva) {
 function RefreshCalcTotalRowPrice(tds, sum) {
     let cant = $(tds[4]).children().val()
     let total = parseInt(cant) + parseInt(sum)
-    let precio = parseFloat($(tds[5]).text())
-    let descuento = $(tds[6]).data('descuento')
+    let precio = parseFloat($(tds[6]).text())
+    let descuento = $(tds[8]).data('descuento')
     let descuento_porcentaje = 0
     let monto_reducir = 0
     let totalAll = 0
@@ -591,7 +647,7 @@ function RefreshCalcTotalRowPrice(tds, sum) {
 
 
     $(tds[4]).children('input').val(total)
-    $(tds[7]).text(totalAll.toFixed(2))
+    $(tds[8]).text(totalAll.toFixed(2))
     let ivaPercent = (parseInt($(tds[3]).text()) == 0 ? 1 : parseInt($(tds[3]).text()))
     if (ivaPercent > 0) {
         let iva = parseInt(ivaPercent) / 100
@@ -601,7 +657,7 @@ function RefreshCalcTotalRowPrice(tds, sum) {
             iva_sum = 0
         }
         let newTotal = parseFloat(totalAll + iva_sum)
-        $(tds[8]).text(newTotal.toFixed(2))
+        $(tds[9]).text(newTotal.toFixed(2))
     }
 }
 
@@ -739,12 +795,13 @@ function SearchProductModalFact(toSearch, page) {
                                             <div class="col-md-8">
                                             <div class="card-body">
                                                 <h6 class="card-title">${el.descripcion}</h6>
-                                                <p class="">₡ ${el.precio_venta} |  Stock:${el.stock} </p>
+                                                <p class="${el.precio_venta<1?"text-danger":""}">₡ ${el.precio_venta} |  Stock:${el.stock} </p>
                                                 <span class="icon_codeToAddInputSearch"><span class="codeToAddInputSearch">${el.codigo}</span></span>
                                                 </br>
                                                 <span class=""><small class="text-muted">${(el.iva > 0 ?"<strong>IVA: </strong>"+el.iva +"%": "")}${(el.descuento > 0 ?" | <strong>Descuento: </strong>"+el.descuento +"%": "")}</small></span>
                                                 </br>
-                                                <span class=""><small class="text-muted">Marca: ${el.marca} | Categoria: ${el.categoria}</small></span>
+                                                <span class=""><small class="text-muted">Marca: ${el.marca} | Categoria: ${el.categoria} | Talla: ${el.talla}</small></span>
+                                                <p class=""><small class="text-muted">Estado: ${(el.estado == 1?"Activo":"Inactivo")}</small></p>
                                             </div>
                                             </div>
                                         </div>

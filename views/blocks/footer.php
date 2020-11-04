@@ -11,6 +11,7 @@
 <script src="public/assets/js/facturacion.js"></script>
 <script src="public/assets/js/inventario.js"></script>
 <script src="public/assets/js/admin.js"></script>
+<script src="public/assets/js/roles.js"></script>
 <script src="public/assets/js/dashboard.js"></script>
 <script src="public/assets/js/sucursal.js"></script>
 <script src="public/assets/js/menu.js"></script>

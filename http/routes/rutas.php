@@ -58,6 +58,7 @@ route::group('inventario', function () {
     route::post('/updateStock', 'inventarioController@updateStock');
     route::post('/updateMinStock', 'inventarioController@updateMinStock');
     route::post('/calcular/sugerido', 'inventarioController@calcular_sugerido');
+    route::post('/impresion/etiquetas', 'inventarioController@indexEtiquetas');
 });
 //+++++++++++ FACTURACION +++++++++++//
 route::group('facturacion', function () {
@@ -65,6 +66,7 @@ route::group('facturacion', function () {
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
+    route::post('/pendientes', 'facturacionController@pendientes');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
@@ -79,6 +81,19 @@ route::group('clientes', function () {
 route::group('usuarios', function () {
     route::post('/', 'usuariosController@index', ['loginMiddleware@auth']);
     route::post('/setUser', 'usuariosController@setUser');
+});
+//+++++++++++ ROLES +++++++++++//
+route::group('roles', function () {
+    route::post('/', 'rolesController@index');
+    route::post('/getRoles', 'rolesController@getRoles');
+    route::post('/newRol', 'rolesController@newRol');
+    route::post('/saveRoles', 'rolesController@saveRoles');
+    route::post('/getRolesPermisos', 'rolesController@getRolesPermisos');
+});
+//+++++++++++ REPORTES +++++++++++//
+route::group('reportes', function () {
+    route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo');
+    route::post('/etiquetas', 'reportesController@etiquetasTallaEstiloPost');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

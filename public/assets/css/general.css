@@ -378,3 +378,15 @@ button.btn svg {
     width: 40%;
     border-radius: 50%;
 }
+.svg_codePritn {
+    display: flex;
+    flex-direction: column;
+    margin-top: 43px;
+    margin-bottom: -0.95rem;
+    /* margin-bottom: -13px; */
+    padding: 0;
+    max-height: 150px;
+    /* border-top: 1px dashed gray; */
+    page-break-inside: avoid;
+}
+

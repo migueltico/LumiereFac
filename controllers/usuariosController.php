@@ -8,6 +8,7 @@ use models\productModel as product;
 use models\sucursalModel as sucursal;
 use models\adminModel as admin;
 use models\usuariosModel as users;
+use models\rolesModel as rols;
 use models\facturacionModel as fac;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -22,7 +23,7 @@ class usuariosController extends view
     {
         $icon = help::icon();
         $users = users::getUsers();
-        $rols = users::getRols();
+        $rols = rols::getRols();
         $data["icons"] =  $icon['icons'];
         $data["users"] =  $users['data'];
         $data["rols"] =  $rols['data'];

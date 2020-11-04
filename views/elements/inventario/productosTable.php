@@ -1,5 +1,14 @@
+<?php
+$gravado = array("noGravado", "gravado");
+$estado = array("inhabilitado", "habilitado");
+$generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+$maxpage = $paginationInfo['paginacion']['paginas'];
+?>
 <div class="table-responsive">
-
+<div class="urlPagination" data-url="/inventario/refresh/producttable">
+  <?php include(self::block('pagination')) ?>
+</div>
+  <p>Total de productos: <?=$paginationInfo['cantidad']?></p>
   <table class="table sort" id="sortable">
     <thead>
       <tr>
@@ -20,12 +29,7 @@
       </tr>
     </thead>
     <tbody data-sorts="DESC">
-      <?php
-      $gravado = array("noGravado", "gravado");
-      $estado = array("inhabilitado", "habilitado");
-      $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
 
-      ?>
       <!-- <span class="mr-2"><?php //echo$icons["codebar"] 
                               ?></span> -->
       <?php foreach ($products as $product) : ?>
@@ -71,6 +75,7 @@
             <div class="btn-group Editbuttons" aria-label="Grupo edicion">
               <button type="button" class="btn btn-success EditProductBtn" data-toggle="modal" data-target="#EditProduct" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['edit'] ?></button>
               <button type="button" class="btn btn-primary pl-3 pr-3 SeeImgProduct" data-urls="<?= $product["image_url"] ?>" data-toggle="modal" data-target="#galleryShow" data-name="<?= $product["descripcion"] ?>" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['eye'] ?></button>
+              <button type="button" class="btn btn-info pl-3 pr-3 printToast" data-name="<?= $product["descripcion"] ?>" data-talla="<?= $product["talla"] ?>" data-estilo="<?= $product["estilo"] ?>" data-idProduct='<?= $product["codigo"] ?>'><?= $icons['print'] ?></button>
               <button type="button" class="btn btn-danger" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['trash'] ?></button>
             </div>
           </td>
@@ -79,12 +84,6 @@
     </tbody>
   </table>
 </div>
-<nav aria-label="Page navigation example">
-  <ul class="pagination pagination_inventario">
-    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-  </ul>
-</nav>
+<div class="urlPagination" data-url="/inventario/refresh/producttable">
+<?php include(self::block('pagination')) ?>
+</div>

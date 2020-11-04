@@ -21,7 +21,9 @@ $("#bodyContent").on("click", ".table.sort thead tr th", function () {
     }
     console.log("After",$(tbodyMain).data('sorts'));
 })
-
+function hasClass(element, cls) {
+    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+}
 function ordenarFila(columna, tipo, sortr, tr) {
     let rows;
     if (sortr=='ASC') {

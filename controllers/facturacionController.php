@@ -21,16 +21,15 @@ class facturacionController extends view
     {
         echo view::renderElement('facturacion/facturacion');
     }
-
-    public function addstock($var)
+    public function pendientes($var)
     {
-        //$icon = help::icon();
-        //$products = product::searchProduct('');
-        //$data["products"] = $products['data'];
-        //$data["icons"] =  $icon['icons'];
-        //echo view::renderElement('inventario/productosTableStock', $data);
-        //echo view::renderElement('inventario/addstock', $data);
+        $icon = help::icon();
+        $fac = fac::getPendingFac();
+        $data["facturas"] = $fac['data'];
+        $data["icons"] =  $icon['icons'];
+        echo view::renderElement('facturacion/facturas_pendientes', $data);
     }
+
     public function searchProduct($var)
     {
 
@@ -79,22 +78,23 @@ class facturacionController extends view
         $data[':tipo'] = (int) $datos['tipoVenta'];
         $data[':estado'] = (int) $datos['estado'];
         $data[':comentario'] = 'Sin comentarios';
-
-        foreach ($datos['methodPay'] as $metodo) {
-            if ($metodo['methods']['tipo'] == "efectivo") {
-                $data[':efectivo'] = 1;
-                $data[':monto_efectivo'] = (int) $metodo['methods']['monto'];
-            } else if ($metodo['methods']['tipo'] == "tarjeta") {
-                $data[':tarjeta'] = 1;
-                $data[':numero_tarjeta'] = (int) $metodo['methods']['tarjeta'];
-                $data[':monto_tarjeta'] = (int) $metodo['methods']['monto'];
-            } else if ($metodo['methods']['tipo'] == "transferencia") {
-                $data[':transferencia'] = 1;
-                $data[':banco_transferencia'] = $metodo['methods']['banco'];
-                $data[':referencia_transferencia'] = $metodo['methods']['referencia'];
-                $data[':monto_transferencia'] = (int)  $metodo['methods']['monto'];
+        if ($datos['hasPay'] == 1) {
+            foreach ($datos['methodPay'] as $metodo) {
+                if ($metodo['methods']['tipo'] == "efectivo") {
+                    $data[':efectivo'] = 1;
+                    $data[':monto_efectivo'] = (float) $metodo['methods']['monto'];
+                } else if ($metodo['methods']['tipo'] == "tarjeta") {
+                    $data[':tarjeta'] = 1;
+                    $data[':numero_tarjeta'] = (int) $metodo['methods']['tarjeta'];
+                    $data[':monto_tarjeta'] = (float) $metodo['methods']['monto'];
+                } else if ($metodo['methods']['tipo'] == "transferencia") {
+                    $data[':transferencia'] = 1;
+                    $data[':banco_transferencia'] = $metodo['methods']['banco'];
+                    $data[':referencia_transferencia'] = $metodo['methods']['referencia'];
+                    $data[':monto_transferencia'] = (float)  $metodo['methods']['monto'];
+                }
             }
-        }   
+        }
         //   :idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total
 
 
@@ -103,8 +103,3 @@ class facturacionController extends view
         return $fac;
     }
 }
-
-
-//,,,,, :, :, :,
-//, :, :, :,
-//, :, :, :

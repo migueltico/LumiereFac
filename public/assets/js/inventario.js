@@ -12,7 +12,9 @@ $('#bodyContent').on("click", "#addProduct #addProduct_generarCodigo", function 
 //REFRESCA LA TABLA EN INVENTARIO
 $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
     e.preventDefault();
-    loadTable(e)
+    if (!$(this).hasClass("disabled")) {
+        loadTable(e, 1, '')
+    }
 })
 
 //SE EJECUTA AL PRESIONAR EL BTN NUEVO PARA NUEVO PRODUCTO
@@ -21,17 +23,31 @@ $('#bodyContent').on("click", "#newProduct", function (e) {
     resetInputImage(e, '#addProduct')
     $("#addProduct #addProduct_imageContainer").html('')
 })
+
+//Pagination Inventario
+$('#bodyContent').on("click", ".paginationInventario", function (e) {
+    let page = this.dataset.page
+    let search = document.getElementsByClassName('inputSearchPagination')[0].value
+
+    console.log(this.dataset.page)
+    if (!$(this).hasClass("disabled")) {
+        loadTable(e, page, search)
+    }
+})
 //SE EJECUTA AL PRESIONAR ENTER EN EL INPUT DE BUSQUEDA EN INVENTARIO
 $('#bodyContent').on("keypress", "#productSearch", function (e) {
     if (e.charCode == 13) {
         let toSearch = document.getElementById('productSearch').value
         let element = document.getElementById('productSearch')
+        let estado = document.getElementById('checkestado')
         let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
         $(".loadTable").html('')
         $(".loadTable").append(img)
         console.log(toSearch);
         let formData = new FormData()
         formData.append("toSearch", toSearch)
+        formData.append('estado', (estado.checked ? 0 : 1))
+        // formData.append('pagination', pagination)
         fetch("/inventario/search", {
                 method: "POST",
                 body: formData
@@ -72,11 +88,13 @@ $('#bodyContent').on("keypress", "#productSearchStockInventario", function (e) {
     if (e.charCode == 13) {
         let toSearch = document.getElementById('productSearchStockInventario').value
         let element = document.getElementById('productSearchStockInventario')
+        let estado = document.getElementById('checkestado')
         let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
         $(".loadTable").html('')
         $(".loadTable").append(img)
         console.log(toSearch);
         let formData = new FormData()
+        formData.append('estado', (estado.checked ? 0 : 1))
         formData.append("toSearch", toSearch)
         fetch("/inventario/search/stock", {
                 method: "POST",
@@ -135,7 +153,7 @@ $('#bodyContent').on("click", ".SeeImgProduct", function (e) {
     urls.map((url, i) => {
         let img = `
         <div class="carousel-item ${(i==0?'active':'')}">
-            <img src="${url}" data-interval="1000" class="d-block w-100" alt="Imagen Articulo">
+            <img src="${(url==""?"/public/assets/img/not-found.png":url)}" data-interval="1000" class="d-block w-100" alt="Imagen Articulo">
         </div>
         `
         let indicator = `
@@ -162,8 +180,9 @@ $("#bodyContent").on('click', '.addMinStockBtn', function (e) {
 function refreshStock() {
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif" alt="Loading..."></div>';
     let toSearch = document.getElementById('productSearchStockInventario')
+    let estado = document.getElementById('checkestado')
     let formData = new FormData()
-    console.log(toSearch);
+    formData.append('estado', (estado.checked ? 0 : 1))
     formData.append('toSearch', toSearch.value)
     $(".loadTable").html('')
     $(".loadTable").append(img)
@@ -366,7 +385,7 @@ function agregarProducto(e) {
                     })
                     $("#addProduct #addProduct_imageContainer").html('')
                     $("#addProduct #addProduct_txtcodigoBarra").val('')
-                    loadTable()
+                    loadTable(e, 1, "")
                 } else {
                     $("#addProduct #addProduct_txtcodigoBarra").val('')
                     Swal.fire({
@@ -405,12 +424,21 @@ function generarCodigo(e, modalId) {
         });
 }
 
-function loadTable(e) {
+function loadTable(e, pagination, search = "") {
     let img = ` <div class = "loading"><img src ="/public/assets/img/loading.gif" ></div>`;
+    let formData = new FormData()
+    let url = document.getElementsByClassName('urlPagination')[0].dataset.url
+    let estado = document.getElementById('checkestado')
+    console.log(url);
+    formData.append('estado', (estado.checked ? 0 : 1))
+    formData.append('pagination', pagination)
+    formData.append('toSearch', search)
+    console.log("To search: " + search);
     $(".loadTable").html('')
     $(".loadTable").append(img)
-    fetch('/inventario/refresh/producttable', {
+    fetch(url, {
             method: 'POST',
+            body: formData
         })
         .then((result) => result.text())
         .then((html) => {
@@ -684,10 +712,10 @@ function UpdateEditModal(e, modalId) {
                     })
                 }
                 $(`#EditProduct`).modal('toggle')
-                loadTable(e)
+                loadTable(e, 1, "")
             }).catch((err) => {
                 console.log('error en FETCH:', err);
-                loadTable(e)
+                loadTable(e, 1, "")
             });
     }
 }
@@ -795,6 +823,108 @@ function GetFilename(url) {
     }
     return "nothing";
 }
+$("#bodyContent").on("click", '.printToast', function (e) {
+    let codigo = e.target.dataset.idproduct
+    let producto = e.target.dataset.name
+    let estilo = e.target.dataset.estilo
+    let talla = e.target.dataset.talla
+    let toPrint = localStorage.getItem("toPrint")
+    let newJson = {
+        codigo,
+        producto,
+        estilo,
+        talla,
+        cantidad: 1
+
+    }
+    if (toPrint !== null) {
+        toPrint = JSON.parse(toPrint)
+        toPrint.push(newJson)
+    } else {
+        toPrint = []
+        toPrint.push(newJson)
+    }
+    console.log(estilo, talla);
+    localStorage.setItem('toPrint', JSON.stringify(toPrint))
+    Swal.fire({
+        position: 'top',
+        title: `${codigo} - ${producto}`,
+        text: "Agregado a la cola de impresion",
+        icon: 'success',
+        confirmButtonText: 'OK',
+        timer: 2500,
+        timerProgressBar: true
+    })
+    $(this).first().parent().parent().parent().css({backgroundColor: '#2780e3'})
+})
+$("#bodyContent").on("click", '#newQueque', function (e) {
+    localStorage.removeItem('toPrint')
+    $("#tbodyPrint").html("")
+})
+$("#bodyContent").on("change", '.inputPrintCantJson', function (e) {
+    let toPrint = localStorage.getItem("toPrint")
+    let cant = this.value
+    let index = parseInt(this.dataset.index)
+    console.log(cant);
+    toPrint = JSON.parse(toPrint)
+    toPrint[index].cantidad = parseInt(cant)
+    localStorage.setItem('toPrint', JSON.stringify(toPrint))
+    //getLocalStoreToPrint()
+
+})
+$("#bodyContent").on("click", '#loadDataProduct', function (e) {
+    getLocalStoreToPrint()
+})
+$("#bodyContent").on("click", '#makePdfPrint', function (e) {
+    // fetch("/reportes/etiquetas", {
+    //         method: "GET"
+    //     }).then(resp => resp.text())
+    //     .then(resp => console.log(resp))
+    printPDF()
+})
+
+function getLocalStoreToPrint() {
+    $("#tbodyPrint").html("")
+    let toPrint = localStorage.getItem("toPrint")
+    toPrint = JSON.parse(toPrint)
+    console.log(toPrint);
+    if (toPrint !== null) {
+        toPrint.map((item, i) => {
+            let row = /*html*/ `
+                    <tr class="TrRow">
+                        <td scope="row">${item.codigo}</td>
+                        <td scope="row">${item.producto}</td>
+                        <td scope="row">${item.estilo}</td>
+                        <td scope="row">${item.talla}</td>
+                        <td scope="row"><input class="inputPrintCantJson" style="width: 45px;" type="number" data-index=" ${i}" name="codigo_${item.codigo}" value="${item.cantidad}"></td>
+                    </tr>
+            `
+            $("#tbodyPrint").append(row)
+        })
+    }
+
+}
+
+function printPDF() {
+    let toPrint = localStorage.getItem("toPrint")
+    let body = ''
+    let headers = {
+        "Content-Type": "application/json"
+    }
+    fetch("/reportes/etiquetas", {
+            method: "POST",
+            headers: headers,
+            body: toPrint
+        }).then(resp => resp.text())
+        .then(resp => {
+            let h = resp;
+            let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
+            window.print();
+            d.remove();
+        })
+
+}
+
 
 //NO BORRAR, SIRVE PARA CONVERTIR URLS CON FETCH EN FILES
 

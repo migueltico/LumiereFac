@@ -23,12 +23,15 @@ $("#main_menu li.uniq_menu").click(function (e) {
 
 })
 $("li.dataLink").click((e) => {
-    loadPage(e)
+    loadPage(e,null)
 })
-
-function loadPage(e) {
-    let url = $(e.target).data('linkto');
-    let functionName = $(e.target).data('functionName');
+function scrollToTop(){
+    let BodyMain = document.getElementsByClassName('bodyMain')[0];
+    BodyMain.scrollTop = 0;
+}
+function loadPage(e,link) {
+    scrollToTop()
+    let url =(link == null? $(e.target).data('linkto'): link);
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
     $(".bodyContent").html('')
     $(".bodyContent").append(img)
@@ -38,10 +41,6 @@ function loadPage(e) {
         .then((result) => result.text())
         .then((html) => {
             $(".bodyContent").html(html)
-        }).then((e) => {
-            if (functionName !== '0') {
-                window['startChars']()
-            }
         })
         .catch((err) => {
             console.log('error en FETCH:', err);
@@ -49,6 +48,7 @@ function loadPage(e) {
 }
 //BORRAR ES TEMPORAL
 function loadPage2(e) {
+    scrollToTop()
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif" alt="Loading..."></div>';
     $(".bodyContent").html('')
     $(".bodyContent").append(img)
@@ -60,7 +60,8 @@ function loadPage2(e) {
         .then((result) => result.text())
         .then((html) => {
             $(".bodyContent").html(html)
-           // window['startChars']()
+
+            // window['startChars']()
         })
         .catch((err) => {
             console.log('error en FETCH:', err);

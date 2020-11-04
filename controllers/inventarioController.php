@@ -25,12 +25,16 @@ class inventarioController extends view
     $cat_precios = admin::getCategoriaPrecios();
     //$categorias = product::getCategory();
     $tallas = product::getTallas();
-    $products = product::getProducts();
+    // $products = product::getProducts();
+    $products = product::searchProduct("", 1,1);
     $descuentos = product::getDescuentos();
+    $data["products"] = $products['data'];
+    $paginationInfo =  $products;
+    unset($paginationInfo['data']);
+    $data["paginationInfo"] = $paginationInfo;
     $data["descuentos"] = $descuentos['data'];
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
-    $data["products"] = $products['data'];
     $data["cat_precios"] = $cat_precios['data'];
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/ListaProductos', $data);
@@ -38,8 +42,11 @@ class inventarioController extends view
   public function addstock($var)
   {
     $icon = help::icon();
-    $products = product::searchProduct('');
+    $products = product::searchProduct('', 1,1);
     $data["products"] = $products['data'];
+    $paginationInfo =  $products;
+    unset($paginationInfo['data']);
+    $data["paginationInfo"] = $paginationInfo;
     $data["icons"] =  $icon['icons'];
     //echo view::renderElement('inventario/productosTableStock', $data);
     echo view::renderElement('inventario/addstock', $data);
@@ -92,9 +99,13 @@ class inventarioController extends view
   public function refreshProductstock($var)
   {
     $toSearch = $_POST['toSearch'];
+    $estado = $_POST['estado'];
     $icon = help::icon();
-    $products = product::searchProduct($toSearch);
+    $products = product::searchProduct($toSearch, 1,$estado);
     $data["products"] = $products['data'];
+    $paginationInfo =  $products;
+    unset($paginationInfo['data']);
+    $data["paginationInfo"] = $paginationInfo;
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/productosTableStock', $data);
   }
@@ -110,17 +121,21 @@ class inventarioController extends view
   }
   public function producttable($var)
   {
+    $estado = $_POST['estado'];
     $icon = help::icon();
     $categorias = product::getCategory();
     $tallas = product::getTallas();
-    $products = product::getProducts();
+    $products = product::searchProduct('', (isset($_POST['pagination']) ? $_POST['pagination'] : 1),$estado);
     $cat_precios = admin::getCategoriaPrecios();
     $descuentos = product::getDescuentos();
+    $data["products"] = $products['data'];
+    $paginationInfo =  $products;
+    unset($paginationInfo['data']);
+    $data["paginationInfo"] = $paginationInfo;
     $data["descuentos"] = $descuentos['data'];
     $data["cat_precios"] = $cat_precios['data'];
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
-    $data["products"] = $products['data'];
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/productosTable', $data);
   }
@@ -135,17 +150,21 @@ class inventarioController extends view
   public function searchProduct($var)
   {
     $toSearch = $_POST['toSearch'];
+    $estado = $_POST['estado'];
     $icon = help::icon();
-    $products = product::searchProduct($toSearch);
+    $products = product::searchProduct($toSearch, (isset($_POST['pagination']) ? $_POST['pagination'] : 1),(isset($estado)?$estado:1));
     $categorias = product::getCategory();
     $tallas = product::getTallas();
     $cat_precios = admin::getCategoriaPrecios();
     $descuentos = product::getDescuentos();
+    $data["products"] = $products['data'];
+    $paginationInfo =  $products;
+    unset($paginationInfo['data']);
+    $data["paginationInfo"] = $paginationInfo;
     $data["descuentos"] = $descuentos['data'];
     $data["cat_precios"] = $cat_precios['data'];
     $data["categorias"] = $categorias['data'];
     $data["tallas"] = $tallas['data'];
-    $data["products"] = $products['data'];
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/productosTable', $data);
   }
@@ -153,8 +172,12 @@ class inventarioController extends view
   public function searchProductstock($var)
   {
     $toSearch = $_POST['toSearch'];
+    $estado = $_POST['estado'];
     $icon = help::icon();
-    $products = product::searchProduct($toSearch);
+    $products = product::searchProduct($toSearch, (isset($_POST['pagination']) ? $_POST['pagination'] : 1), $estado);
+    $paginationInfo =  $products;
+    unset($paginationInfo['data']);
+    $data["paginationInfo"] = $paginationInfo;
     $data["products"] = $products['data'];
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/productosTableStock', $data);
@@ -250,5 +273,11 @@ class inventarioController extends view
     echo json_encode(array(
       "precio_sugerido" => $precio_sugerido,
     ));
+  }
+  public function indexEtiquetas()
+  {
+    $icon = help::icon();
+    $data["icons"] =  $icon['icons'];
+    echo view::renderElement('inventario/etiquetas', $data);
   }
 }
