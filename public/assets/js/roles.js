@@ -53,12 +53,24 @@ function newRol() {
 function saveRoles() {
     let form = document.getElementById("permisosForm")
     let formData = new FormData(form)
+    let cb = document.getElementById("cbSelectRol")
+    let rol = cb.options[cb.selectedIndex].textContent
     fetch("/roles/saveRoles", {
             method: "POST",
             body: formData
         }).then(resp => resp.json())
         .then(resp => {
-            console.log(resp);
+            if(resp.error =="00000"){
+                Swal.fire({
+                    position: 'top',
+                    title: `Permisos Agregados`,
+                    html:`Se agregaron los permisos del Rol: <strong>${rol}</strong>`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+            }
         })
 }
 
@@ -72,10 +84,12 @@ function setPermisos() {
             body: formData
         }).then(resp => resp.json())
         .then(resp => {
-            console.log(resp);
-            Object.keys(resp).map(key => {
-                let elem = document.getElementById(key)
-                elem.checked = true
-            })
+            if (resp !== "" && resp !== null) {
+
+                Object.keys(resp).map(key => {
+                    let elem = document.getElementById(key)
+                    elem.checked = true
+                })
+            }
         })
 }

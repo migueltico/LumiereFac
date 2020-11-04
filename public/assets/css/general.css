@@ -389,4 +389,8 @@ button.btn svg {
     /* border-top: 1px dashed gray; */
     page-break-inside: avoid;
 }
+.textcolorhover label:hover{
+    color:#9954bb !important;
+    cursor: pointer;
+}
 
