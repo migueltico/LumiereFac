@@ -11,7 +11,7 @@ class view
      * @param mixed array $parameters
      * @return void
      */
-    public static function render(String $template_url, array $parameters)
+    public static function render(String $template_url, array $parameters = null)
     {
         foreach ($parameters as $property => $value) {
             $$property = $value;
@@ -31,6 +31,28 @@ class view
             }
         }
         require_once "./views/$template_url.php";
+    }
+    public static function renderError(String $template_url, array $parameters = null)
+    {
+        if ($parameters !== null) {
+            foreach ($parameters as $property => $value) {
+                $$property = $value;              
+            }
+            
+        }
+        if (!empty($parameters['get'])) {
+            // echo 'Si tiene datos el get';
+            // print_r($get);
+            foreach ($get as $property => $value) {
+                $$property = $value;
+            }
+        }
+        if (!empty($parameters['post'])) {
+            foreach ($post as $property => $value) {
+                $$property = $value;
+            }
+        }
+        require_once "./views/errors/$template_url.php";
     }
     public static function renderElement(String $template_url, array $parameters = null)
     {

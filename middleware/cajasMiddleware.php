@@ -13,11 +13,9 @@ class cajasMiddleware
         $data[":fecha"] = date('Y-m-d');;
         $result = fac::cajaAsignada($data);
         if ($result['rows'] > 0) {
-            echo "nada";
-            return false;
+            return ["return" => true];
         } else {
-            echo "Algo";
-            return true;
+            return ["return" => false,"send_json_error"=>true, "send_msg" =>false,"data"=>array("msg"=>"Necesitas tener una caja habilitada"),"url"=>"sincaja"];
         }
 
 

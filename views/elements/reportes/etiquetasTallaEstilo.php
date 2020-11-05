@@ -14,7 +14,7 @@ $count = 0;
             <?php for ($i = 0; $i < (int)$item['cantidad']; $i++) : ?>
                 <?php $count = $i ?>
                 <div class="col-3 svg_codePritn">
-                    <p class="text-center" style="display: flex;justify-content: space-evenly;padding-top:0.847rem;font-size:1.2rem"><span>T: <?= $item['talla'] ?></span> <span> P: <?= $item['precio'] ?></span></p>
+                    <p class="text-center" style="display: flex;justify-content: space-evenly;padding-top:0.847rem;font-size:1.2rem"><span>(<?= $item['talla'] ?>)</span> <span> ₡<?= $item['precio'] ?></span></p>
 
                     <?php echo $generator->getBarcode($item['codigo'], $generator::TYPE_CODE_128, 2, 50); ?>
                     <p class="text-center" style="display: flex;justify-content: center;font-size:1.1rem"><?=h::shorter( $item['estilo'],25) ?></span></p>

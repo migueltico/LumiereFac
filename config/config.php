@@ -28,16 +28,27 @@ $route_group_active = false;
 $middleware_array = [];
 $middleware_active = false;
 $error404 = false;
+$errorMsg = ["send_msg" => false, "data" => null, "url" => null];
 date_default_timezone_set('America/Costa_Rica');
+
+use config\view;
+
 class Config
 {
 
     public function err()
     {
         if (!$GLOBALS["error404"]) {
-            echo "<h1>ERROR404</h1>";
+            if ($GLOBALS["errorMsg"]['send_msg']) {
+                echo view::renderError($GLOBALS["errorMsg"]['url'], $GLOBALS["errorMsg"]['data']);
+            } else {
+                echo view::renderError('error404');
+            }
         } else {
             $GLOBALS["error404"] = false;
+            $GLOBALS["errorMsg"]['url'] = null;
+            $GLOBALS["errorMsg"]['send_msg'] = false;
+            $GLOBALS["errorMsg"]['data'] = null;
         }
     }
     public function route()
