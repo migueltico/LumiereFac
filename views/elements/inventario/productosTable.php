@@ -75,7 +75,7 @@ $maxpage = $paginationInfo['paginacion']['paginas'];
             <div class="btn-group Editbuttons" aria-label="Grupo edicion">
               <button type="button" class="btn btn-success EditProductBtn" data-toggle="modal" data-target="#EditProduct" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['edit'] ?></button>
               <button type="button" class="btn btn-primary pl-3 pr-3 SeeImgProduct" data-urls="<?= $product["image_url"] ?>" data-toggle="modal" data-target="#galleryShow" data-name="<?= $product["descripcion"] ?>" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['eye'] ?></button>
-              <button type="button" class="btn btn-info pl-3 pr-3 printToast" data-name="<?= $product["descripcion"] ?>" data-talla="<?= $product["talla"] ?>" data-estilo="<?= $product["estilo"] ?>" data-idProduct='<?= $product["codigo"] ?>'><?= $icons['print'] ?></button>
+              <button type="button" class="btn btn-info pl-3 pr-3 printToast" data-precio="<?= $product["precio_venta"] ?>" data-name="<?= $product["descripcion"] ?>" data-talla="<?= $product["talla"] ?>" data-estilo="<?= $product["estilo"] ?>" data-idProduct='<?= $product["codigo"] ?>'><?= $icons['print'] ?></button>
               <button type="button" class="btn btn-danger" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['trash'] ?></button>
             </div>
           </td>

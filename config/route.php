@@ -63,7 +63,7 @@ class route
                 //*Verifica si la url se encuntra dentro de un grupo de middleware
                 if ($GLOBALS['middleware_active']) {
                     $result = route::middleware_exc($GLOBALS['middleware_array']);
-                    if (!$result) {
+                    if (!$result['return']) {
                         return;
                     }
 
@@ -72,7 +72,7 @@ class route
                 //*Verifica si cada Ruta tiene Middlewares individuales
                 if (!empty($middlewares)) {
                     $result = route::middleware_exc($middlewares);
-                    if (!$result) {
+                    if (!$result['return']) {
                         return;
                     }
 

@@ -8,16 +8,25 @@
 
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-8 col-md-8 col-sm-12">
-                        <?php foreach($cajas as $caja):  ?>
-                        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                            <div class="card-header"><h4><?=$caja['nombre'] ?> |  <?=$caja['fecha_init']?></h4></div>
-                            <div class="card-body">
-                                <h5 class="card-title">Caja Base: <?=$caja['caja_base'] ?></h5>
+                    <?php foreach ($cajas as $caja) :  ?>
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="card text-white bg-<?= ($caja['estado'] == 0 ? "danger" : ($caja['estado'] == 1 ? "success" : "warning")) ?> ?> mb-3" style="max-width: 100%;">
+                                <div class="card-header">
+                                    <h5><?= $caja['nombre_vendedor'] ?> | <?= $caja['fecha_init'] ?></h5>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Caja Base: <?= $caja['caja_base'] ?></h5>
+                                    <?php if ($caja['estado'] == 0) :  ?>
+                                        <button class="btn" style="border:1px solid white;color:white;">Abrir Caja</button>
+                                    <?php elseif ($caja['estado'] == 1) :  ?>
+                                        <button class="btn" style="border:1px solid white;color:white;">Cerrar Caja</button>
+                                    <?php else :  ?>
+                                        <button class="btn" style="border:1px solid white;color:white;">Ver Estado</button>
+                                    <?php endif;  ?>
+                                </div>
                             </div>
                         </div>
-                        <?php endforeach;  ?>
-                    </div>
+                    <?php endforeach;  ?>
                 </div>
             </div>
         </div>

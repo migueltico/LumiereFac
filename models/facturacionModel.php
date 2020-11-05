@@ -65,4 +65,10 @@ class facturacionModel
         $data = $con->SQND("SELECT c.*,u.nombre, u2.nombre AS nombre_vendedor FROM  cajas AS c INNER JOIN usuario AS u ON u.idusuario = c.idusuario_openbox INNER JOIN usuario AS u2 ON u2.idusuario = c.idvendedor");
         return $data;
     }
+    public static function cajaAsignada($datos)
+    {
+        $con = new conexion();
+        $data = $con->SRQ("SELECT * from cajas AS c WHERE c.idvendedor = :id AND c.fecha_init =:fecha", $datos);
+        return $data;
+    }
 }

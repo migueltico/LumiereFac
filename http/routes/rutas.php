@@ -62,7 +62,7 @@ route::group('inventario', function () {
 });
 //+++++++++++ FACTURACION +++++++++++//
 route::group('facturacion', function () {
-    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth']);
+    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth','cajasMiddleware@cajaAsignada']);
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');

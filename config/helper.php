@@ -212,11 +212,27 @@ class helper
           $response["ok"] = false;
         }
       }
-    }else{
+    } else {
       $response["Result"] = "Sorry, there was an error uploading your file.";
-          $response["url"] = '';
-          $response["ok"] = false;
+      $response["url"] = '';
+      $response["ok"] = false;
     }
     return $response;
+  }
+  public static function shorter($text, $chars_limit)
+  {
+    // Check if length is larger than the character limit
+    if (strlen($text) > $chars_limit) {
+      // If so, cut the string at the character limit
+      $new_text = substr($text, 0, $chars_limit);
+      // Trim off white space
+      $new_text = trim($new_text);
+      // Add at end of text ...
+      return $new_text . ".";
+    }
+    // If not just return the text as is
+    else {
+      return $text;
+    }
   }
 }

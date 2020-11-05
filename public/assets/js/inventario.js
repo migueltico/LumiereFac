@@ -828,10 +828,12 @@ $("#bodyContent").on("click", '.printToast', function (e) {
     let producto = e.target.dataset.name
     let estilo = e.target.dataset.estilo
     let talla = e.target.dataset.talla
+    let precio = e.target.dataset.precio
     let toPrint = localStorage.getItem("toPrint")
     let newJson = {
         codigo,
         producto,
+        precio,
         estilo,
         talla,
         cantidad: 1
