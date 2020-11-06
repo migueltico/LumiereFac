@@ -7,6 +7,7 @@
                         <h1 class="display-4">No se puede facturar</h1>
                         <p class="lead"><?= $msg ?></p>
                         <p>Solicite a su encargado que le genere una caja para iniciar a facturar.</p>
+                        <button class="btn btn-primary" onclick="loadPage(null,'/facturacion/cajas')">Ir a Cajas</button>
                     </div>
                 </div>
             </div>

@@ -32,6 +32,7 @@
                             <button type="button" data-tipo="2" id="btnTypeEnvio" class="btn btn-info">Envio</button>
                             <button type="button" data-tipo="3" id="btnTypeApartado" class="btn btn-info">Apartado</button>
                         </div>
+                        <button type="button" data-tipo="3" id="btnAbonarApartado" class="btn btn-outline-dark">Abonar</button>
 
 
                     </div>
@@ -48,7 +49,7 @@
                         <div class="input-group-prepend">
                             <label class="btn btn-outline-secondary" id="btnCodigoBarrasModal" type="button">Buscar</label>
                         </div>
-                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" autofocus="on" placeholder="Escanea o Digita el codigo" value="">
+                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" autofocus="on" placeholder="Escanea o Digita el codigo" value="496578309">
                         <input type="hidden" name="" id="bodyFactMain" data-number="1">
                     </div>
 

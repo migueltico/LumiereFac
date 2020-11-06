@@ -17,11 +17,11 @@
                                 <div class="card-body">
                                     <h5 class="card-title">Caja Base: <?= $caja['caja_base'] ?></h5>
                                     <?php if ($caja['estado'] == 0) :  ?>
-                                        <button class="btn" style="border:1px solid white;color:white;">Abrir Caja</button>
+                                        <button class="btn btnAbrirCajaEstado" data-caja="<?= $caja['idcaja'] ?>" style="border:1px solid white;color:white;">Abrir Caja</button>
                                     <?php elseif ($caja['estado'] == 1) :  ?>
-                                        <button class="btn" style="border:1px solid white;color:white;">Cerrar Caja</button>
+                                        <button class="btn btnCerrarCajaEstado" data-toggle="modal" data-target="#cajas_cerrarCaja"  data-caja="<?= $caja['idcaja'] ?>" style="border:1px solid white;color:white;">Cerrar Caja</button>
                                     <?php else :  ?>
-                                        <button class="btn" style="border:1px solid white;color:white;">Ver Estado</button>
+                                        <button class="btn btnVerCajaEstado" data-caja="<?= $caja['idcaja'] ?>" style="border:1px solid white;color:white;">Ver Estado</button>
                                     <?php endif;  ?>
                                 </div>
                             </div>
@@ -35,3 +35,4 @@
 </div>
 
 <?php include_once(self::modal('modalAddCaja')) ?>
+<?php include_once(self::modal('modalCerrarCaja')) ?>

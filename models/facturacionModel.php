@@ -18,7 +18,7 @@ class facturacionModel
     {
         $con = new conexion();
         $result = $con->Multitransaction(
-            'CALL sp_setFacHeader(:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario)',
+            'CALL sp_setFacHeader(:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,:idcaja)',
             $data
         );
         if ($result['rows'] == 1) {
@@ -47,6 +47,18 @@ class facturacionModel
             }
         }
     }
+    public static function setAbonoRecibo()
+    {
+        $con = new conexion();
+        $data = $con->SPCALL("SELECT *,f.estado AS fac_estado FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente WHERE f.estado = 0 AND f.tipo > 1");
+        return $data;
+    }
+    public static function setFirstAbonoRecibo()
+    {
+        $con = new conexion();
+        $data = $con->SPCALL("SELECT *,f.estado AS fac_estado FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente WHERE f.estado = 0 AND f.tipo > 1");
+        return $data;
+    }
     public static function getPendingFac()
     {
         $con = new conexion();
@@ -59,6 +71,20 @@ class facturacionModel
         $data = $con->SQ("INSERT INTO cajas (idusuario_openbox, idvendedor, caja_base, fecha_init, estado) VALUES (:id, :userId, :monto,:fecha_init, 0)", $data);
         return $data;
     }
+    public static function abrirCajaEstado($data)
+    {
+        $con = new conexion();
+        $data = $con->SQ("UPDATE cajas SET estado = 1 WHERE idcaja=:idcaja", $data);
+        return $data;
+    }
+    public static function cerrarCajaEstado($data)
+    {
+        $con = new conexion();
+        $data1 = $con->SQ("SELECT COUNT(*), SUM(f.monto_efectivo) AS efectivo,SUM(f.monto_tarjeta) AS tarjeta,SUM(f.monto_transferencia) AS transferencia, f.tipo FROM facturas AS f WHERE f.idcaja = 2 AND f.tipo = 1", $data);
+        $data2 = $con->SQ("SELECT COUNT(*), SUM(f.monto_efectivo) AS efectivo,SUM(f.monto_tarjeta) AS tarjeta,SUM(f.monto_transferencia) AS transferencia, f.tipo FROM facturas AS f WHERE f.idcaja = 2 AND f.tipo = 2", $data);
+        $data2 = $con->SQ("SELECT COUNT(*), SUM(f.monto_efectivo) AS efectivo,SUM(f.monto_tarjeta) AS tarjeta,SUM(f.monto_transferencia) AS transferencia, f.tipo FROM facturas AS f WHERE f.idcaja = 2 AND f.tipo = 3", $data);
+        return [$data1, $data2];
+    }
     public static function getCajas()
     {
         $con = new conexion();
@@ -68,7 +94,7 @@ class facturacionModel
     public static function cajaAsignada($datos)
     {
         $con = new conexion();
-        $data = $con->SRQ("SELECT * from cajas AS c WHERE c.idvendedor = :id AND c.fecha_init =:fecha", $datos);
+        $data = $con->SRQ("SELECT * from cajas AS c WHERE c.idvendedor = :id AND c.fecha_init =:fecha  AND c.estado = 1", $datos);
         return $data;
     }
 }

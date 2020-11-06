@@ -16,14 +16,24 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-sm">Monto inicial</span>
                                 </div>
-                                <input type="text" id="cajas_monto" name="monto" class="form-control  p-3">
+                                <input type="number" id="cajas_monto" name="monto" class="form-control  p-3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-12">
+                            <div class="input-group input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">Fecha inicial</span>
+                                </div>
+                                <input type="date" id="cajas_fecha" name="fecha" class="form-control  p-3" value="<?=date('Y-m-d')?>">
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="form-group col-lg-12 col-md-12 col-sm-12">
                             <select class="custom-select" id="cbSelectuser" name="userId">
-                                <option selected disabled>Seleccione un usuario</option>
+                                <option selected disabled value="0">Seleccione un usuario</option>
                                 <?php foreach ($users as $user) : ?>
                                     <option value="<?= $user['idusuario'] ?>"><?= $user['nombre'] ?> (<?= $user['roles'] ?>)</option>
                                 <?php endforeach; ?>

@@ -7,10 +7,10 @@ use config\route;
 //------------- +++ RUTAS GET +++ -----------------//
 
 //+++++++++++ LOGIN +++++++++++//
+route::get('/', 'loginController@index', ['loginMiddleware@auth']);
 route::post('/validateauth', 'loginController@validar');
 route::post('/validateauth*', 'loginController@validar');
 route::get('/logout', 'loginController@logout');
-route::get('/', 'loginController@index', ['loginMiddleware@auth']);
 //+++++++++++ DASHBOARD +++++++++++//
 route::get('/dashboard', 'dashboardController@index', ['loginMiddleware@auth']);
 route::post('/dashboard/general', 'dashboardController@general', ['loginMiddleware@auth']);
@@ -69,6 +69,8 @@ route::group('facturacion', function () {
     route::post('/pendientes', 'facturacionController@pendientes');
     route::post('/cajas', 'facturacionController@cajas');
     route::post('/cajas/abrirCaja', 'facturacionController@abrirCaja');
+    route::post('/cajas/abrirCajaEstado', 'facturacionController@abrirCajaEstado');
+    route::post('/cajas/cerrarCajaEstado', 'facturacionController@cerrarCajaEstado');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {

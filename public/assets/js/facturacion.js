@@ -10,27 +10,30 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
     const InputRadio = document.getElementsByClassName('fact_rbRadiosBtns');
 
     $(".cardHeaderSwitch").removeClass('selectedMethodPay')
-    if (cb.checked) {
-        $('.lbMontoToPay').prop('disabled', false)
-        $(".lbMontoToPay").val('0.00')
-        for (let i = 0; i < InputSwitch.length; i++) {
-            InputSwitch[i].checked = false
-            InputSwitch[i].style.display = "block"
-            InputRadio[i].style.display = "none"
+    let pago = document.getElementById("pagoContraEntrega").checked
+    if (!pago) {
+        if (cb.checked) {
+            $('.lbMontoToPay').prop('disabled', false)
+            $(".lbMontoToPay").val('0.00')
+            for (let i = 0; i < InputSwitch.length; i++) {
+                InputSwitch[i].checked = false
+                InputSwitch[i].style.display = "block"
+                InputRadio[i].style.display = "none"
 
-        }
-    } else {
-        let amounts = document.getElementById('totalFactAmount')
-        $(".lbMontoToPay").val(amounts.dataset.amount)
-        $(".cardHeaderSwitch").first().addClass('selectedMethodPay')
-        $(".fact_switchBtns input[type='checkbox").prop("checked", false)
-        $('.lbMontoToPay').prop('disabled', true)
-        InputRadio[0].checked = true
-        for (let i = 0; i < InputSwitch.length; i++) {
-            InputSwitch[i].checked = false
-            InputSwitch[i].style.display = "none"
-            InputRadio[i].style.display = "block"
-            cb.style.display = "block"
+            }
+        } else {
+            let amounts = document.getElementById('totalFactAmount')
+            $(".lbMontoToPay").val(amounts.dataset.amount)
+            $(".cardHeaderSwitch").first().addClass('selectedMethodPay')
+            $(".fact_switchBtns input[type='checkbox").prop("checked", false)
+            $('.lbMontoToPay').prop('disabled', true)
+            InputRadio[0].checked = true
+            for (let i = 0; i < InputSwitch.length; i++) {
+                InputSwitch[i].checked = false
+                InputSwitch[i].style.display = "none"
+                InputRadio[i].style.display = "block"
+                cb.style.display = "block"
+            }
         }
     }
 
@@ -38,11 +41,24 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
 })
 $("#bodyContent").on("change", "#pagoContraEntrega", function (e) {
     let tr = document.getElementById("appendItemRowProduct")
+    let Multi = document.getElementById("MultiTipoPagoFact").checked
     let count = tr.getElementsByTagName("tr")
-    if (this.checked && count > 0) {
+    console.log(Multi);
+    if (Multi && this.checked) {
+        $(".lbMontoToPay").prop("disabled", true)
+    } else {
+        $(".lbMontoToPay").prop("disabled", false)
+    }
+    if (this.checked && count.length > 0) {
         $("#btnMakeFact").prop("disabled", false)
+        $(".lbMontoToPay").prop("disabled", true)
+        $(".lbMontoToPay").val("0.00")
+    } else if (count.length > 0) {
+        $("#btnMakeFact").prop("disabled", false)
+        $(".lbMontoToPay").prop("disabled", false)
     } else {
         $("#btnMakeFact").prop("disabled", true)
+
     }
 })
 $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
@@ -61,10 +77,10 @@ $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
         $("#btnMakeFact").prop("disabled", true)
     }
     let btn_Envio = document.getElementById("btnTypeEnvio")
+    let btnApartado = document.getElementById("btnTypeApartado")
     let btn_pagoContraEntrega = document.getElementById("pagoContraEntregaContainer")
     let pagoContraEntrega = document.getElementById("pagoContraEntrega")
     pagoContraEntrega.checked = false
-    $('.lbMontoToPay').prop('disabled', true)
     $(".tarjertaInputs_tarjeta").val('')
     $(".transferenciaInputs_referencia").val('')
     $(".transferenciaInputs_banco").val(0)
@@ -83,7 +99,12 @@ $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
     } else {
         $(btn).prop("disabled", true)
     }
-
+    if (hasClass(btnApartado, "active")) {
+        $('.lbMontoToPay').prop('disabled', false)
+        $('.lbMontoToPay').val('0.00')
+    } else {
+        $('.lbMontoToPay').prop('disabled', true)
+    }
 })
 $("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
     console.log("CLICK");
@@ -96,42 +117,47 @@ $("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
 })
 
 function resetFactScreen() {
+    // let totalFactAmount = document.getElementById("totalFactAmount")
+    // let cliente = document.getElementById("fac_cliente_input")
+    // let ScanCode = document.getElementById("ScanCode")
+    // totalFactAmount.dataset.amount = 0.00
+    // totalFactAmount.innerHTML = 0.00
+    // cliente.dataset.cliente = 0
+    // cliente.value = "Generico"
+    // ScanCode.value = ""
     //Resetea los botones de local envio o apartado
-    $("#group_type_fac .btn").removeClass("active")
-    $("#group_type_fac .btn").removeClass("btn-primary")
-    $("#group_type_fac .btn").addClass("btn-info")
-    $("#group_type_fac .btn").first().addClass("btn-primary")
-    $("#group_type_fac .btn").first().removeClass("btn-info")
-    $("#group_type_fac .btn").first().addClass("active")
+    // $("#group_type_fac .btn").removeClass("active")
+    // $("#group_type_fac .btn").removeClass("btn-primary")
+    // $("#group_type_fac .btn").addClass("btn-info")
+    // $("#group_type_fac .btn").first().addClass("btn-primary")
+    // $("#group_type_fac .btn").first().removeClass("btn-info")
+    $(`.modal-backdrop`).remove()
+    loadPage(null, "facturacion/facturar")
 }
 $('#bodyContent').on("click", "#btnMakeFact", function (e) {
     //ANCLA
     e.preventDefault();
     const cb = document.getElementById('MultiTipoPagoFact');
-    let pagoContraEntrega = document.getElementById('pagoContraEntrega');
-    if (pagoContraEntrega.checked) {
-        let method = {
-            state: false
+    let pagoContraEntrega = document.getElementById('pagoContraEntrega').checked;
+    pagoContraEntrega = (pagoContraEntrega ? 0 : 1)
+    if (cb.checked) {
+        let method = PagoMultipleFac(pagoContraEntrega)
+        console.log("JSON", method);
+        if (method.state) {
+            getProductsRowsForFac(method.methodsArray, pagoContraEntrega)
         }
-        getProductsRowsForFac(method, 0)
     } else {
-        if (cb.checked) {
-            // printFact()
-            let method = PagoMultipleFac()
-            console.log("JSON", method);
-            if (method.state) {
-                getProductsRowsForFac(method.methodsArray, 1)
-            }
-        } else {
-            let method = PagoUnicoFac()
-            //let isOk = true
-            console.log("JSON", method);
-            // method.map(e => (e.state == false ? isOk = true : isOk = false))
-            if (method[0].state) {
-                getProductsRowsForFac(method, 1)
-            }
+        let method = PagoUnicoFac()
+        //let isOk = true
+        console.log("JSON", method);
+        // method.map(e => (e.state == false ? isOk = true : isOk = false))
+        if (method[0].state) {
+            getProductsRowsForFac(method, pagoContraEntrega)
+        } else if (pagoContraEntrega.checked) {
 
         }
+
+
     }
 })
 
@@ -232,7 +258,7 @@ function PagoUnicoFac() {
     }
 }
 
-function PagoMultipleFac() {
+function PagoMultipleFac(pago) {
     let montoToPay = document.getElementsByClassName("lbMontoToPay")
     let amounts = document.getElementById('totalFactAmount').dataset.amount
     let Allswitch = document.getElementsByClassName('switchGroupAmount')
@@ -265,8 +291,13 @@ function PagoMultipleFac() {
             }
         }
     }
-    if (parseInt(finalAmount) == parseInt(amounts.replace(',', ""))) {
+    if (parseInt(finalAmount) == parseInt(amounts.replace(',', "")) && pago == 1) {
         return {
+            state: true,
+            methodsArray
+        }
+    } else if (pago == 0) {
+        methodsArray = {
             state: true,
             methodsArray
         }
@@ -282,8 +313,8 @@ function PagoMultipleFac() {
             confirmButtonText: 'OK',
             timer: 2500
         })
-        return methodsArray
     }
+    return methodsArray
 }
 
 function verificaCamposPago(inputClass) {
@@ -369,14 +400,14 @@ function printFact(datos) {
         .then(resp => {
             //console.log(resp);
             if (Okprint.checked) {
-                // $(`#FacSendModal`).modal('toggle')
+                $(`#FacSendModal`).modal('toggle')
                 //$('#printContainer').html(resp)
                 let h = resp;
                 let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
                 window.print();
                 d.remove();
             } else {
-                //$(`#FacSendModal`).modal('toggle')
+                $(`#FacSendModal`).modal('toggle')
                 Swal.fire({
                     position: 'top',
                     title: "Factura",
@@ -531,6 +562,25 @@ function getProductFact(e) {
             .then(resp => {
                 if (resp.data !== false) {
                     let data = resp.data
+                    if (data.stock <= 0) {
+                        if (data.stock < 0) {
+                            Swal.fire({
+                                position: 'top',
+                                title: "Producto sin stock",
+                                text: `Este producto tiene un stock negativo de ${data.stock}`,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            })
+                            return
+                        }
+                        Swal.fire({
+                            position: 'top',
+                            title: "Producto sin stock",
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                        return
+                    }
                     let descuento = (data.descuento == null ? 'N/A' : data.descuento + '%')
                     let des_descuento = (data.descuento_descripcion == null ? 'Sin Descuento' : data.descuento_descripcion)
                     let precios = calcTotalRowPrice(data.precio_venta, (data.descuento == null ? 0 : data.descuento), (data.activado_iva == 0 ? 0 : data.iva))
@@ -877,6 +927,9 @@ function searchClient(toSearch, page) {
         })
 
 }
+$('#bodyContent').on("click", "#btnTypeApartado", function (e) {
+    //abrirCaja();
+})
 $('#bodyContent').on("click", "#btnAbrirCaja", function (e) {
     abrirCaja();
 })
@@ -885,20 +938,82 @@ function abrirCaja() {
     let form = document.getElementById("cajas_form_addcaja")
     let formData = new FormData(form)
     let cb = document.getElementById("cbSelectuser")
-    let user = cb.options[cb.selectedIndex].textContent
-    fetch("/facturacion/cajas/abrirCaja", {
+    let monto = parseInt(document.getElementById("cajas_monto").value)
+    let user = parseInt(cb.options[cb.selectedIndex].value)
+    if (user !== 0 && !isNaN(monto)) {
+        fetch("/facturacion/cajas/abrirCaja", {
+                method: "POST",
+                body: formData
+            }).then(resp => resp.json())
+            .then(resp => {
+                console.log(resp);
+
+                if (resp.error == "00000") {
+                    $("#cajas_addcaja").modal("toggle")
+                    form.reset()
+                    loadPage(null, "/facturacion/cajas")
+                    Swal.fire({
+                        position: 'top',
+                        title: `Rol agregado correctamente`,
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        timer: 2500,
+                        timerProgressBar: true
+                    })
+
+
+                }
+            })
+    } else {
+        alert('Debe rellenar los campos con la informacion correcta')
+    }
+}
+$('#bodyContent').on("click", ".btnAbrirCajaEstado", function (e) {
+    let id = this.dataset.caja
+    AbrirCajaEstado(id);
+})
+
+function AbrirCajaEstado(id) {
+    let formData = new FormData()
+    formData.append("idcaja", id)
+    fetch("/facturacion/cajas/abrirCajaEstado", {
             method: "POST",
             body: formData
         }).then(resp => resp.json())
         .then(resp => {
             console.log(resp);
-            
+
             if (resp.error == "00000") {
-                $("#cajas_addcaja").modal("toggle")
                 loadPage(null, "/facturacion/cajas")
                 Swal.fire({
                     position: 'top',
-                    title: `Rol agregado correctamente`,
+                    title: `Caja Abierta`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+
+
+            }
+        })
+}
+
+function btnCerrarCajaEstado(id) {
+    let formData = new FormData()
+    formData.append("idcaja", id)
+    fetch("/facturacion/cajas/cerrarCajaEstado", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.json())
+        .then(resp => {
+            console.log(resp);
+
+            if (resp.error == "00000") {
+                loadPage(null, "/facturacion/cajas")
+                Swal.fire({
+                    position: 'top',
+                    title: `Caja Abierta`,
                     icon: 'success',
                     confirmButtonText: 'OK',
                     timer: 2500,
