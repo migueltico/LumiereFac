@@ -77,7 +77,7 @@ class conexion
 		} catch (\PDOException $e) {
 			//$this->con->rollBack();
 			$this->disconnect();
-			return  array("rows" => 0, 'estado' => false, 'generalError' => $e, 'rollback' => true, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+			return  array('data' => json_encode($datos), 'sql' => $sql, "rows" => 0, 'estado' => false, 'generalError' => $e, 'rollback' => true,);
 		}
 	}
 	/**

@@ -5,7 +5,7 @@
     align-items: center;
     height: 100%;
     width: 100%;
-    font-size: 5.5rem;
+    font-size: 4.3rem;
     text-align: center;
     padding-left: 45px;
     color: var(--ColorFact);
@@ -18,7 +18,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 5.5rem;
+    font-size: 4.3rem;
     top: 0;
     left: 0;
     bottom: 0;
@@ -37,7 +37,7 @@
         align-items: center;
         height: 100%;
         width: 100%;
-        font-size: 5rem;
+        font-size: 3.5rem;
         text-align: center;
         padding-left: 45px;
         color: var(--ColorFact);
@@ -50,7 +50,7 @@
         justify-content: center;
         align-items: center;
         content: "₡";
-        font-size: 5rem;
+        font-size: 3.5rem;
         top: 0;
         left: 0;
         bottom: 0;
@@ -69,7 +69,7 @@
         align-items: center;
         height: 100%;
         width: 100%;
-        font-size: 4rem;
+        font-size: 3rem;
         text-align: center;
         padding-left: 35px;
         color: var(--ColorFact);
@@ -82,7 +82,7 @@
         justify-content: center;
         align-items: center;
         content: "₡";
-        font-size: 4rem;
+        font-size: 3rem;
         top: 0;
         left: 0;
         bottom: 0;
@@ -220,6 +220,14 @@
 .cardHeaderSwitch {
     cursor: pointer;
 }
+.cardHeaderAbono h5 {
+    margin-top: 2px;
+    padding: 10px;
+}
+
+.cardHeaderAbono {
+    cursor: pointer;
+}
 
 .fact_switchBtns {
     display: none;
@@ -236,4 +244,19 @@
 
 .selectedMethodPay+div>input {
     background-color: #eee;
+}
+.selectedMethodPayAbono {
+    background-color: var(--primaryColor);
+    color: white;
+}
+
+.selectedMethodPayAbono+div {
+    border: 1px solid var(--primaryColor);
+}
+
+.selectedMethodPayAbono+div>input {
+    background-color: #eee;
+}
+#abonoSaldoData{
+    font-size: 1.4rem;
 }

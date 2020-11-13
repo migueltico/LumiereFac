@@ -13,8 +13,12 @@ class cajasMiddleware
         $data[":fecha"] = date('Y-m-d');;
         $result = fac::cajaAsignada($data);
         if ($result['rows'] > 0) {
+            $_SESSION['hasCaja'] = true;
+            $_SESSION['idcaja'] = $result['data']['idcaja'];
             return ["return" => true];
         } else {
+            $_SESSION['hasCaja'] = false;
+            $_SESSION['idcaja'] = '';
             return ["return" => false,"send_json_error"=>true, "send_msg" =>false,"data"=>array("msg"=>"Necesitas tener una caja habilitada"),"url"=>"sincaja"];
         }
 

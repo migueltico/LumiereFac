@@ -393,7 +393,7 @@ function addTalla() {
 			position: 'top',
 			icon: 'error',
 			title: 'Error al Ingresar la Talla',
-			text: (descripcion.length > 0?"Debes Ingresar una talla":(talla.length > 0 ?"Debes ingresar una descripcion":"Debes ingresar una descripcion y talla")),
+			text: (descripcion.length > 0 ? "Debes Ingresar una talla" : (talla.length > 0 ? "Debes ingresar una descripcion" : "Debes ingresar una descripcion y talla")),
 			showConfirmButton: true,
 		})
 	}
@@ -551,6 +551,104 @@ function SaveGeneralInfo() {
 					position: 'top',
 					icon: 'error',
 					title: 'Error al Guardar',
+					showConfirmButton: true,
+				})
+			}
+		})
+}
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+////////////////////////----END GENERAL----///////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+/////////////////////////----DESCUENTOS----///////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+$('#bodyContent').on("click", "#newDescuento", function (e) {
+	$("#descuentos_AddDescuento").modal("toggle")
+})
+$('#bodyContent').on("click", ".EditDescuentoBtn", function (e) {
+	let id = document.getElementById('descuento_Edit_id')
+	let descripcion = document.getElementById('descuentos_Edit_descripcion')
+	let descuento = document.getElementById('descuentos_Edit_descuento')
+	let activo = document.getElementById('descuentos_Edit_activo')
+	let Btn_id = this.dataset.id
+	let Btn_descripcion = this.dataset.descripcion
+	let Btn_descuento = this.dataset.descuento
+	let Btn_activo = this.dataset.activo
+	id.value = Btn_id
+	descripcion.value = Btn_descripcion
+	descuento.value = Btn_descuento
+	activo.checked = (Btn_activo == 1 ? true : false)
+	$("#descuentos_EditDescuento").modal("toggle")
+
+})
+$('#bodyContent').on("click", "#btnCrearDescuento", function (e) {
+	addnewDescuento()
+})
+$('#bodyContent').on("click", "#btnEditarDescuento", function (e) {
+	EditarDescuento()
+})
+
+function addnewDescuento() {
+	let form = document.getElementById("descuentos_form_AddDescuento")
+	let formData = new FormData(form)
+	fetch("/admin/descuentos/addnewDescuento", {
+			method: "POST",
+			body: formData
+		}).then(resp => resp.json())
+		.then(resp => {
+			if (resp.error == '00000') {
+				$("#descuentos_AddDescuento").modal("toggle")
+				loadPage(null, "/admin/descuentos")
+				Swal.fire({
+					position: 'top',
+					icon: 'success',
+					title: 'Datos Guardados correctamente',
+					showConfirmButton: true,
+					timer: 1500
+				})
+
+			} else {
+				Swal.fire({
+					position: 'top',
+					icon: 'error',
+					title: 'Error al Guardar',
+					showConfirmButton: true,
+				})
+			}
+		})
+}
+
+function EditarDescuento() {
+	let formData = new FormData(document.getElementById("descuentos_form_EditDescuento"))
+	fetch("/admin/descuentos/EditarDescuento", {
+			method: "POST",
+			body: formData
+		}).then(resp => resp.json())
+		.then(resp => {
+			if (resp.error == '00000') {
+				$("#descuentos_EditDescuento").modal("toggle")
+				loadPage(null, "/admin/descuentos")
+				Swal.fire({
+					position: 'top',
+					icon: 'success',
+					title: 'Datos editados correctamente',
+					showConfirmButton: true,
+					timer: 1500
+				})
+
+			} else {
+				Swal.fire({
+					position: 'top',
+					icon: 'error',
+					title: 'Error al editar',
 					showConfirmButton: true,
 				})
 			}

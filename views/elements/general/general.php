@@ -50,7 +50,7 @@
                                     <span class="input-group-text " id="">Correo Ventas</span>
                                 </div>
                                 <input type="text" class="form-control" name=":mail_ventas" value="<?= (!isset($correo_venta) ? "" : $correo_venta) ?>">
-                            </div>
+                            </div>                           
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend tagNameGastos">
                                     <span class="input-group-text " id="">Mensaje pie de pagina ( Tickets )</span>
@@ -68,6 +68,12 @@
                                     <span class="input-group-text " id="">Logo</span>
                                 </div>
                                 <input type="text" class="form-control" name=":logo" placeholder="Url de la imagen" value="<?= (!isset($url_logo) ? "" : $url_logo) ?>">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend tagNameGastos">
+                                    <span class="input-group-text " id="">Id Cliente Generico para facturas</span>
+                                </div>
+                                <input type="text" class="form-control" name=":idclienteGenerico" value="<?= (!isset($idclienteGenerico) ? "" : $idclienteGenerico) ?>">
                             </div>
                         </form>
                     </div>

@@ -116,7 +116,7 @@
                     <input type="checkbox" class="custom-control-input" checked="true" id="SendFactBoolean">
                     <label class="custom-control-label" for="SendFactBoolean">Imprimir</label>
                 </div>
-                <button type="button" id="btnMakeFact" class="btn btn-lg btn-info">Generar Factura</button>
+                <button type="button" id="btnMakeFact" class="btn btn-lg btn-info">Generar Venta</button>
                 <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>

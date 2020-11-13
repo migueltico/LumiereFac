@@ -11,6 +11,7 @@ route::get('/', 'loginController@index', ['loginMiddleware@auth']);
 route::post('/validateauth', 'loginController@validar');
 route::post('/validateauth*', 'loginController@validar');
 route::get('/logout', 'loginController@logout');
+route::get('/funcion/:char/:format/:valor', 'facturacionController@test');
 //+++++++++++ DASHBOARD +++++++++++//
 route::get('/dashboard', 'dashboardController@index', ['loginMiddleware@auth']);
 route::post('/dashboard/general', 'dashboardController@general', ['loginMiddleware@auth']);
@@ -33,6 +34,9 @@ route::group('admin', function () {
     route::post('/categoriastallas', 'adminController@indexCategoriasTallas', ['loginMiddleware@auth']);
     route::post('/categoriastallas/AddCategoria', 'adminController@AddCategoria');
     route::post('/categoriastallas/AddTalla', 'adminController@AddTalla');
+    route::post('/descuentos', 'adminController@descuentos');
+    route::post('/descuentos/addnewDescuento', 'adminController@addnewDescuento');
+    route::post('/descuentos/EditarDescuento', 'adminController@EditarDescuento');
     route::post('/categoriastallas/table', 'adminController@tableCategoriaTallas');
     route::post('/categoriastallas/editCategoria', 'adminController@editCategorias');
     route::post('/categoriastallas/editTallas', 'adminController@editTallas');
@@ -67,10 +71,15 @@ route::group('facturacion', function () {
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
     route::post('/pendientes', 'facturacionController@pendientes');
+    route::post('/pendientes/productos', 'facturacionController@pendientesProductos');
+    route::post('/pendientes/changeStateFac', 'facturacionController@changeStateFac');
     route::post('/cajas', 'facturacionController@cajas');
     route::post('/cajas/abrirCaja', 'facturacionController@abrirCaja');
     route::post('/cajas/abrirCajaEstado', 'facturacionController@abrirCajaEstado');
-    route::post('/cajas/cerrarCajaEstado', 'facturacionController@cerrarCajaEstado');
+    route::post('/cajas/obtenerEstadoCajaEstado', 'facturacionController@obtenerEstadoCajaEstado');
+    route::post('/apartados/getApartadosHasClient', 'facturacionController@getApartadosHasClient');
+    route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
+    route::post('/apartados/setAbono', 'facturacionController@setAbono');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {

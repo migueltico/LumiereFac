@@ -19,7 +19,8 @@ $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
 
 //SE EJECUTA AL PRESIONAR EL BTN NUEVO PARA NUEVO PRODUCTO
 $('#bodyContent').on("click", "#newProduct", function (e) {
-    document.getElementById("AddProductForm").reset();
+    let newProduct = document.getElementById("AddProductForm")
+    newProduct.reset();
     resetInputImage(e, '#addProduct')
     $("#addProduct #addProduct_imageContainer").html('')
 })
@@ -857,7 +858,9 @@ $("#bodyContent").on("click", '.printToast', function (e) {
         timer: 2500,
         timerProgressBar: true
     })
-    $(this).first().parent().parent().parent().css({backgroundColor: '#2780e3'})
+    $(this).first().parent().parent().parent().css({
+        backgroundColor: '#2780e3'
+    })
 })
 $("#bodyContent").on("click", '#newQueque', function (e) {
     localStorage.removeItem('toPrint')

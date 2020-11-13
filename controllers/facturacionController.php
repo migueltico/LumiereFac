@@ -7,6 +7,7 @@ use config\view;
 use models\productModel as product;
 use models\usuariosModel as user;
 use models\adminModel as admin;
+use models\clientesModel as cliente;
 use models\facturacionModel as fac;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -19,7 +20,14 @@ class facturacionController extends view
 
     public function index()
     {
-        echo view::renderElement('facturacion/facturacion');
+        $info = admin::infoSucursal();
+        $info = $info['data'];
+        $cliente = cliente::getClienteById(array(":id" => $info['idclienteGenerico']));
+
+        $icon = help::icon();
+        $data["icons"] =  $icon['icons'];
+        $data["cliente"] =  $cliente['data'];
+        echo view::renderElement('facturacion/facturacion', $data);
     }
     public function cajas()
     {
@@ -40,6 +48,21 @@ class facturacionController extends view
         echo view::renderElement('facturacion/facturas_pendientes', $data);
     }
 
+    public function pendientesProductos()
+    {
+        $id = (int) $_POST['id'];
+        $result = fac::pendientesProductos($id);
+        $data['productos'] = $result['data'];
+        echo view::renderElement('facturacion/tablaProductosPendientes', $data);
+    }
+
+    public function changeStateFac()
+    {
+        $id[':consecutivo'] = (int) $_POST['id'];
+        $result = fac::changeStateFac($id);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
     public function abrirCaja()
     {
         $data[':userId'] = (int) $_POST['userId'];
@@ -54,18 +77,18 @@ class facturacionController extends view
     {
         $data[':idcaja'] = (int) $_POST['idcaja'];
         $result = fac::abrirCajaEstado($data);
-        if ($result['error'] == "00000") {
-            $_SESSION['idcaja'] = (int) $_POST['idcaja'];
-        }
         header('Content-Type: application/json');
+        $_SESSION['hasCaja'] = true;
         echo json_encode($result);
     }
-    public function cerrarCajaEstado()
+    public function obtenerEstadoCajaEstado()
     {
         $data[':idcaja'] = (int) $_POST['idcaja'];
-        $result = fac::abrirCajaEstado($data);
+        $result = fac::obtenerEstadoCajaEstadoPagos($data);
+        //$result = fac::obtenerEstadoCajaEstadoEnvios($data);
+        //$result = fac::obtenerEstadoCajaEstadoMonto($data);
         if ($result['error'] == "00000") {
-            $_SESSION['idcaja'] = (int) $_POST['idcaja'];
+            //$_SESSION['hasCaja'] = false;
         }
         header('Content-Type: application/json');
         echo json_encode($result);
@@ -88,31 +111,30 @@ class facturacionController extends view
     public function getFact()
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        error_log("Init: " . json_encode(array("idCliente" => $data['idCliente'], "nameCliente" => $data['nameCliente'], "Fecha" => date('d-m-Y h:i:s A'))) . "\n", 3, "./logs/errors.log");
         $result = $this->setFacHeader($data);
+        $data["data"] = admin::infoSucursal();
+        $data["factura"] =  ($result[1]['rows'] == 1 ? $result[1]['data'] : "error");
         if ($result[0] == 0) {
-
-            $data["data"] = admin::infoSucursal();
-            $data["factura"] =  ($result[1]['rows'] == 1 ? $result[1]['data'] : "error");
-
             if ($data['sendFac']) {
                 echo view::renderElement('facturas/facturaVenta', $data);
             }
         } else if ($result[0] == 1) {
-            echo view::renderElement('facturas/reciboApartado', $data);
-        } else if ($result[0] == 2 || ($result[1]['rows'] == 1 ? true : false)) {
+            $data['idrecibo'] = $result[2]['idrecibo'];
             echo view::renderElement('facturas/reciboApartado', $data);
         }
     }
     public function setFacHeader($datos)
     {
-        if (isset($_SESSION['idcaja']) && $_SESSION['idcaja'] !== "") {
+        error_log("recibe: " . json_encode(array("idCliente" => $datos['idCliente'], "nameCliente" => $datos['nameCliente'], "Fecha" => date('d-m-Y h:i:s A'))) . "\n", 3, "./logs/errors.log");
+        if (isset($_SESSION['hasCaja']) &&  $_SESSION['hasCaja'] == true) {
 
             //efectivo
             $data[':efectivo'] = 0;
             $data[':monto_efectivo'] = (float) 0.00;
             //tarjeta
             $data[':tarjeta'] = 0;
-            $data[':numero_tarjeta'] = (float) 0.00;
+            $data[':numero_tarjeta'] = null;
             $data[':monto_tarjeta'] = (float) 0.00;
             //transferencia
             $data[':transferencia'] = 0;
@@ -120,6 +142,7 @@ class facturacionController extends view
             $data[':referencia_transferencia'] = "";
             $data[':monto_transferencia'] = (float)  0.00;
             //demas datos
+            $data[':monto_envio'] = (float)  ($datos['monto_envio'] > 0 ? $datos['monto_envio'] : 0);
             $data[':idusuario'] = (int) $_SESSION['id'];
             $data[':idcliente'] = (int) $datos['idCliente'];
             $data[':impuesto'] = (float) str_replace(",", "", $datos['iva']);
@@ -129,8 +152,9 @@ class facturacionController extends view
             $data[':estado'] = (int) $datos['estado'];
             $data[':comentario'] = 'Sin comentarios';
             $data[':idcaja'] = $_SESSION['idcaja'];
+
             //verificamos si la factura lleva un pago
-            if ($datos['hasPay'] == 1) {
+            if ($datos['hasPay']) {
                 foreach ($datos['methodPay'] as $metodo) {
                     if ($metodo['methods']['tipo'] == "efectivo") {
                         $data[':efectivo'] = 1;
@@ -147,32 +171,115 @@ class facturacionController extends view
                     }
                 }
             }
-            //Si la factura es del tipo Apartado inicial, se pone en cero los montos
-            if ($datos['tipoVenta'] == 3 && $datos['firstAbono']) {
+            if ($datos['tipoVenta'] == 3 && $datos['firstAbono'] == 1) {
                 //efectivo
                 $data[':efectivo'] = 0;
                 $data[':monto_efectivo'] = (float) 0.00;
                 //tarjeta
                 $data[':tarjeta'] = 0;
-                $data[':numero_tarjeta'] = (float) 0.00;
+                $data[':numero_tarjeta'] = null;
                 $data[':monto_tarjeta'] = (float) 0.00;
                 //transferencia
                 $data[':transferencia'] = 0;
                 $data[':banco_transferencia'] = "";
                 $data[':referencia_transferencia'] = "";
                 $data[':monto_transferencia'] = (float)  0.00;
-
                 $fac = fac::setFacHeader($data, $datos);
-                $abono = fac::setAbonoRecibo($data, $datos);
-                return array(2, $fac, $abono);
-            } else if ($datos['tipoVenta'] == 3 && $datos['abono']) {
-                $abono = fac::setAbonoRecibo($data, $datos);
-                return array(1, $abono);
+                foreach ($datos['methodPay'] as $metodo) {
+                    if ($metodo['methods']['tipo'] == "efectivo") {
+                        $data[':efectivo'] = 1;
+                        $data[':monto_efectivo'] = (float) $metodo['methods']['monto'];
+                    } else if ($metodo['methods']['tipo'] == "tarjeta") {
+                        $data[':tarjeta'] = 1;
+                        $data[':numero_tarjeta'] = (int) $metodo['methods']['tarjeta'];
+                        $data[':monto_tarjeta'] = (float) $metodo['methods']['monto'];
+                    } else if ($metodo['methods']['tipo'] == "transferencia") {
+                        $data[':transferencia'] = 1;
+                        $data[':banco_transferencia'] = $metodo['methods']['banco'];
+                        $data[':referencia_transferencia'] = $metodo['methods']['referencia'];
+                        $data[':monto_transferencia'] = (float)  $metodo['methods']['monto'];
+                    }
+                }
+                $data[':abono'] = (float) ($data[':monto_efectivo'] + $data[':monto_transferencia'] + $data[':monto_tarjeta']);
+                $data[':idfactura'] = (int) $fac['data']['fac'];
+                $abono = fac::setAbonoRecibo($data, false); //False para que elimine los campos extras y true porque ya no los lleva el array
+                $abono['fac'] = (int) $fac['data']['fac'];
+                return array(1, $fac, $abono);
             } else {
                 $fac = fac::setFacHeader($data, $datos);
                 return array(0, $fac);
             }
         }
         return array(["error" => "FAC0001", "errorMsg" => "No existe una caja abierta para el usuario"]);
+    }
+    public function getApartadosHasClient()
+    {
+        $apartados =  fac::getApartadosHasClient($_POST['cliente']);
+        header('Content-Type: application/json');
+        echo json_encode($apartados);
+    }
+    public function getProductsFromApartado()
+    {
+        $apartados =  fac::getProductsFromApartado($_POST['fac']);
+        header('Content-Type: application/json');
+        echo json_encode($apartados);
+    }
+    public function setAbono()
+    {
+        $montoEfectivo = str_replace(",", "", ($_POST['efectivoMontoAbono']));
+        $montoTarjeta = str_replace(",", "", $_POST['tarjetaMontoAbono']);
+        $montoTransferencia = str_replace(",", "", $_POST['bancoMontoAbono']);
+        $montoEfectivo = (float) $montoEfectivo;
+        $montoTarjeta = (float) $montoTarjeta;
+        $montoTransferencia = (float) $montoTransferencia;
+
+        $montoEfectivo = (float)($montoEfectivo > 0 ? $montoEfectivo : 0.00);
+        $montoTarjeta = (float)($montoTarjeta > 0 ? $montoTarjeta : 0.00);
+        $montoTransferencia = (float)($montoTransferencia > 0 ? $montoTransferencia : 0.00);
+
+        $data[':idfactura'] = (int)$_POST['idfactura'];
+        $data[':abono'] = (float)($montoEfectivo + $montoTarjeta + $montoTransferencia);
+        //efectivo
+        $data[':efectivo'] = (int)($montoEfectivo > 0 ? 1 : 0);
+        $data[':monto_efectivo'] = (float)($montoEfectivo > 0 ? $montoEfectivo : 0.00);
+        //tarjeta
+        $data[':tarjeta'] = (int)($montoTarjeta > 0 ? 1 : 0);
+        $data[':numero_tarjeta'] = (int)($montoTarjeta > 0 ? $_POST['tarjetaAbono'] : null);
+        $data[':monto_tarjeta'] = (float)($montoTarjeta > 0 ? $montoTarjeta : 0.00);
+        //transferencia
+        $data[':transferencia'] = (int)($montoTransferencia > 0 ? 1 : 0);
+        $data[':banco_transferencia'] = ($_POST['banco'] !== "" ? $_POST['banco'] : "");
+        $data[':referencia_transferencia'] = ($_POST['referenciaAbono'] !== "" ? $_POST['referenciaAbono'] : "");
+        $data[':monto_transferencia'] = (float)($montoTransferencia > 0 ? $montoTransferencia : 0.00);
+        //demas datos
+        $data[':idusuario'] = (int)$_SESSION['id'];
+        $NewData['methods'] = [];
+        $apartados =  fac::setAbonoRecibo($data, true);
+        $NewData["data"] = admin::infoSucursal();
+        if ($montoEfectivo > 0) {
+            $efectivoArray = ["tipo" => "efectivo", "monto" => $montoEfectivo];
+            array_push($NewData['methods'], $efectivoArray);
+        }
+        if ($montoTarjeta > 0) {
+            $tarjetaArray = ["tipo" => "tarjeta", "tarjeta" => $_POST['tarjetaAbono'], "monto" => $montoTarjeta];
+            array_push($NewData['methods'], $tarjetaArray);
+        }
+        if ($montoTransferencia > 0) {
+            $transferencia = ["tipo" => "transferencia", "monto" =>  $montoTransferencia];
+            array_push($NewData['methods'], $transferencia);
+        }
+
+
+
+        $NewData["factura"] =  $data[':idfactura'];
+        $NewData["nameCliente"] =  $_POST['cliente'];
+        $NewData["nameVendedor"] =  $_POST['vendedor'];
+        $NewData["abono"] =  $data[':abono'];
+        $NewData["idrecibo"] = $apartados['idrecibo'];
+        $NewData["AbonoTotal"] = $apartados['AbonoTotal'];
+        $NewData["fecha_final"] = $apartados['fecha_final'];
+        $NewData["total"] = $apartados['total'];
+        $NewData['idrecibo'] = $apartados['idrecibo'];
+        echo view::renderElement('facturas/reciboSinproducto', $NewData);
     }
 }

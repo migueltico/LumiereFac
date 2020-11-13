@@ -28,11 +28,10 @@ class adminController extends view
     }
     public function general($var)
     {
-        $cat_precios = admin::getCategoriaPrecios();
         $general = admin::getGeneralInfo();
         $icon = help::icon();
         $data = $general['data']; // se pone de primero para que las variables se creen en el primer nivel
-        $data["icons"] =  $icon['icons'];//las segundas se agregan despues para evitar ser borradas
+        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
         view::renderElement('general/general', $data);
     }
     public function SaveGeneralInfo($var)
@@ -42,13 +41,38 @@ class adminController extends view
         header('Content-Type: application/json');
         echo json_encode($general);
     }
-  
-    public function consecutivo($var)
+    public function addnewDescuento($var)
     {
-        $consecutivo = admin::consecutivo();
+        $data[':descripcion'] = $_POST['descripcion'];
+        $data[':descuento'] = (int) $_POST['descuento'];
+        $data[':creado_por'] = (int) $_SESSION['id'];
+        $data[':modificado_por'] = (int) $_SESSION['id'];
+        $data[':activo'] = 1;
+        $admin = admin::addnewDescuento($data);
         header('Content-Type: application/json');
-        echo json_encode($consecutivo);
-    }  
+        echo json_encode($admin);
+    }
+    public function EditarDescuento($var)
+    {
+        $check = (isset($_POST['activo']) ? 1 : 0);
+        $data[':descripcion'] = $_POST['descripcion'];
+        $data[':descuento'] = (int) $_POST['descuento'];
+        $data[':modificado_por'] = (int) $_SESSION['id'];
+        $data[':activo'] = (int)  $check;
+        $data[':id'] = (int) $_POST['id'];
+        $admin = admin::updateDescuento($data);
+        header('Content-Type: application/json');
+        echo json_encode($admin);
+    }
+
+    public function descuentos($var)
+    {
+        $descuentos = admin::descuentos();
+        $icon = help::icon();
+        $data['data'] = $descuentos['data']; // se pone de primero para que las variables se creen en el primer nivel
+        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
+        view::renderElement('descuentos/descuentos', $data);
+    }
     public function indexCategoriasTallas($var)
     {
         $getTallas = admin::getTallas();

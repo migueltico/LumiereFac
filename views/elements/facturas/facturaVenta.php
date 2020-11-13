@@ -8,17 +8,15 @@
     ?>
     <div class="row col">
         <h4 class='col-12 text-center mt-2'><?= $info['nombre_local'] ?></h4>
-        <p class="col-12 text-center colFac" style="font-size: 1.1rem;">Razón: <?= $info['razon_social'] ?> </p>
+        <p class="col-12 text-center colFac" style="font-size: 1.1rem;"><?= $info['razon_social'] ?> </p>
         <p class="col-12 text-center colFac" style="font-size: 1.1rem;"><?= $info['direccion'] ?></p>
-        <p class="col-12 text-center colFac" style="font-size: 1.1rem;">Tel: <?= $info['telefono'] ?></p>
+        <p class="col-12 text-center colFac" style="font-size: 1.1rem;"><?= $info['telefono'] ?></p>
     </div>
     <div class="row col mt-2>
         <p class=" col-12 text-left colFac" style="font-size: 1.1rem;">Cliente: <?= $nameCliente ?> </p>
         <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Cajero: <?= $nameVendedor ?> </p>
         <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Tipo Doc: Tiquete </p>
         <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Fac:&nbsp; <?= $factura['fac'] ?> &nbsp;&nbsp;&nbsp;&nbsp;<?= $hoy ?></p>
-        <p class="col-12 text-left colFac" style="font-size: 1.1rem;"><?= $info['direccion'] ?></p>
-        <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Tel: <?= $info['telefono'] ?></p>
     </div>
     <br>
     <div class="row col">
@@ -93,6 +91,10 @@
         <?php if ($HasIva) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">I.V.A: </div>
             <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $iva ?> </div>
+        <?php endif;  ?>
+        <?php if ($tipoVenta == 2) : ?>
+            <div class="col-9 text-right" style="font-size: 1.1rem;">ENVIO: </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?=number_format($monto_envio, 2, '.', ',')?> </div>
         <?php endif;  ?>
         <div class="col-9 text-right" style="font-size: 1.1rem;">TOTAL A PAGAR: </div>
         <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $total ?> </div>

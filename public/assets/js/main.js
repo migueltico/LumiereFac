@@ -11,7 +11,6 @@ $("#bodyContent").on("click", ".table.sort thead tr th", function () {
     } else {
         result = ordenarFilaByData(columnId, tipo, sortr, tbody)
     }
-    console.log("Before",sortr);
     $(tbodyMain).html(result)
     if (sortr=='ASC') {
         $(tbodyMain).data('sorts', 'DESC')
@@ -19,7 +18,6 @@ $("#bodyContent").on("click", ".table.sort thead tr th", function () {
     } else {
         $(tbodyMain).data('sorts', 'ASC')
     }
-    console.log("After",$(tbodyMain).data('sorts'));
 })
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;

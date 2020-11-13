@@ -128,6 +128,9 @@ class helper
       <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z"/>
       <path fill-rule="evenodd" d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
       <path fill-rule="evenodd" d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+    </svg>',
+      "check" => '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
     </svg>'
     ));
     return  $icon;
@@ -151,7 +154,7 @@ class helper
    */
   public static function paginacion($cantidadRows, $maxPerPage, $nowPage)
   {
-    $InitLimit = ($nowPage - 1) * $maxPerPage;
+    @$InitLimit = ($nowPage - 1) * $maxPerPage;
     $paginas = ceil($cantidadRows / $maxPerPage);
     return array('paginas' => $paginas, 'InitLimit' => $InitLimit);
   }
@@ -234,5 +237,22 @@ class helper
     else {
       return $text;
     }
+  }
+  public static function maskFormat($format, $valor)
+  {
+    $char = '#';
+    $array = str_split($valor);
+    $count = count($array);
+    $newString = str_split($format);
+    $newFormat = $format;
+    $countformat = count($newString);
+    for ($i = $count; $i > 0; $i--) {
+      //
+      $chartValor = substr($valor, $i - 1, 1);
+      $pos = strrpos($newFormat, $char);
+      $newString[$pos] = $chartValor;
+      $newFormat = implode("", $newString);
+    }
+    return str_replace($char, 0, $newFormat);
   }
 }

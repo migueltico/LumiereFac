@@ -4,6 +4,7 @@ namespace controllers;
 // manda a llamar al controlador de vistas
 use config\view;
 use models\userModel as user;
+use models\clientesModel as cliente;
 use models\adminModel as admin;
 //Funciones de ayuda
 use config\helper as help;
@@ -37,9 +38,6 @@ class loginController extends view
                 $_SESSION["nombre"] = $data["nombre"];
                 $_SESSION["rolname"] = $data["rolname"];
                 $_SESSION["idrol"] = $data["idrol"];
-                //$_SESSION["sucursal"] = $data["sucursal"];
-                //$_SESSION["idsucursal"] = $data["idsucursal"];
-
                 $_SESSION["info"] = $info;
 
                 //return json_encode(array("estado" => 200, "session" => $_SESSION));
@@ -50,7 +48,7 @@ class loginController extends view
                 help::redirect("/");
             }
         } else {
-          echo "ERROR LOGIN";
+            echo "ERROR LOGIN";
         }
     }
 }

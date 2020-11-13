@@ -1,5 +1,8 @@
 <div class="hoja">
     <?php
+
+    use config\helper as h;
+
     $info = $data['data'];
     $hoy = date("Y-m-d H:i:s");
     $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
@@ -8,17 +11,16 @@
     ?>
     <div class="row col">
         <h4 class='col-12 text-center mt-2'><?= $info['nombre_local'] ?></h4>
-        <p class="col-12 text-center colFac" style="font-size: 1.1rem;">Razón: <?= $info['razon_social'] ?> </p>
+        <p class="col-12 text-center colFac" style="font-size: 1.1rem;"><?= $info['razon_social'] ?> </p>
         <p class="col-12 text-center colFac" style="font-size: 1.1rem;"><?= $info['direccion'] ?></p>
-        <p class="col-12 text-center colFac" style="font-size: 1.1rem;">Tel: <?= $info['telefono'] ?></p>
+        <p class="col-12 text-center colFac" style="font-size: 1.1rem;"><?= $info['telefono'] ?></p>
     </div>
     <div class="row col mt-2>
         <p class=" col-12 text-left colFac" style="font-size: 1.1rem;">Cliente: <?= $nameCliente ?> </p>
         <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Cajero: <?= $nameVendedor ?> </p>
-        <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Tipo Doc: Tiquete </p>
+        <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Tipo Doc: recibo </p>
         <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Fac:&nbsp; <?= $factura['fac'] ?> &nbsp;&nbsp;&nbsp;&nbsp;<?= $hoy ?></p>
-        <p class="col-12 text-left colFac" style="font-size: 1.1rem;"><?= $info['direccion'] ?></p>
-        <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Tel: <?= $info['telefono'] ?></p>
+        <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Recibo:&nbsp; <?= h::maskFormat('#########', $idrecibo) ?></p>
     </div>
     <br>
     <div class="row col">
@@ -96,27 +98,30 @@
         <?php endif;  ?>
         <div class="col-9 text-right" style="font-size: 1.1rem;">TOTAL A PAGAR: </div>
         <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $total ?> </div>
-        <div class="col-12 text-right" style="font-size: 1.1rem;">-----------------------------------------</div>
-        <!-- "0" = no pago | "1" Si pago -->
-        <?php if ($hasPay == 1) : ?>
-            <?php if ($tipoVenta == 1) : ?>
-                <?php foreach ($methodPay as $method) : ?>
-                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
-                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $method['methods']['montoWithFormat'] ?></p>
-                <?php endforeach; ?>
-            <?php elseif ($tipoVenta == 2) : ?>
-                <?php foreach ($methodPay as $method) : ?>
-                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
-                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $method['methods']['montoWithFormat'] ?></p>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        <?php else : ?>
-            <?php if ($hasPay == 0 && $tipoVenta == 2) : ?>
-                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Cancelacion Contra Entrega**</p>
-            <?php elseif ($tipoVenta == 3) : ?>
-                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Apartado**</p>
-            <?php endif; ?>
-        <?php endif; ?>
+        <div class="col-12 text-right" style="font-size: 1.1rem;">---------------------------------------</div>
+        <?php
+        $montoAbono = 0.00;
+        ?>
+        <?php foreach ($methodPay as $method) : ?>
+            <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
+            <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $method['methods']['montoWithFormat'] ?></p>
+            <?php
+            $montoAbono += (float)($method['methods']['monto']);
+
+            ?>
+        <?php endforeach; ?>
+        <div class="col-12 text-right" style="font-size: 1.1rem;margin-top:5px;">---------------------------------------</div>
+        <?php
+        $newtotal = str_replace(',', '', $total);
+        $newtotal = (float) $newtotal;
+        $saldo = ($newtotal - $montoAbono);
+
+        ?>
+        <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;">SALDO:</p>
+        <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',') ?></p>
+        <br>
+        <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Apartado**</p>
+
     </div>
     <div class="row col mt-3">
         <p class="col-12 text-center colFac" style="font-size: 1.3rem;"><?= $info['mensaje_footer_fac'] ?></p>
