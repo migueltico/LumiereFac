@@ -50,6 +50,28 @@ class adminModel
         $con = new conexion();
         return $con->SQ("UPDATE descuentos SET descripcion = :descripcion, descuento = :descuento, modificado_por =:modificado_por, activo = :activo WHERE iddescuento = :id", $datos);
     }
+    public static function aplicarDescuentoEnLote($datos)
+    {
+        $con = new conexion();
+        $codigos = explode(",", $datos[':codigos']);
+        $iddescuento =  $datos[':iddescuento'];
+        $ok = true;
+        foreach ($codigos as $codigo) {
+            $codigo = (int) $codigo;
+            $array[':codigo'] = $codigo;
+            $array[':iddescuento'] = $iddescuento;
+
+            $result = $con->SQ("UPDATE producto SET iddescuento = :iddescuento WHERE codigo=:codigo", $array);
+            if ($result['error'] !== '00000') {
+                $ok = false;
+            }
+        }
+        if ($ok) {
+            return ["error" => '00000'];
+        } else {
+            return ["error" => 'fatal'];
+        }
+    }
     public static function getGeneralInfo()
     {
         $con = new conexion();

@@ -20,6 +20,7 @@ $maxpage = $paginationInfo['paginacion']['paginas'];
         <th data-type="0" data-inner="0" scope="col">Marca</th>
         <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Estilo</th>
         <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Talla</th>
+        <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Descuento</th>
         <th data-type="1" data-inner="1" scope="col" style="text-align: center;">IVA</th>
         <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Precio</th>
         <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Stock</th>
@@ -62,6 +63,7 @@ $maxpage = $paginationInfo['paginacion']['paginas'];
           <td scope="row"><?= $product["marca"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["estilo"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["talla"] ?></td>
+          <td scope="row" style="text-align: center;"><?= ($product["descuento"]==0 || $product["descuento"]== null?"N/A":$product["descuento"]."%") ?></td>
           <td scope="row" data-value="<?= $product["activado_iva"] ?>" style="text-align: center;margin:0 auto">
             <div class="<?= $gravado[$product["activado_iva"]] ?>" data-toggle="tooltip" data-placement="top" title="<?= $product["iva"] . ' - ' . $product["activado_iva"] ?>"></div>
           </td>

@@ -25,7 +25,7 @@
                         <div class="col-12">
                             <div class="input-group input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-sm">Descuento</span>
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">Descuento %</span>
                                 </div>
                                 <input type="number" id="descuentos_Edit_descuento" name="descuento" class="form-control  p-3">
                             </div>

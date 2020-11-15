@@ -29,6 +29,7 @@
                 <li data-functionName="0" data-linkto="/admin/categoriastallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
                 <li data-functionName="0" data-linkto="/admin/categoriastallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
                 <li data-functionName="0" data-linkto="/admin/descuentos" class="dataLink"><span class="spanStyleMenu"></span><span>Descuentos</span><span></span></li>
+                <li data-functionName="0" data-linkto="/admin/descuentos/lote" class="dataLink"><span class="spanStyleMenu"></span><span>Descuentos por Lote</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>

@@ -1,0 +1,30 @@
+Init: {"idCliente":"24","nameCliente":"Gen\u00e9rico","Fecha":"11-11-2020 04:31:33 PM"}
+recibe: {"idCliente":"24","nameCliente":"Gen\u00e9rico","Fecha":"11-11-2020 04:31:33 PM"}
+Insert: {"idcliente":24,"Fecha":"11-11-2020 04:31:33 PM"}
+Init: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"11-11-2020 04:53:33 PM"}
+recibe: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"11-11-2020 04:53:33 PM"}
+Insert: {"idcliente":26,"Fecha":"11-11-2020 04:53:33 PM"}
+Init: {"idCliente":"27","nameCliente":"Sandra","Fecha":"12-11-2020 04:47:57 PM"}
+recibe: {"idCliente":"27","nameCliente":"Sandra","Fecha":"12-11-2020 04:47:57 PM"}
+Insert: {"idcliente":27,"Fecha":"12-11-2020 04:47:57 PM"}
+Init: {"idCliente":"28","nameCliente":"Sharon","Fecha":"12-11-2020 04:52:36 PM"}
+recibe: {"idCliente":"28","nameCliente":"Sharon","Fecha":"12-11-2020 04:52:36 PM"}
+Insert: {"idcliente":28,"Fecha":"12-11-2020 04:52:36 PM"}
+Init: {"idCliente":"30","nameCliente":"jimena castillo","Fecha":"12-11-2020 05:09:55 PM"}
+recibe: {"idCliente":"30","nameCliente":"jimena castillo","Fecha":"12-11-2020 05:09:55 PM"}
+Insert: {"idcliente":30,"Fecha":"12-11-2020 05:09:55 PM"}
+Init: {"idCliente":"24","nameCliente":"Gen\u00e9rico","Fecha":"12-11-2020 07:35:08 PM"}
+recibe: {"idCliente":"24","nameCliente":"Gen\u00e9rico","Fecha":"12-11-2020 07:35:08 PM"}
+Insert: {"idcliente":24,"Fecha":"12-11-2020 07:35:08 PM"}
+Init: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"12-11-2020 07:37:46 PM"}
+recibe: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"12-11-2020 07:37:46 PM"}
+Insert: {"idcliente":26,"Fecha":"12-11-2020 07:37:46 PM"}
+Init: {"idCliente":"24","nameCliente":"Gen\u00e9rico","Fecha":"12-11-2020 07:40:04 PM"}
+recibe: {"idCliente":"24","nameCliente":"Gen\u00e9rico","Fecha":"12-11-2020 07:40:04 PM"}
+Insert: {"idcliente":24,"Fecha":"12-11-2020 07:40:04 PM"}
+Init: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"12-11-2020 07:40:31 PM"}
+recibe: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"12-11-2020 07:40:31 PM"}
+Insert: {"idcliente":26,"Fecha":"12-11-2020 07:40:31 PM"}
+Init: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"13-11-2020 01:58:02 PM"}
+recibe: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"13-11-2020 01:58:02 PM"}
+Insert: {"idcliente":26,"Fecha":"13-11-2020 01:58:02 PM"}

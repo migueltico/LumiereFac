@@ -35,8 +35,10 @@ route::group('admin', function () {
     route::post('/categoriastallas/AddCategoria', 'adminController@AddCategoria');
     route::post('/categoriastallas/AddTalla', 'adminController@AddTalla');
     route::post('/descuentos', 'adminController@descuentos');
+    route::post('/descuentos/lote', 'adminController@descuentosPorLote');
     route::post('/descuentos/addnewDescuento', 'adminController@addnewDescuento');
     route::post('/descuentos/EditarDescuento', 'adminController@EditarDescuento');
+    route::post('/descuentos/aplicarDescuentoEnLote', 'adminController@aplicarDescuentoEnLote');
     route::post('/categoriastallas/table', 'adminController@tableCategoriaTallas');
     route::post('/categoriastallas/editCategoria', 'adminController@editCategorias');
     route::post('/categoriastallas/editTallas', 'adminController@editTallas');
@@ -95,6 +97,8 @@ route::group('usuarios', function () {
     route::post('/', 'usuariosController@index', ['loginMiddleware@auth']);
     route::post('/setUser', 'usuariosController@setUser');
 });
+//+++++++++++ SERVER +++++++++++//
+    route::get('/getnewpassword/:identificador', 'usuariosController@getNewPassword');
 //+++++++++++ ROLES +++++++++++//
 route::group('roles', function () {
     route::post('/', 'rolesController@index');

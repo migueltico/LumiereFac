@@ -64,6 +64,14 @@ class adminController extends view
         header('Content-Type: application/json');
         echo json_encode($admin);
     }
+    public function aplicarDescuentoEnLote($var)
+    {
+        $data[':codigos'] = $_POST['codigos'];
+        $data[':iddescuento'] = $_POST['iddescuento'];
+        $admin = admin::aplicarDescuentoEnLote($data);
+        header('Content-Type: application/json');
+        echo json_encode($admin);
+    }
 
     public function descuentos($var)
     {
@@ -72,6 +80,14 @@ class adminController extends view
         $data['data'] = $descuentos['data']; // se pone de primero para que las variables se creen en el primer nivel
         $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
         view::renderElement('descuentos/descuentos', $data);
+    }
+    public function descuentosPorLote($var)
+    {
+        $descuentos = admin::descuentos();
+        $icon = help::icon();
+        $data['data'] = $descuentos['data']; // se pone de primero para que las variables se creen en el primer nivel
+        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
+        view::renderElement('descuentos/descuentosPorLote', $data);
     }
     public function indexCategoriasTallas($var)
     {

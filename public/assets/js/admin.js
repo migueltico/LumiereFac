@@ -595,6 +595,9 @@ $('#bodyContent').on("click", "#btnCrearDescuento", function (e) {
 $('#bodyContent').on("click", "#btnEditarDescuento", function (e) {
 	EditarDescuento()
 })
+$('#bodyContent').on("click", "#buscarProductoBtn", function (e) {
+	$("#SearchProductModalGeneral").modal("toggle")
+})
 
 function addnewDescuento() {
 	let form = document.getElementById("descuentos_form_AddDescuento")
@@ -649,6 +652,183 @@ function EditarDescuento() {
 					position: 'top',
 					icon: 'error',
 					title: 'Error al editar',
+					showConfirmButton: true,
+				})
+			}
+		})
+}
+
+function SearchProductModalGeneral(toSearch, page) {
+	let formData = new FormData()
+	let initLimit = page
+
+	formData.append("toSearch", toSearch)
+	formData.append("initLimit", initLimit)
+	fetch("/facturacion/search/product/ctrlq", {
+			method: "POST",
+			body: formData
+		}).then(resp => resp.json())
+		.then(resp => {
+			$('#contentSearchGeneral').html('')
+			let paginacion = resp.paginacion
+			let items = `<li class="page-item pre_nex ${resp.previouspage <= 0? 'disabled' : ''}" data-minpage="1" data-page="${resp.previouspage <= 0 ? 1 : resp.previouspage}"><p class="page-link">Previous</p></li>`
+			for (let index = 0; index < paginacion.paginas; index++) {
+				let pageNow = index + 1
+				items += `<li class="page-item paginationBtn ${pageNow == page? 'active' : ''}" data-page="${index+1}"><a class="page-link" href="#">${index+1}</a></li>`
+
+			}
+			items += `<li class="page-item pre_nex ${resp.nextpage > paginacion.paginas ? 'disabled' : ''}" data-maxpage="${paginacion.paginas }" data-page="${resp.nextpage >= paginacion.paginas ? paginacion.paginas : resp.nextpage}"><p class="page-link">Next</p></li>`
+
+			resp.data.map((el, i) => {
+				let url = el.image_url.split(',')
+				let producto = `    <div class="col-6 ">
+                                        <div class="card mb-3 generalSearch codeToAddInputSearchCard2" style="width: 100%;" data-marca="${el.marca}" data-estilo="${el.estilo}" data-codigo="${el.codigo}"  data-descripcion="${el.descripcion}"  data-descuento="${(el.descuento > 0 ?el.descuento:'N/A')}" data-precio="${el.precio_venta}">
+                                        <div class="row no-gutters">
+                                            <div class="col-md-4 cardImgBody">
+                                            <img src="${(url[0]==""?"/public/assets/img/not-found.png":url[0])}" class="card-img" alt="...">
+                                            </div>
+                                            <div class="col-md-8">
+                                            <div class="card-body">
+                                                <h6 class="card-title">${el.descripcion}</h6>
+                                                <p class="${el.precio_venta<1?"text-danger":""}">₡ ${el.precio_venta} |  Stock:${el.stock} </p>
+                                                <span class="icon_codeToAddInputSearch"><span class="codeToAddInputSearch2">${el.codigo}</span></span>
+                                                </br>
+                                                <span class=""><small class="text-muted">${(el.iva > 0 ?"<strong>IVA: </strong>"+el.iva +"%": "")}${(el.descuento > 0 ?" | <strong>Descuento: </strong>"+el.descuento +"%": "")}</small></span>
+                                                </br>
+                                                <span class=""><small class="text-muted">Marca: ${el.marca} | Categoria: ${el.categoria} | Talla: ${el.talla}</small></span>
+                                                <p class=""><small class="text-muted">Estado: ${(el.estado == 1?"Activo":"Inactivo")}</small></p>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>                                
+                                    </div>                                
+              `
+
+				$('#contentSearchGeneral').append(producto)
+			})
+			$('#paginationModal').html('')
+			$('#paginationModal').html(items)
+		})
+}
+$('#bodyContent').on("click", "#SearchProductInputCtrlQBtnGeneral", function (e) {
+	SearchProductModalGeneral("", 1)
+
+})
+$('#bodyContent').on("click", "#paginationModal .paginationBtn", function (e) {
+	let valueInput = document.getElementById('SearchProductInputCtrlQGeneral').value
+	SearchProductModalGeneral(valueInput, this.dataset.page)
+
+
+
+})
+$('#bodyContent').on("click", "#paginationModal .pre_nex", function (e) {
+	let valueInput = document.getElementById('SearchProductInputCtrlQGeneral').value
+
+	SearchProductModalGeneral(valueInput, this.dataset.page)
+
+})
+$('#bodyContent').on("click", ".deleteProductoDescuentoBtn", function (e) {
+	let id = this.dataset.id
+	let tr = document.getElementById(`tr_${id}`)
+	tr.remove()
+
+})
+$('#bodyContent').on("click", "#aplicarDescuento", function (e) {
+	aplicarDescuento()
+
+})
+$('#bodyContent').on("keypress", "#SearchProductInputCtrlQGeneral", function (e) {
+	if (e.charCode == 13) {
+		SearchProductModalGeneral(this.value, 1)
+
+	}
+
+})
+$('#bodyContent').on("click", ".generalSearch", function (e) {
+	let codigo = this.dataset.codigo
+	let descripcion = this.dataset.descripcion
+	let descuento = this.dataset.descuento
+	let marca = this.dataset.marca
+	let estilo = this.dataset.estilo
+	let tbody = document.getElementById("tbodyDescuentosPorlote")
+	let tr = document.createElement('tr')
+	this.style.border = '2px solid green'
+	tr.id = `tr_${codigo}`
+	tr.innerHTML = `
+			<td scope="row" style="text-align: center;">${codigo}</td>
+			<td scope="row" style="text-align: left;">${descripcion}</td>
+			<td scope="row" style="text-align: center;">${marca}</td>
+			<td scope="row" style="text-align: center;">${estilo}</td>
+			<td scope="row" style="text-align: center;">${descuento}</td>
+			<td scope="row">
+			<div class="btn-group" aria-label="Grupo edicion"> 
+				<button type="button" class="btn btn-danger deleteProductoDescuentoBtn" data-id="${codigo}" >X</button>
+            </div>
+          </td>
+
+`
+	console.log(codigo, descripcion, descuento);
+	tbody.appendChild(tr)
+	console.log(codigo);
+
+
+
+})
+
+function aplicarDescuento() {
+	let formData = new FormData()
+	let tbody = document.getElementById("tbodyDescuentosPorlote")
+	let select = document.getElementById("iddescuentoSelect")
+	let id = select.options[select.selectedIndex].value
+	let childrens = tbody.getElementsByTagName('tr')
+	let codigos = ''
+	if (id == 0 || id == "") {
+		Swal.fire({
+			position: 'top',
+			icon: 'error',
+			title: 'Seleccione un descuento antes de aplicar el cambio',
+			showConfirmButton: true,
+		})
+		return
+	}
+
+	for (let i = 0; i < childrens.length; i++) {
+		let item = childrens[i]
+		codigos += parseInt(item.id.split('_')[1]) + (i == childrens.length - 1 ? "" : ",")
+		console.log(item.id)
+	}
+	if (codigos.length == 0) {
+		Swal.fire({
+			position: 'top',
+			icon: 'error',
+			title: 'Debe seleccionar almenos un producto',
+			showConfirmButton: true,
+		})
+		return
+	}
+	formData.append("codigos", codigos)
+	formData.append("iddescuento", id)
+	fetch("/admin/descuentos/aplicarDescuentoEnLote", {
+			method: "POST",
+			body: formData
+		}).then(resp => resp.json())
+		.then(resp => {
+			if (resp.error == '00000') {
+				$("#descuentos_EditDescuento").modal("toggle")
+				// loadPage(null, "/admin/descuentos/lote")
+				Swal.fire({
+					position: 'top',
+					icon: 'success',
+					title: 'Descuentos agregados correctamente',
+					showConfirmButton: true,
+					timer: 1500
+				})
+
+			} else {
+				Swal.fire({
+					position: 'top',
+					icon: 'error',
+					title: 'Error al agregar los descuentos',
 					showConfirmButton: true,
 				})
 			}
