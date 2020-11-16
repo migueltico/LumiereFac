@@ -23,9 +23,9 @@ if ($env == 1) {
     $DB_USER ="adminUser";
     $DB_PASS ="MXx12Lumiere2!#W@rr";
     $DB_NAME = array(
-        "Alajuela DB" => "maindb",
-        "Heredia DB" => "BDA_HEREDIA",
-        "Sanjose DB" => "BDA_SAN_JOSE",
+        "Alajuela" => "maindb",
+        "Heredia" => "BDA_HEREDIA",
+        "Sanjose" => "BDA_SAN_JOSE",
     );
 } else {
     $DB_USER ="root";
