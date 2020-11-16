@@ -2,8 +2,8 @@
 
 namespace config;
 
-define('DS', DIRECTORY_SEPARATOR);
-define('ROOT', realpath(dirname(__FILE__)) . DS);
+// define('DS', DIRECTORY_SEPARATOR);
+// define('ROOT', realpath(dirname(__FILE__)) . DS);
 define('VIEWS', './views/');
 define('TEMPLATE', './views/template/');
 define('BLOCKS', './views/blocks/');

@@ -23,15 +23,19 @@ $("#main_menu li.uniq_menu").click(function (e) {
 
 })
 $("li.dataLink").click((e) => {
-    loadPage(e,null)
+    loadPage(e, null)
 })
-function scrollToTop(){
+
+function scrollToTop() {
     let BodyMain = document.getElementsByClassName('bodyMain')[0];
-    BodyMain.scrollTop = 0;
+    if (BodyMain) {
+        BodyMain.scrollTop = 0;
+    }
 }
-function loadPage(e,link) {
+
+function loadPage(e, link) {
     scrollToTop()
-    let url =(link == null? $(e.target).data('linkto'): link);
+    let url = (link == null ? $(e.target).data('linkto') : link);
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
     $(".bodyContent").html('')
     $(".bodyContent").append(img)

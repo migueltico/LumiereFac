@@ -14,7 +14,7 @@
                             <div class="col-12">
                                 <div class="input-group input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-sm">Nombre Completo </span>
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Nombre y apellidos</span>
                                     </div>
                                     <input type="text" id="usuarios_add_nombre" name="nombre" class="form-control  p-3">
                                 </div>
@@ -48,7 +48,7 @@
                                     <div class="input-group-prepend">
                                         <label class="input-group-text" for="inputGroupSelect01">Rol</label>
                                     </div>
-                                    <select class="custom-select" id="inputGroupSelect01">
+                                    <select class="custom-select" name="rol" id="usuarios_add_rol">
                                     <option value="0">Seleccione un Rol</option>
                                         <?php foreach($rols as $rol): ?>
                                             <option value="<?= $rol['idrol'] ?>"><?= $rol['rol'] ?></option>

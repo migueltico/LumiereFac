@@ -98,7 +98,9 @@ route::group('usuarios', function () {
     route::post('/setUser', 'usuariosController@setUser');
 });
 //+++++++++++ SERVER +++++++++++//
-    route::get('/getnewpassword/:identificador', 'usuariosController@getNewPassword');
+    route::get('/getPassword/:db/:identificador', 'usuariosController@getNewPassword');
+    route::post('/setPassword', 'usuariosController@setNewPassword');
+    route::post('/verIdentificador', 'usuariosController@verIdentificador');
 //+++++++++++ ROLES +++++++++++//
 route::group('roles', function () {
     route::post('/', 'rolesController@index');

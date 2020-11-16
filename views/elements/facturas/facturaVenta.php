@@ -59,12 +59,12 @@
             <?php if ($item['descuento'] !== 0) : ?>
                 <div class="colFac col-3">
                     <?php $HasDescuento = true; ?>
-                    <span>DESC% <?= strtoupper($item['descuento']) ?></span>
+                    <span>DESC <?= strtoupper($item['descuento']) ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($item['descuento'] !== 0) : ?>
                 <div class="colFac col-4 text-left">
-                    <span class="text-right">SUB T.% <?= $item['subtotal'] ?></span>
+                    <span class="text-right">SUB T. <?= $item['subtotal'] ?></span>
                 </div>
             <?php endif; ?>
             <?php if ($item['iva'] !== 0) : ?>
@@ -83,7 +83,7 @@
     </div>
     <div class="row col">
         <?php if ($HasDescuento) : ?>
-            <div class="col-9 text-right" style="font-size: 1.1rem;">DESC%: </div>
+            <div class="col-9 text-right" style="font-size: 1.1rem;">DESC: </div>
             <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $descuento ?> </div>
         <?php endif;  ?>
         <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>

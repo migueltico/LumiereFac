@@ -60,7 +60,8 @@ class facturacionModel
             unset($data[':tipo']);
             unset($data[':estado']);
             unset($data[':comentario']);
-            unset($data[':idcaja']);
+            unset($data[':idcaja']);            
+            unset($data[':monto_envio']);
             $data[':idusuario'] = $_SESSION['id'];
         }
         $data[':idcaja'] = $_SESSION['idcaja'];

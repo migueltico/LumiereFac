@@ -28,10 +28,11 @@ class loginController extends view
         $post =  $var['post'];
         if (!empty($post["db"]) && !empty($post["usuario"]) && !empty($post["pass"])) {
             $_SESSION["db"] = $post["db"];
-            $data = user::getUser($post['usuario'], $post['pass']);
-            $info = admin::infoSucursal();
-            $info = $info['data'];
+            $hash = hash('sha256', $post['pass']);
+            $data = user::getUser($post['usuario'], $hash);
             if ($data['rows'] == 1) {
+                $info = admin::infoSucursal();
+                $info = $info['data'];
                 $data = $data['data'];
                 $_SESSION["id"] = $data["idusuario"];
                 $_SESSION["usuario"] = $data["usuario"];

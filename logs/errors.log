@@ -28,3 +28,24 @@ Insert: {"idcliente":26,"Fecha":"12-11-2020 07:40:31 PM"}
 Init: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"13-11-2020 01:58:02 PM"}
 recibe: {"idCliente":"26","nameCliente":"John Vargas","Fecha":"13-11-2020 01:58:02 PM"}
 Insert: {"idcliente":26,"Fecha":"13-11-2020 01:58:02 PM"}
+Init: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:12:16 AM"}
+recibe: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:12:16 AM"}
+Insert: {"idcliente":25,"Fecha":"16-11-2020 12:12:16 AM"}
+Init: {"idCliente":"26","nameCliente":"Generico","Fecha":"16-11-2020 12:14:17 AM"}
+recibe: {"idCliente":"26","nameCliente":"Generico","Fecha":"16-11-2020 12:14:17 AM"}
+Insert: {"idcliente":26,"Fecha":"16-11-2020 12:14:17 AM"}
+Init: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:15:09 AM"}
+recibe: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:15:09 AM"}
+Insert: {"idcliente":25,"Fecha":"16-11-2020 12:15:09 AM"}
+Init: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:18:21 AM"}
+recibe: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:18:26 AM"}
+Insert: {"idcliente":25,"Fecha":"16-11-2020 12:18:54 AM"}
+Init: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:24:02 AM"}
+recibe: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:24:02 AM"}
+Insert: {"idcliente":25,"Fecha":"16-11-2020 12:24:02 AM"}
+Init: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:26:27 AM"}
+recibe: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:26:35 AM"}
+Insert: {"idcliente":25,"Fecha":"16-11-2020 12:26:42 AM"}
+Init: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:30:55 AM"}
+recibe: {"idCliente":"25","nameCliente":"Bernarda Castrillo Guevara","Fecha":"16-11-2020 12:30:55 AM"}
+Insert: {"idcliente":25,"Fecha":"16-11-2020 12:30:56 AM"}

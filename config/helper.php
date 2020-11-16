@@ -131,6 +131,10 @@ class helper
     </svg>',
       "check" => '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+    </svg>',
+      "link" => '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-link-45deg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4.715 6.542L3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.001 1.001 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+      <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 0 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 0 0-4.243-4.243L6.586 4.672z"/>
     </svg>'
     ));
     return  $icon;
@@ -143,6 +147,19 @@ class helper
     $max = strlen($pattern) - 1;
     for ($i = 0; $i < $longitud; $i++) $key .= $pattern[mt_rand(0, $max)];
     return strtoupper($key);
+  }
+  public static function randLetterNumber($longitud)
+  {
+    $key = '';
+    $pattern = ["a", "b", "c", "d", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", 1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+    $longitud = $longitud;
+    $max = count($pattern) - 1;
+    for ($i = 0; $i < $longitud; $i++) {
+      $upper = rand(0, 1);
+      $key .= ($upper ? strtoupper($pattern[mt_rand(0, $max)]) : $pattern[mt_rand(0, $max)]);
+    }
+
+    return $key;
   }
   /**
    * Crea la informacion para generar la paginacion

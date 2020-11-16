@@ -1,3 +1,18 @@
+$(document).ready(function () {
+    $('.pass_show').append('<span class="ptxt">Mostrar</span>');
+});
+
+
+$(document).on('click', '.pass_show .ptxt', function () {
+
+    $(this).text($(this).text() == "Show" ? "Esconder" : "Mostrar");
+
+    $(this).prev().attr('type', function (index, attr) {
+        return attr == 'password' ? 'text' : 'password';
+    });
+
+});
+
 $("#bodyContent").on("click", ".table.sort thead tr th", function () {
     let columnId = $(".table.sort thead tr th").index(this)
     let tipo = $(this).data('type')
@@ -12,19 +27,21 @@ $("#bodyContent").on("click", ".table.sort thead tr th", function () {
         result = ordenarFilaByData(columnId, tipo, sortr, tbody)
     }
     $(tbodyMain).html(result)
-    if (sortr=='ASC') {
+    if (sortr == 'ASC') {
         $(tbodyMain).data('sorts', 'DESC')
 
     } else {
         $(tbodyMain).data('sorts', 'ASC')
     }
 })
+
 function hasClass(element, cls) {
     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
 }
+
 function ordenarFila(columna, tipo, sortr, tr) {
     let rows;
-    if (sortr=='ASC') {
+    if (sortr == 'ASC') {
         if (tipo == 1) {
             rows = tr.sort((a, b) => a.children[columna].innerText - b.children[columna].innerText);
         } else {
@@ -46,7 +63,7 @@ function ordenarFila(columna, tipo, sortr, tr) {
 
 function ordenarFilaByData(columna, tipo, sortr, tr) {
     let rows;
-    if (sortr=='ASC') {
+    if (sortr == 'ASC') {
         if (tipo == 1) {
             rows = tr.sort((a, b) => $(a.children[columna]).data("value") - $(b.children[columna]).data("value"));
         } else {
