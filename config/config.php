@@ -5,7 +5,7 @@ namespace config;
 $archivo = "./env.ini";
 
 $contenido = parse_ini_file($archivo, true);
-$env = $contenido['env'];
+$env = $contenido['env']['produccion'];
 // print_r($contenido['env']);
 // define('DS', DIRECTORY_SEPARATOR);
 // define('ROOT', realpath(dirname(__FILE__)) . DS);
@@ -20,12 +20,16 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 if ($env == 1) {
+    $DB_USER ="lumiere_user";
+    $DB_PASS ="MXx12Lumiere@7820a20_?";
     $DB_NAME = array(
-        "alajuela" => "id14989780_lumiere",
-        "heredia" => "BDA_HEREDIA",
-        "sanjose" => "BDA_SAN_JOSE",
+        "Alajuela DB" => "maindb",
+        "Heredia DB" => "BDA_HEREDIA",
+        "Sanjose DB" => "BDA_SAN_JOSE",
     );
 } else {
+    $DB_USER ="root";
+    $DB_PASS ="";
     $DB_NAME = array(
         "test" => "maindb"
     );
