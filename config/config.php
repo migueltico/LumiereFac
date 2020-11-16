@@ -20,8 +20,8 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 if ($env == 1) {
-    $DB_USER ="lumiere_user";
-    $DB_PASS ="MXx12Lumiere@7820a20_?";
+    $DB_USER ="adminUser";
+    $DB_PASS ="MXx12Lumiere2!#W@rr";
     $DB_NAME = array(
         "Alajuela DB" => "maindb",
         "Heredia DB" => "BDA_HEREDIA",
