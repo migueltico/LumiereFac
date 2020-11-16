@@ -7,10 +7,11 @@ use config\route;
 //------------- +++ RUTAS GET +++ -----------------//
 
 //+++++++++++ LOGIN +++++++++++//
+route::get('/', 'loginController@index', ['loginMiddleware@auth']);
 route::post('/validateauth', 'loginController@validar');
 route::post('/validateauth*', 'loginController@validar');
 route::get('/logout', 'loginController@logout');
-route::get('/', 'loginController@index', ['loginMiddleware@auth']);
+route::get('/funcion/:char/:format/:valor', 'facturacionController@test');
 //+++++++++++ DASHBOARD +++++++++++//
 route::get('/dashboard', 'dashboardController@index', ['loginMiddleware@auth']);
 route::post('/dashboard/general', 'dashboardController@general', ['loginMiddleware@auth']);
@@ -33,6 +34,11 @@ route::group('admin', function () {
     route::post('/categoriastallas', 'adminController@indexCategoriasTallas', ['loginMiddleware@auth']);
     route::post('/categoriastallas/AddCategoria', 'adminController@AddCategoria');
     route::post('/categoriastallas/AddTalla', 'adminController@AddTalla');
+    route::post('/descuentos', 'adminController@descuentos');
+    route::post('/descuentos/lote', 'adminController@descuentosPorLote');
+    route::post('/descuentos/addnewDescuento', 'adminController@addnewDescuento');
+    route::post('/descuentos/EditarDescuento', 'adminController@EditarDescuento');
+    route::post('/descuentos/aplicarDescuentoEnLote', 'adminController@aplicarDescuentoEnLote');
     route::post('/categoriastallas/table', 'adminController@tableCategoriaTallas');
     route::post('/categoriastallas/editCategoria', 'adminController@editCategorias');
     route::post('/categoriastallas/editTallas', 'adminController@editTallas');
@@ -58,13 +64,24 @@ route::group('inventario', function () {
     route::post('/updateStock', 'inventarioController@updateStock');
     route::post('/updateMinStock', 'inventarioController@updateMinStock');
     route::post('/calcular/sugerido', 'inventarioController@calcular_sugerido');
+    route::post('/impresion/etiquetas', 'inventarioController@indexEtiquetas');
 });
 //+++++++++++ FACTURACION +++++++++++//
 route::group('facturacion', function () {
-    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth']);
+    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth','cajasMiddleware@cajaAsignada']);
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
+    route::post('/pendientes', 'facturacionController@pendientes');
+    route::post('/pendientes/productos', 'facturacionController@pendientesProductos');
+    route::post('/pendientes/changeStateFac', 'facturacionController@changeStateFac');
+    route::post('/cajas', 'facturacionController@cajas');
+    route::post('/cajas/abrirCaja', 'facturacionController@abrirCaja');
+    route::post('/cajas/abrirCajaEstado', 'facturacionController@abrirCajaEstado');
+    route::post('/cajas/obtenerEstadoCajaEstado', 'facturacionController@obtenerEstadoCajaEstado');
+    route::post('/apartados/getApartadosHasClient', 'facturacionController@getApartadosHasClient');
+    route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
+    route::post('/apartados/setAbono', 'facturacionController@setAbono');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
@@ -79,6 +96,23 @@ route::group('clientes', function () {
 route::group('usuarios', function () {
     route::post('/', 'usuariosController@index', ['loginMiddleware@auth']);
     route::post('/setUser', 'usuariosController@setUser');
+});
+//+++++++++++ SERVER +++++++++++//
+    route::get('/getPassword/:db/:identificador', 'usuariosController@getNewPassword');
+    route::post('/setPassword', 'usuariosController@setNewPassword');
+    route::post('/verIdentificador', 'usuariosController@verIdentificador');
+//+++++++++++ ROLES +++++++++++//
+route::group('roles', function () {
+    route::post('/', 'rolesController@index');
+    route::post('/getRoles', 'rolesController@getRoles');
+    route::post('/newRol', 'rolesController@newRol');
+    route::post('/saveRoles', 'rolesController@saveRoles');
+    route::post('/getRolesPermisos', 'rolesController@getRolesPermisos');
+});
+//+++++++++++ REPORTES +++++++++++//
+route::group('reportes', function () {
+    route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo');
+    route::post('/etiquetas', 'reportesController@etiquetasTallaEstiloPost');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

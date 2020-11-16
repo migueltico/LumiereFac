@@ -1,22 +1,25 @@
-<?php namespace middleware;
- use config\helper as h;
+<?php
+
+namespace middleware;
+
+use config\helper as h;
+
 class loginMiddleware
 {
     public function auth($request = '', $next = '')
     {
-     
-      
+        $url = $_SERVER['REQUEST_URI'];
+
         if (!isset($_SESSION['id'])) {
-            if($_SERVER['REQUEST_URI']!=="/"){
+            if ($url !== "/") {
                 h::redirect("/");
-            }           
-            return true;
-        }else{
-            if($_SERVER['REQUEST_URI']=="/"){
+            }
+            return ["return" => true, "send_json_error" => false, "send_msg" => false, "msg" => ""];
+        } else {
+            if ($url == "/") {
                 h::redirect("/dashboard");
             }
-            return true;
+            return ["return" => true, "send_json_error" => false, "send_msg" => false, "msg" => ""];
         }
     }
-  
 }

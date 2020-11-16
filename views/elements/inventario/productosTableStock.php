@@ -1,11 +1,17 @@
 <div class="table-responsive">
-
+    <?php
+    $maxpage = $paginationInfo['paginacion']['paginas'];
+    ?>
+    <div class="urlPagination" data-url="/inventario/search/stock">
+    <?php include(self::block('pagination')) ?>
+    </div>
     <table class="table sort" id="sortable">
         <thead>
             <tr>
                 <th data-type="1" data-inner="0" scope="col" style="text-align: center;">ID</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Imagen</th>
                 <th data-type="0" data-inner="0" scope="col">Descripcion</th>
+                <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Estilo</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Talla</th>
                 <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Precio Unitario</th>
                 <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Precio Costo</th>
@@ -44,6 +50,7 @@
                         </div>
                     </td>
                     <td scope="row"><?= $product["descripcion"] ?></td>
+                    <td scope="row" style="text-align: center;"><strong><?= $product["estilo"] ?></strong></td>
                     <td scope="row" style="text-align: center;"><strong><?= $product["talla"] ?></strong></td>
                     <?php if ($_SESSION["idrol"] == 1) : ?>
                         <td scope="row" style="text-align: center;margin:0 auto;min-width: 175px !important;" data-value="<?= $product["precio_unitario"] ?>">
@@ -120,4 +127,7 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    <div class="urlPagination" data-url="/inventario/search/stock">
+        <?php include(self::block('pagination')) ?>
+    </div>
 </div>

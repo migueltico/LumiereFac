@@ -16,30 +16,38 @@
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <div id="inputGroupGastos">
                             <?php
+
                             $gastoAll = explode(',', $gastos);
                             $totalGastos = 0;
+                            $gastos = trim($gastos);
                             //print_r($gastoAll);
                             ?>
-                            <?php foreach ($gastoAll as $value) : ?>
-                                <?php
-                               
-                                $gasto = explode(':', $value);
-                                if(is_numeric($gasto[1])){
+                            <?php if ($gastos !== "") :  ?>
+                                <?php foreach ($gastoAll as $value) : ?>
+                                    <?php
 
-                                    $totalGastos +=  $gasto[1];
-                                }else{
-                                    $totalGastos += 0;
-                                }	
-                                ?>
-                                <div class="input-group mb-3 col-lg-12 col-md-12 col-sm-12">
-                                    <div class="input-group-prepend tagNameGastos">
-                                        <span class="input-group-text gastosLabel" data-toggle="tooltip" data-placement="bottom" title="Doble click para cambiar nombre" id="inputGroup-sizing-default"><?= $gasto[0] ?></span>
-                                        <span class="input-group-text">₡</span>
+                                    $gasto = explode(':', $value);
+
+                                    if (is_numeric($gasto[1])) {
+
+                                        $totalGastos +=  $gasto[1];
+                                    } else {
+                                        $totalGastos += 0;
+                                    }
+                                    ?>
+
+                                    <div class="input-group mb-3 col-lg-12 col-md-12 col-sm-12">
+                                        <div class="input-group-prepend tagNameGastos">
+                                            <span class="input-group-text gastosLabel" data-toggle="tooltip" data-placement="bottom" title="Doble click para cambiar nombre" id="inputGroup-sizing-default"><?= $gasto[0] ?></span>
+                                            <span class="input-group-text">₡</span>
+                                        </div>
+                                        <input type="text" class="form-control inputGastos" data-name="<?= $gasto[0] ?>" value="<?= number_format($gasto[1], 2, '.', ',') ?>">
+                                        <div class="RemoveInputGastos">x</div>
                                     </div>
-                                    <input type="text" class="form-control inputGastos" data-name="<?= $gasto[0] ?>" value="<?= number_format($gasto[1], 2, '.', ',') ?>">
-                                    <div class="RemoveInputGastos">x</div>
-                                </div>
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
+                                
+
+                            <?php endif;  ?>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">

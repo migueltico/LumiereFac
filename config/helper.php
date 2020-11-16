@@ -24,16 +24,18 @@ class helper
     $clear = strtolower($clear);
     return $clear;
   }
-  public static function coverToSqlparams($asoccArray){
-    $StringParams="";
+  public static function coverToSqlparams($asoccArray)
+  {
+    $StringParams = "";
     $ArrayParams = array_keys($asoccArray);
     foreach ($ArrayParams as $value) {
-      $StringParams.=$value.",";
+      $StringParams .= $value . ",";
     }
-    return rtrim($StringParams,",");
+    return rtrim($StringParams, ",");
   }
-  public static function errorMsg($code, $msg){
-    return  array('estado' => 0, 'error' => $code, 'errorMsg' =>$msg);
+  public static function errorMsg($code, $msg)
+  {
+    return  array('estado' => 0, 'error' => $code, 'errorMsg' => $msg);
   }
   public static function StringExplode($string, $delimiter, $indexId)
   {
@@ -121,6 +123,18 @@ class helper
       "update" => '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-clockwise" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z"/>
       <path fill-rule="evenodd" d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z"/>
+    </svg>',
+      "print" => '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z"/>
+      <path fill-rule="evenodd" d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
+      <path fill-rule="evenodd" d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+    </svg>',
+      "check" => '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
+    </svg>',
+      "link" => '<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-link-45deg" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4.715 6.542L3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.001 1.001 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+      <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 0 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 0 0-4.243-4.243L6.586 4.672z"/>
     </svg>'
     ));
     return  $icon;
@@ -134,6 +148,19 @@ class helper
     for ($i = 0; $i < $longitud; $i++) $key .= $pattern[mt_rand(0, $max)];
     return strtoupper($key);
   }
+  public static function randLetterNumber($longitud)
+  {
+    $key = '';
+    $pattern = ["a", "b", "c", "d", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", 1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+    $longitud = $longitud;
+    $max = count($pattern) - 1;
+    for ($i = 0; $i < $longitud; $i++) {
+      $upper = rand(0, 1);
+      $key .= ($upper ? strtoupper($pattern[mt_rand(0, $max)]) : $pattern[mt_rand(0, $max)]);
+    }
+
+    return $key;
+  }
   /**
    * Crea la informacion para generar la paginacion
    *
@@ -144,66 +171,105 @@ class helper
    */
   public static function paginacion($cantidadRows, $maxPerPage, $nowPage)
   {
-    $InitLimit = ($nowPage - 1) * $maxPerPage;
+    @$InitLimit = ($nowPage - 1) * $maxPerPage;
     $paginas = ceil($cantidadRows / $maxPerPage);
     return array('paginas' => $paginas, 'InitLimit' => $InitLimit);
   }
   public static function uploadImage($index)
   {
-    $target_dir = "./uploads/products/";
-    $target_file = $target_dir . basename($_FILES["file"]["name"][$index]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    $response = [];
-
-    $check = getimagesize($_FILES["file"]["tmp_name"][$index]);
-    if ($check !== false) {
-      $response["checkMIME"] = "File is an image - " . $check["mime"] . ".";
+    if ($_FILES['file']['error'] == 0) {
+      $target_dir = "./uploads/products/";
+      $target_file = $target_dir . basename($_FILES["file"]["name"][$index]);
       $uploadOk = 1;
-    } else {
-      $response["checkMIME"] = "File is not an image.";
-      $uploadOk = 1;
-    }
+      $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+      $response = [];
 
-    // Check if file already exists
-    if (file_exists($target_file)) {
-      unlink($target_file);
-    }
-
-    // Check file size
-    if ($_FILES["file"]["size"][$index] > 50000000) {
-      $response["FileSize"] = "Sorry, your file is too large.";
-      $uploadOk = 0;
-    }
-
-    // Allow certain file formats
-    if (
-      $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-      && $imageFileType != "gif"
-    ) {
-      $response["FormatDeny"] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-      $uploadOk = 0;
-    }
-
-    // Check if $uploadOk is set to 0 by an error
-    if ($uploadOk == 0) {
-      $response["Error"] = "Sorry, your file was not uploaded.";
-      $response["url"] = '';
-      // if everything is ok, try to upload file
-    } else {
-      $arrayletter = ["a", "b", "c", "d", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",];
-      $Name = 'IMAGE' . "_" . strtoupper($arrayletter[rand(0, 24)]) . rand(1000, 9999) . strtoupper($arrayletter[rand(0, 24)]) .  rand(10, 99) . date("dmy");
-      $randomName = $target_dir . $Name . "." . $imageFileType;
-      if (move_uploaded_file($_FILES["file"]["tmp_name"][$index], $randomName)) {
-        $response["Result"] = "The file " . basename($_FILES["file"]["name"][$index]) . " has been uploaded.";
-        $response["url"] = $randomName;
-        $response["ok"] = true;
+      @$check = getimagesize($_FILES["file"]["tmp_name"][$index]);
+      if ($check !== false) {
+        $response["checkMIME"] = "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
       } else {
-        $response["Result"] = "Sorry, there was an error uploading your file.";
-        $response["url"] = '';
-        $response["ok"] = false;
+        $response["checkMIME"] = "File is not an image.";
+        $uploadOk = 1;
       }
+
+      // Check if file already exists
+      if (file_exists($target_file)) {
+        unlink($target_file);
+      }
+
+      // Check file size
+      if ($_FILES["file"]["size"][$index] > 50000000) {
+        $response["FileSize"] = "Sorry, your file is too large.";
+        $uploadOk = 0;
+      }
+
+      // Allow certain file formats
+      if (
+        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+        && $imageFileType != "gif"
+      ) {
+        $response["FormatDeny"] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+      }
+
+      // Check if $uploadOk is set to 0 by an error
+      if ($uploadOk == 0) {
+        $response["Error"] = "Sorry, your file was not uploaded.";
+        $response["url"] = '';
+        // if everything is ok, try to upload file
+      } else {
+        $arrayletter = ["a", "b", "c", "d", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",];
+        $Name = 'IMAGE' . "_" . strtoupper($arrayletter[rand(0, 24)]) . rand(1000, 9999) . strtoupper($arrayletter[rand(0, 24)]) .  rand(10, 99) . date("dmy");
+        $randomName = $target_dir . $Name . "." . $imageFileType;
+        if (move_uploaded_file($_FILES["file"]["tmp_name"][$index], $randomName)) {
+          $response["Result"] = "The file " . basename($_FILES["file"]["name"][$index]) . " has been uploaded.";
+          $response["url"] = $randomName;
+          $response["ok"] = true;
+        } else {
+          $response["Result"] = "Sorry, there was an error uploading your file.";
+          $response["url"] = '';
+          $response["ok"] = false;
+        }
+      }
+    } else {
+      $response["Result"] = "Sorry, there was an error uploading your file.";
+      $response["url"] = '';
+      $response["ok"] = false;
     }
     return $response;
+  }
+  public static function shorter($text, $chars_limit)
+  {
+    // Check if length is larger than the character limit
+    if (strlen($text) > $chars_limit) {
+      // If so, cut the string at the character limit
+      $new_text = substr($text, 0, $chars_limit);
+      // Trim off white space
+      $new_text = trim($new_text);
+      // Add at end of text ...
+      return $new_text . ".";
+    }
+    // If not just return the text as is
+    else {
+      return $text;
+    }
+  }
+  public static function maskFormat($format, $valor)
+  {
+    $char = '#';
+    $array = str_split($valor);
+    $count = count($array);
+    $newString = str_split($format);
+    $newFormat = $format;
+    $countformat = count($newString);
+    for ($i = $count; $i > 0; $i--) {
+      //
+      $chartValor = substr($valor, $i - 1, 1);
+      $pos = strrpos($newFormat, $char);
+      $newString[$pos] = $chartValor;
+      $newFormat = implode("", $newString);
+    }
+    return str_replace($char, 0, $newFormat);
   }
 }

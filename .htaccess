@@ -1,26 +1,28 @@
-Options +FollowSymLinks
+# This first part should be done by the webserver,
+# if not than thing about to change you hoster but I put it here:
+# Preventing direct access to any .ht file (.htaccess, .htpasswd, etc.)
+<FilesMatch "^\.ht">
+    Require all denied
+</FilesMatch>
+
+Options +FollowSymlinks
 Options -Indexes
-# Activamos mod_rewrite
-RewriteEngine on
 
-# Definimos la ruta base, por facilidad, una única vez
-SetEnvIf RUTA_BASE ^(.*)$ RUTA_BASE=/public/assets/
+# Start to Rewrite
+RewriteEngine On
 
-# Aquí nos evitamos comprobar que sea un archivo (agrego comprobación
-# para detectar también directorio) en cada conjunto de reglas
-RewriteCond %{REQUEST_FILENAME} -d [OR]
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^(.*)$ $1 [QSA,L]
+# For all URL starting with /css, /fonts, /img or /js
+RewriteCond %{REQUEST_URI} ^/?(css|fonts|img|js)(/.*)?$ [NC]
+RewriteRule ^.*$ /public/assets/%1%2 [L]
 
-# Obtenemos todo lo que vaya tras "assets/"
-RewriteCond %{REQUEST_URI} /(.+)$
-# Y éstos coinciden con un archivo existente..
-RewriteCond %{DOCUMENT_ROOT}%{ENV:RUTA_BASE}%1 -f
-# Entonces (si se cumplen todas las condiciones) redirigimos (R)
-# y dejamos de evaluar el resto de reglas (L)
-RewriteRule ^(.*)$ %{ENV:RUTA_BASE}%1 [L,R]
-
-RewriteRule ^ index.php [QSA,L]
-
-#php_flag  log_errors on
-#php_value error_log  /storage/ssd4/780/14989780/public_html/logs/PHP_errors.log
+# Redirect all to the Application if not done already
+RewriteCond %{REQUEST_URI} !^/?public/index\.php [NC]
+# but not if the URL starts with css, fonts, img or js
+RewriteCond %{REQUEST_URI} !^/?(css|fonts|img|js)(/.*)?$ [NC]
+# or if request is a real file
+RewriteCond %{REQUEST_FILENAME} !-f
+# or if request is a real directory but not the root directory
+RewriteCond %{REQUEST_URI} ^/?$ [OR]
+RewriteCond %{REQUEST_FILENAME} !-d
+# Rewrite the rest to the index.php file in your public folder
+RewriteRule ^.*$ /index.php [NC,L]

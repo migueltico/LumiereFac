@@ -19,8 +19,7 @@
         <li>
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['gear'] ?></span><span>Admin</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
-                <li data-functionName="0" data-linkto="/admin/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>
-                <li data-functionName="0" data-linkto="/sucursal" class="dataLink"><span class="spanStyleMenu"></span><span>Sucursales</span><span></span></li>
+                <li data-functionName="0" data-linkto="/admin/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>               
                 <?php if($_SESSION["idrol"]==1): ?>
                 <li data-functionName="0" data-linkto="/admin/gastos" class="dataLink"><span class="spanStyleMenu"></span><span>Gastos</span><span></span></li>
                 <?php endif; ?>
@@ -28,6 +27,9 @@
                 <li data-functionName="0" data-linkto="/admin/categoriaprecios" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias de precios</span><span></span></li>
                 <?php endif; ?>
                 <li data-functionName="0" data-linkto="/admin/categoriastallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
+                <li data-functionName="0" data-linkto="/admin/categoriastallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
+                <li data-functionName="0" data-linkto="/admin/descuentos" class="dataLink"><span class="spanStyleMenu"></span><span>Descuentos</span><span></span></li>
+                <li data-functionName="0" data-linkto="/admin/descuentos/lote" class="dataLink"><span class="spanStyleMenu"></span><span>Descuentos por Lote</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>
@@ -35,7 +37,8 @@
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['calc'] ?></span><span>Facturacion</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
                 <li data-functionName="0" data-linkto="/facturacion/facturar" class="dataLink"><span class="spanStyleMenu"></span><span>Facturar</span><span></span></li>
-                <li data-functionName="0" data-linkto="/facturacion" class="dataLink"><span class="spanStyleMenu"></span><span>Cajas</span><span></span></li>
+                <li data-functionName="0" data-linkto="/facturacion/cajas" class="dataLink"><span class="spanStyleMenu"></span><span>Cajas</span><span></span></li>
+                <li data-functionName="0" data-linkto="/facturacion/pendientes" class="dataLink"><span class="spanStyleMenu"></span><span>Facturas Pendientes</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion" class="dataLink"><span class="spanStyleMenu"></span><span>Apartados</span><span></span></li>
             </ul>
@@ -45,7 +48,7 @@
             <ul class="listitems">
                 <li data-functionName="0" data-linkto="/inventario/listarproductos" class="dataLink"><span class="spanStyleMenu"></span><span>Lista de Productos</span><span></span></li>
                 <li data-functionName="0" data-linkto="/inventario/addstock" class="dataLink"><span class="spanStyleMenu"></span><span>Stock y Precios</span><span></span></li>
-                <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
+                <li data-functionName="0" data-linkto="/inventario/impresion/etiquetas" class="dataLink"><span class="spanStyleMenu"></span><span>Impresion de etiquetas</span><span></span></li>
             </ul>
         </li>
         <li>
@@ -62,8 +65,11 @@
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>
-        <li class="uniq_menu">
-            <a href="/dashboard"><span><?= $icons['lock'] ?></span><span>Permisos</span><span></span></a>
+        <li>
+            <a class="btnSlideDown" href="/dashboard"><span><?= $icons['lock'] ?></span><span>Permisos</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
+            <ul class="listitems">
+                <li data-functionName="0" data-linkto="/roles" class="dataLink"><span class="spanStyleMenu"></span><span>Permisos por Rol</span><span></span></li>
+            </ul>
         </li>
         <li>
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['history'] ?></span><span>Historial</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
@@ -74,10 +80,7 @@
         </li>
         <li class="uniq_menu">
             <a href="/logout"><span><?= $icons['exit'] ?></span><span>Cerrar Sesion</span><span class="menu_down"></span></a>
-        </li>
-        <li class="uniq_menu2">
-            <a target='_blank' href="C:\xampp\php\logs"><span><?= $icons['exit'] ?></span><span>Log</span><span class="menu_down"></span></a>
-        </li>
+        </li>    
 
     </ul>
 

@@ -330,6 +330,14 @@ button.btn svg {
     text-align: center;
     margin: 0 auto;
 }
+.nuevoState {
+    border-radius: 50%;
+    background-color: rgb(186, 255, 194);
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    margin: 0 auto;
+}
 
 *::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.164);
@@ -378,3 +386,43 @@ button.btn svg {
     width: 40%;
     border-radius: 50%;
 }
+.svg_codePritn {
+    display: flex;
+    flex-direction: column;
+    margin-top: 43px;
+    margin-bottom: -0.95rem;
+    /* margin-bottom: -13px; */
+    padding: 0;
+    max-height: 150px;
+    /* border-top: 1px dashed gray; */
+    page-break-inside: avoid;
+}
+.textcolorhover label:hover{
+    color:#9954bb !important;
+    cursor: pointer;
+}
+
+/* RECUEPRAR PASSWORD */
+.pass_show{position: relative} 
+
+.pass_show .ptxt { 
+
+position: absolute; 
+
+top: 50%; 
+
+right: 10px; 
+
+z-index: 1; 
+
+color: #f36c01; 
+
+margin-top: -10px; 
+
+cursor: pointer; 
+
+transition: .3s ease all; 
+
+} 
+
+.pass_show .ptxt:hover{color: #333333;} 

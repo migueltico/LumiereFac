@@ -4,6 +4,7 @@ namespace controllers;
 // manda a llamar al controlador de vistas
 use config\view;
 use models\userModel as user;
+use models\clientesModel as cliente;
 use models\adminModel as admin;
 //Funciones de ayuda
 use config\helper as help;
@@ -27,19 +28,17 @@ class loginController extends view
         $post =  $var['post'];
         if (!empty($post["db"]) && !empty($post["usuario"]) && !empty($post["pass"])) {
             $_SESSION["db"] = $post["db"];
-            $data = user::getUser($post['usuario'], $post['pass']);
-            $info = admin::infoSucursal();
-            $info = $info['data'];
+            $hash = hash('sha256', $post['pass']);
+            $data = user::getUser($post['usuario'], $hash);
             if ($data['rows'] == 1) {
+                $info = admin::infoSucursal();
+                $info = $info['data'];
                 $data = $data['data'];
                 $_SESSION["id"] = $data["idusuario"];
                 $_SESSION["usuario"] = $data["usuario"];
                 $_SESSION["nombre"] = $data["nombre"];
                 $_SESSION["rolname"] = $data["rolname"];
                 $_SESSION["idrol"] = $data["idrol"];
-                //$_SESSION["sucursal"] = $data["sucursal"];
-                //$_SESSION["idsucursal"] = $data["idsucursal"];
-
                 $_SESSION["info"] = $info;
 
                 //return json_encode(array("estado" => 200, "session" => $_SESSION));
@@ -50,7 +49,7 @@ class loginController extends view
                 help::redirect("/");
             }
         } else {
-          echo "ERROR LOGIN";
+            echo "ERROR LOGIN";
         }
     }
 }

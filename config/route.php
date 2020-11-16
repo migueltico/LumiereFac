@@ -58,12 +58,13 @@ class route
         //*Validar si la Url es del tipo post o un get sin parametros
         if (!$typeUrl["isVar"]) {
             //!verifico si la url del Get es igual a alguna Ruta Asignada.
-             if ($url['url'] == $url['ruta']) {
+            if ($url['url'] == $url['ruta']) {
                 //TODO: HACER QUE EL RETURN DE LOS MIDDLEWARES DEVUELVAN DATOS EN UN ARRAY
                 //*Verifica si la url se encuntra dentro de un grupo de middleware
+                //["return" => true,"send_json_error"=>true, "send_msg" =>true,"msg"=>"No tienes una caja asignada"]
                 if ($GLOBALS['middleware_active']) {
                     $result = route::middleware_exc($GLOBALS['middleware_array']);
-                    if (!$result) {
+                    if (!$result['return']) {
                         return;
                     }
 
@@ -72,7 +73,12 @@ class route
                 //*Verifica si cada Ruta tiene Middlewares individuales
                 if (!empty($middlewares)) {
                     $result = route::middleware_exc($middlewares);
-                    if (!$result) {
+                    if (!$result['return']) {
+                        if ($result['send_json_error']) {
+                            $GLOBALS["errorMsg"]['send_msg'] = true;
+                            $GLOBALS["errorMsg"]['data'] = $result['data'];
+                            $GLOBALS["errorMsg"]['url'] = $result['url'];
+                        }
                         return;
                     }
 
@@ -80,11 +86,11 @@ class route
                 }
                 //*Valida que no hubo error y continua con el proceso
                 $GLOBALS["error404"] = true;
-                $methodsData["post"]= $_POST;
-                $methodsData["get"]= $_GET;
-                self::callMethod($funcion,$methodsData);
+                $methodsData["post"] = $_POST;
+                $methodsData["get"] = $_GET;
+                self::callMethod($funcion, $methodsData);
             }
-        } else {//URL CON PARAMETROS
+        } else { //URL CON PARAMETROS
             //*Verifica que la Ruta coinciada con la URL y obtiene sus parametros
             $hasVar = self::getParams($url['ruta'], $url['url']);
             //*Si la Url es del tipo que contiene parametros continua dentro del IF
@@ -96,7 +102,6 @@ class route
                     if (!$result) {
                         return;
                     }
-
                 }
                 //*Verifica si cada Ruta tiene Middlewares individuales
                 if (!empty($middlewares)) {
@@ -104,12 +109,11 @@ class route
                     if (!$result) {
                         return;
                     }
-
                 }
                 $GLOBALS["error404"] = true;
-                $var["params"]= $hasVar["vars"];
-                $var["post"]= $_POST;
-                $var["get"]= $_GET;
+                $var["params"] = $hasVar["vars"];
+                $var["post"] = $_POST;
+                $var["get"] = $_GET;
                 self::callMethod($funcion, $var);
                 return;
             } else {
@@ -127,7 +131,7 @@ class route
         $ruta = ($GLOBALS['route_group_active'] === true ? rtrim($ruta = $GLOBALS['route_group'] . $ruta, '/') : (strlen($ruta) > 1 ? rtrim($ruta, '/') : $ruta));
         $url = $_SERVER['REQUEST_URI'];
         $url = explode("?", $url);
-        $url =$url[0];
+        $url = $url[0];
         $url = (strlen($url) > 1 ? rtrim($url, '/') : $url);
         return ['ruta' => $ruta, 'url' => $url];
     }
@@ -141,9 +145,9 @@ class route
      */
     public static function middleware_exc($Middlewares, $var = [])
     {
-        $method["params"]= $var;
-        $method["post"]= $_POST;
-        $method["get"]= $_GET;
+        $method["params"] = $var;
+        $method["post"] = $_POST;
+        $method["get"] = $_GET;
         $return = false;
         foreach ($Middlewares as $Middleware) {
             /**Obtener los middlewares y su controlador en array y lo asignamos a una variable */

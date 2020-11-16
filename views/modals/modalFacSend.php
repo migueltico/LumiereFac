@@ -10,9 +10,15 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="custom-control custom-switch mb-3">
-                    <input type="checkbox" class="custom-control-input" id="MultiTipoPagoFact">
-                    <label class="custom-control-label" for="MultiTipoPagoFact">Habilitar Seleccion Multiple</label>
+                <div class="row container">
+                    <div class="custom-control custom-switch mb-3">
+                        <input type="checkbox" class="custom-control-input" id="MultiTipoPagoFact">
+                        <label class="custom-control-label" for="MultiTipoPagoFact">Habilitar Seleccion Multiple</label>
+                    </div>
+                    <div class="custom-control custom-switch mb-3 ml-2" style="display: none;" id="pagoContraEntregaContainer">
+                        <input type="checkbox" class="custom-control-input"  id="pagoContraEntrega">
+                        <label class="custom-control-label"  for="pagoContraEntrega">Pago Contra Entrega</label>
+                    </div>
                 </div>
                 <div class="card">
                     <div class="cardHeaderSwitch selectedMethodPay">
@@ -107,10 +113,10 @@
             </div>
             <div class="modal-footer">
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" checked="true"  id="SendFactBoolean">
+                    <input type="checkbox" class="custom-control-input" checked="true" id="SendFactBoolean">
                     <label class="custom-control-label" for="SendFactBoolean">Imprimir</label>
                 </div>
-                <button type="button" id="btnMakeFact" class="btn btn-lg btn-info">Generar Factura</button>
+                <button type="button" id="btnMakeFact" class="btn btn-lg btn-info">Generar Venta</button>
                 <button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
