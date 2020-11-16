@@ -20,6 +20,7 @@ class loginMiddleware
                 h::redirect("/dashboard");
             }
             return ["return" => true, "send_json_error" => false, "send_msg" => false, "msg" => ""];
+            
         }
     }
 }
