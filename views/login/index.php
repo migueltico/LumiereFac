@@ -13,7 +13,7 @@
     <div class="container">
       <h1>Lumiere</h1>
       <?php
-      use const config\DB_NAME;
+      //use const config\DB_NAME;
       ?>
       <form class="form" action="/validateauth" method="POST">
         <input type="text" name="usuario" placeholder="Usuario" value="">
@@ -21,7 +21,7 @@
         <select id="selected" name="db" id="">
         <option value="0">Seleccione una Sucursal</option>
           <?php
-          foreach (DB_NAME as $key=> $db) : ?>
+          foreach ($GLOBALS['DB_NAME'] as $key=> $db) : ?>
             <option value="<?= $key ?>"><?= $key ?></option>
           <?php endforeach; ?>
         </select>

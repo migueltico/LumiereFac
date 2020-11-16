@@ -3,3 +3,4 @@ bestophp.code-workspace
 sftp.json
 launch.json
 /vendor/
+env.ini

@@ -2,6 +2,11 @@
 
 namespace config;
 
+$archivo = "./env.ini";
+
+$contenido = parse_ini_file($archivo, true);
+$env = $contenido['env'];
+// print_r($contenido['env']);
 // define('DS', DIRECTORY_SEPARATOR);
 // define('ROOT', realpath(dirname(__FILE__)) . DS);
 define('VIEWS', './views/');
@@ -14,13 +19,19 @@ define('DB_HOST', 'localhost');
 // define('DB_USER', 'root');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-const DB_NAME = array(
-    "alajuela" => "id14989780_lumiere",
-    "testMain" => "maindb",
-    "test" => "dbfac",
-    "heredia" => "BDA_HEREDIA",
-    "sanjose" => "BDA_SAN_JOSE",
-);
+if ($env == 1) {
+    $DB_NAME = array(
+        "alajuela" => "id14989780_lumiere",
+        "heredia" => "BDA_HEREDIA",
+        "sanjose" => "BDA_SAN_JOSE",
+    );
+} else {
+    $DB_NAME = array(
+        "test" => "maindb"
+    );
+}
+
+
 //define('DB_NAME', 'dbfac');
 
 $route_group = '';
