@@ -37,12 +37,7 @@ class conexion
 				if (!$this->statement) {
 					//$this->con->rollBack();
 					$this->disconnect();
-					$error =array('estado' => false, 'generalError' => false, 'rollback' => true,  'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
-					echo "<pre>";
-					print_r($error);
-					echo "</pre>";
-					return  $error;
-				
+					return  array('estado' => false, 'generalError' => false, 'rollback' => true,  'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
 				}
 			}
 
@@ -70,7 +65,6 @@ class conexion
 			$row = $this->statement->fetch(PDO::FETCH_ASSOC);
 			$cuenta = $this->statement->rowCount();
 			$estado = array("rows" => $cuenta, "data" => $row, "SQL" => $this->statement, 'estado' => true, 'generalError' => false, 'rollback' => false,  'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
-			//error_log("estado: " . json_encode($estado) . "\n", 3, "./logs/errors.log");
 			if ($estado['error'] == "00000" && $estado['estado'] == true) {
 				//$this->con->commit();
 				$this->disconnect();
@@ -83,8 +77,7 @@ class conexion
 		} catch (\PDOException $e) {
 			//$this->con->rollBack();
 			$this->disconnect();
-			error_log("ERROR MULTI: " . json_encode(array('data' => json_encode($datos), 'sql' => $sql, "rows" => 0, 'estado' => false, 'generalError' => $e, 'rollback' => true,)) . "\n", 3, "./logs/errors.log");
-			return  array('data' => json_encode($datos), 'sql' => $sql, "rows" => 0, 'estado' => false, 'generalError' => json_encode($e), 'rollback' => true,);
+			return  array('data' => json_encode($datos), 'sql' => $sql, "rows" => 0, 'estado' => false, 'generalError' => $e, 'rollback' => true,);
 		}
 	}
 	/**

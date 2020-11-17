@@ -17,9 +17,11 @@ class facturacionModel
     public static function setFacHeader($data, $items)
     {
         $con = new conexion();
-
+        $conse = $con->SQR_ONEROW("SELECT * FROM consecutivos WHERE idconsecutivos = 1");
+        $consecutivo = ((int) $conse['data']['fac']) + 1;
+        $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' =>(int) $consecutivo));
         $result = $con->Multitransaction(
-            'CALL sp_setFacHeader(:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,:idcaja,:monto_envio)',
+            "CALL sp_setFacHeader($consecutivo,:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,:idcaja,:monto_envio)",
             $data
         );
 
@@ -27,11 +29,15 @@ class facturacionModel
         if ($result['rows'] == 1) {
             $con2 = new conexion();
             $result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
-            echo "<pre>";
-            print_r($result);
-            print_r($result2);
-            echo "</pre>";
-            
+            // echo "<pre>";
+            // print_r($result);
+            // print_r($result2);
+            // echo "</pre>";
+            // echo "<pre>";
+            // echo "****************";
+            // print_r($result2);
+            // echo "</pre>";
+
             if ($result2['data']['fac'] == $result['data']['fac']) {
 
                 $itemsSql = [];
@@ -47,7 +53,7 @@ class facturacionModel
                         ":total" => (float) str_replace(",", "", $item['total_iva'])
                     ));
                 }
-                
+
                 $result3 = $con2->Sqlforeach('CALL sp_insertFactDetails(:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)', $itemsSql);
                 return  $result;
             } else {
