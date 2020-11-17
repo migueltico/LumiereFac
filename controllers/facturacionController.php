@@ -122,8 +122,7 @@ class facturacionController extends view
     }
     public function getFact()
     {
-        $data = json_decode(file_get_contents("php://input"), true);
-        error_log("Init: " . json_encode(array("idCliente" => $data['idCliente'], "nameCliente" => $data['nameCliente'], "Fecha" => date('d-m-Y h:i:s A'))) . "\n", 3, "./logs/errors.log");
+        $data = json_decode(file_get_contents("php://input"), true);        
         $result = $this->setFacHeader($data);
         $data["data"] = admin::infoSucursal();
         $data["factura"] =  ($result[1]['rows'] == 1 ? $result[1]['data'] : "error");
@@ -137,8 +136,7 @@ class facturacionController extends view
         }
     }
     public function setFacHeader($datos)
-    {
-        error_log("recibe: " . json_encode(array("idCliente" => $datos['idCliente'], "nameCliente" => $datos['nameCliente'], "Fecha" => date('d-m-Y h:i:s A'))) . "\n", 3, "./logs/errors.log");
+    {        
         if (isset($_SESSION['hasCaja']) &&  $_SESSION['hasCaja'] == true) {
 
             //efectivo
