@@ -45,8 +45,6 @@ class facturacionController extends view
         $fac = fac::getPendingFac();
         $data["facturas"] = $fac['data'];
         $data["icons"] =  $icon['icons'];
-        print_r($fac);
-        die();
         echo view::renderElement('facturacion/facturas_pendientes', $data);
     }
 
