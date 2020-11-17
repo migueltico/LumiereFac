@@ -1,6 +1,6 @@
 <?php 
-ini_set("session.cookie_lifetime","86400");
-ini_set("session.gc_maxlifetime","86400");
+$expire=15*60*60;
+session_set_cookie_params($expire);
 session_start();
 //error_reporting(E_ALL);
 date_default_timezone_set('UTC');

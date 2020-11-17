@@ -79,6 +79,7 @@ route::group('facturacion', function () {
     route::post('/cajas/abrirCaja', 'facturacionController@abrirCaja');
     route::post('/cajas/abrirCajaEstado', 'facturacionController@abrirCajaEstado');
     route::post('/cajas/obtenerEstadoCajaEstado', 'facturacionController@obtenerEstadoCajaEstado');
+    route::post('/cajas/cerrarcajafinal', 'facturacionController@cerrarcajafinal');
     route::post('/apartados/getApartadosHasClient', 'facturacionController@getApartadosHasClient');
     route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
     route::post('/apartados/setAbono', 'facturacionController@setAbono');

@@ -60,7 +60,7 @@ class facturacionModel
             unset($data[':tipo']);
             unset($data[':estado']);
             unset($data[':comentario']);
-            unset($data[':idcaja']);            
+            unset($data[':idcaja']);
             unset($data[':monto_envio']);
             $data[':idusuario'] = $_SESSION['id'];
         }
@@ -136,37 +136,52 @@ class facturacionModel
         $data = $con->SQ("UPDATE cajas SET estado = 1 WHERE idcaja=:idcaja", $data);
         return $data;
     }
+    public static function obtenerEstadoCajaEstadoPagos2($data)
+    {
+        $con = new conexion();
+        $data1 = $con->SRQ("SELECT (SUM(r.monto_efectivo)+IF((SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja),0)) AS total_efectivo,
+        (SUM(r.monto_tarjeta)+IF((SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja),0)) AS total_tarjeta,
+        (SUM(r.monto_transferencia) + IF((SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja),0)) AS total_transferencia
+        FROM facturas AS r WHERE idcaja =:idcaja GROUP BY idcaja", $data);
+        return $data1;
+    }
     public static function obtenerEstadoCajaEstadoPagos($data)
     {
         $con = new conexion();
-        $data1 = $con->SRQ("SELECT (SUM(r.monto_efectivo)+IF((SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja),0)) AS total_efectivo,
-        (SUM(r.monto_tarjeta)+IF((SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja),0)) AS total_tarjeta,
-        (SUM(r.monto_transferencia) + IF((SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja),0)) AS total_transferencia
-        FROM facturas AS r WHERE idcaja =:idcaja GROUP BY idcaja", $data);
-        return $data1;
-    }
-    public static function obtenerEstadoCajaEstadoMonto($data)
-    {
-        $con = new conexion();
-        $data1 = $con->SRQ("SELECT (SUM(r.monto_efectivo)+IF((SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja),0)) AS total_efectivo,
-        (SUM(r.monto_tarjeta)+IF((SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja),0)) AS total_tarjeta,
-        (SUM(r.monto_transferencia) + IF((SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja),0)) AS total_transferencia
-        FROM facturas AS r WHERE idcaja =:idcaja GROUP BY idcaja", $data);
-        return $data1;
-    }
-    public static function obtenerEstadoCajaEstadoEnvios($data)
-    {
-        $con = new conexion();
-        $data1 = $con->SRQ("SELECT (SUM(r.monto_efectivo)+IF((SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja =:idcaja),0)) AS total_efectivo,
-        (SUM(r.monto_tarjeta)+IF((SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja =:idcaja),0)) AS total_tarjeta,
-        (SUM(r.monto_transferencia) + IF((SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja)>0,(SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja =:idcaja),0)) AS total_transferencia
-        FROM facturas AS r WHERE idcaja =:idcaja GROUP BY idcaja", $data);
-        return $data1;
+        $totales = $con->SRQ("SELECT 
+        (SELECT SUM(total) FROM facturas WHERE idcaja =:idcaja)  AS total_facturas,  
+        (SELECT SUM(abono) FROM recibos WHERE idcaja = :idcaja) AS total_recibos,
+        (SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_efectivo, 
+        (SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_tarjeta, 
+        (SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_transferencia, 
+        (SELECT SUM(monto_efectivo) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_efectivo, 
+        (SELECT SUM(monto_transferencia) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_transferencia, 
+        (SELECT SUM(monto_tarjeta) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_tarjeta", $data);
+        $recibos_monto_efectivo = $totales['data']['recibos_monto_efectivo'];
+        $recibos_monto_tarjeta = $totales['data']['recibos_monto_tarjeta'];
+        $recibos_monto_transferencia = $totales['data']['recibos_monto_transferencia'];
+        $facturas_monto_transferencia = $totales['data']['facturas_monto_transferencia'];
+        $facturas_monto_efectivo = $totales['data']['facturas_monto_efectivo'];
+        $facturas_monto_tarjeta = $totales['data']['facturas_monto_tarjeta'];
+        $totalEfectivo = (float)($recibos_monto_efectivo + $facturas_monto_efectivo);
+        $totalTarjeta = (float)($recibos_monto_tarjeta + $facturas_monto_tarjeta);
+        $totalTransferencia = (float)($recibos_monto_transferencia + $facturas_monto_transferencia);
+        $totales['efectivo'] = $totalEfectivo;
+        $totales['tarjeta'] = $totalTarjeta;
+        $totales['transferencia'] = $totalTransferencia;
+        return $totales;
     }
     public static function getCajas()
     {
         $con = new conexion();
         $data = $con->SQND("SELECT c.*,u.nombre, u2.nombre AS nombre_vendedor FROM  cajas AS c INNER JOIN usuario AS u ON u.idusuario = c.idusuario_openbox INNER JOIN usuario AS u2 ON u2.idusuario = c.idvendedor");
+        return $data;
+    }
+    public static function cerrarCajafinal($datos)
+    {
+        $con = new conexion();
+        $date = date('Y') . "-" . date('m') . "-" . date('d');
+        $data = $con->SQ("UPDATE cajas SET efectivo=:efectivo, tarjetas=:tarjeta, transferencias=:transferencia, diferencia =:diferencia, comentario =:comentario, fecha_close = $date, estado =3 WHERE idcaja=:id ", $datos);
         return $data;
     }
     public static function cajaAsignada($datos)

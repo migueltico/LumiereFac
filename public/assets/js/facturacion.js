@@ -155,10 +155,10 @@ $("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
             btnTypeLocal.classList.add("btn-primary")
             btnTypeLocal.classList.remove("btn-info")
             wrapperAbono.style.display = "none"
-            wrapperAbono.checked = false  
+            wrapperAbono.checked = false
             precioEnvioWrapper.style.display = "none"
-            precioEnvio.value = '0.00'  
-            getSubTotalAndTotal()       
+            precioEnvio.value = '0.00'
+            getSubTotalAndTotal()
             Swal.fire({
                 position: 'top',
                 title: 'Tipo de venta requiere Cliente',
@@ -171,7 +171,7 @@ $("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
 
         }
     }
-   
+
 })
 
 function resetFactScreen() {
@@ -1063,30 +1063,54 @@ function btnCerrarCajaEstado(id, monto) {
             body: formData
         }).then(resp => resp.json())
         .then(resp => {
-
+            console.log(resp);
 
             if (resp.error == "00000") {
 
                 let data = resp.data
-
+                let btncerrarCajaFinal = document.getElementById('btncerrarCajaFinal')
+                let total = resp.tarjeta + resp.efectivo + resp.transferencia + parseFloat(monto)
                 let montos = `
-                <div class="alert alert-success d-flex justify-content-between" role="alert">
-                <span>Efectivo:</span> <span>₡${(data.total_efectivo == null?'0.00':data.total_efectivo)}</span>
+                <div class="alert alert-primary d-flex justify-content-between" role="alert">
+                <span>Caja Base:</span> <span>${monto}</span>
                 </div>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
-                <span>Tarjetas:</span> <span>₡${(data.total_tarjeta == null?'0.00':data.total_tarjeta)}</span>
+                <span>Efectivo:</span> <span>${(resp.efectivo.toFixed(2) == null?'0.00':resp.efectivo.toFixed(2))}</span>
                 </div>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
-                <span>Transferencias:</span> <span>₡${(data.total_transferencia == null?'0.00':data.total_transferencia)}</span>
+                <span>Tarjetas:</span> <span>${(resp.tarjeta.toFixed(2) == null?'0.00':resp.tarjeta.toFixed(2))}</span>
                 </div>
-                <div class="alert alert-info d-flex justify-content-between" role="alert">
-                <span>Caja Base:</span> <span>₡${monto}</span>
+                <div class="alert alert-success d-flex justify-content-between" role="alert">
+                <span>Transferencias:</span> <span>${(resp.transferencia.toFixed(2) == null?'0.00':resp.transferencia.toFixed(2))}</span>
                 </div>
+                <div class="alert alert-info d-flex justify-content-between" id="caja_totalsystem" data-total="${total.toFixed(2)}" role="alert">
+                <span><strong>Total:</span> <span>${total.toFixed(2)}</strong></span>
+                </div>
+                
                 `
+                btncerrarCajaFinal.dataset.id = id
                 $("#montosCajaCerrar").html(montos)
             }
         })
 }
+$('#bodyContent').on("blur", ".caja_blur", function (e) {
+    if (this.value == '') {
+        this.value = 0
+    }
+    let efectivo = document.getElementById('caja_efectivo').value
+    let tarjeta = document.getElementById('caja_tarjeta').value
+    let transferencia = document.getElementById('caja_transferencia').value
+    let total = document.getElementById('caja_total')
+    let totalsystem = document.getElementById('caja_totalsystem').dataset.total
+    let diferencia = document.getElementById('caja_diferencia')
+    let inputDiff = document.getElementById('inputDiff')
+    let suma = (parseFloat(efectivo) + parseFloat(tarjeta) + parseFloat(transferencia))
+    total.innerHTML = suma.toFixed(2)
+    diferencia.innerHTML = (suma - totalsystem).toFixed(2)
+    inputDiff.value = (suma - totalsystem).toFixed(2)
+    console.log(total);
+
+})
 $('#bodyContent').on("blur", ".abonoMontosModal", function (e) {
     if (this.value == '') this.value = 0.00
     e.preventDefault();
@@ -1094,7 +1118,6 @@ $('#bodyContent').on("blur", ".abonoMontosModal", function (e) {
         .toFixed(2)
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    totalGastosLabel()
     //document.getElementById("display").value = this.value.replace(/,/g, "")
 })
 $('#bodyContent').on("change", "#ckAbonoSw", function (e) {
@@ -1212,6 +1235,9 @@ $('#bodyContent').on("click", ".productosPendienteBtn", function (e) {
 $('#bodyContent').on("click", ".facturaChangeState", function (e) {
     facturaChangeState(parseInt(this.dataset.id))
 })
+$('#bodyContent').on("click", "#btncerrarCajaFinal", function (e) {
+    cerrarCajaFinal(parseInt(this.dataset.id))
+})
 
 function setAbono() {
     let form = document.getElementById('apartados_form_abonar')
@@ -1267,6 +1293,20 @@ function facturaChangeState(id) {
 
                 loadPage(null, "/facturacion/pendientes")
             alert("Se acutializo el estado de la factura pendiente #" + id)
+        })
+
+}
+
+function cerrarCajaFinal(id) {
+    let form = document.getElementById('formCerrarCaja')
+    let formData = new FormData(form)
+    formData.append('id', id)
+    fetch("/facturacion/cajas/cerrarcajafinal", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.json())
+        .then(resp => {
+            console.log(resp);
         })
 
 }

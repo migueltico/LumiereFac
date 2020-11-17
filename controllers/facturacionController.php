@@ -93,6 +93,18 @@ class facturacionController extends view
         header('Content-Type: application/json');
         echo json_encode($result);
     }
+    public function cerrarcajafinal()
+    {
+        $data[':efectivo'] = (float) $_POST['efectivo'];
+        $data[':tarjeta'] = (float)  $_POST['tarjeta'];
+        $data[':transferencia'] = (float) $_POST['transferencia'];
+        $data[':diferencia'] = (float) $_POST['diferencia'];
+        $data[':comentario'] = $_POST['comentario'];
+        $data[':id'] =(int)  $_POST['id'];
+        $result = fac::cerrarCajafinal($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
 
     public function searchProduct()
     {
