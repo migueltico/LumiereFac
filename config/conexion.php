@@ -37,7 +37,12 @@ class conexion
 				if (!$this->statement) {
 					//$this->con->rollBack();
 					$this->disconnect();
-					return  array('estado' => false, 'generalError' => false, 'rollback' => true,  'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+					$error =array('estado' => false, 'generalError' => false, 'rollback' => true,  'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+					echo "<pre>";
+					print_r($error);
+					echo "</pre>";
+					return  $error;
+				
 				}
 			}
 

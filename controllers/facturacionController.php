@@ -128,6 +128,7 @@ class facturacionController extends view
         $result = $this->setFacHeader($data);
         $data["data"] = admin::infoSucursal();
         $data["factura"] =  ($result[1]['rows'] == 1 ? $result[1]['data'] : "error");
+        die();
         if ($result[0] == 0) {
             if ($data['sendFac']) {
                 echo view::renderElement('facturas/facturaVenta', $data);
