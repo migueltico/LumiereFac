@@ -17,11 +17,12 @@ class facturacionModel
     public static function setFacHeader($data, $items)
     {
         $con = new conexion();
-        error_log("Insert: " . json_encode(array("idcliente" => $data[':idcliente'], "Fecha" => date('d-m-Y h:i:s A'))) . "\n", 3, "./logs/errors.log");
+        
         $result = $con->Multitransaction(
             'CALL sp_setFacHeader(:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,:idcaja,:monto_envio)',
             $data
         );
+        error_log("result 1: " . json_encode($result) . "\n", 3, "./logs/errors.log");
         if ($result['rows'] == 1) {
             $con2 = new conexion();
             $result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
