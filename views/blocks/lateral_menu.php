@@ -1,15 +1,20 @@
 <div class="menuContainer">
+    <?php if (isset($_SESSION["db"])) :   ?>
+        <?php if ($_SESSION["db"] =='TestDB') :   ?>
+            <div style="width: 100%;padding-top:10px;padding-bottom:10px;background:yellow;color:black;text-align:center;">Entorno de Pruebas</div>
+        <?php endif;  ?>
+    <?php endif;  ?>
     <div>
         <div class="perfil mt-3 mb-1">
             <img src="public/assets/img/perfil_no_found.jpg" alt="Perfil">
-            <p class="mt-1"><?= $_SESSION["nombre"]?></p>
+            <p class="mt-1"><?= $_SESSION["nombre"] ?></p>
         </div>
     </div>
     <ul class="main_menu" id="main_menu">
         <li>
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['dashboard'] ?></span><span>Dashboard</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
-                <li data-functionName="startChars" data-linkto="/dashboard/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>             
+                <li data-functionName="startChars" data-linkto="/dashboard/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>General2</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Productos</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Vendedores</span><span></span></li>
@@ -19,12 +24,12 @@
         <li>
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['gear'] ?></span><span>Admin</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
-                <li data-functionName="0" data-linkto="/admin/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>               
-                <?php if($_SESSION["idrol"]==1): ?>
-                <li data-functionName="0" data-linkto="/admin/gastos" class="dataLink"><span class="spanStyleMenu"></span><span>Gastos</span><span></span></li>
+                <li data-functionName="0" data-linkto="/admin/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>
+                <?php if ($_SESSION["idrol"] == 1) : ?>
+                    <li data-functionName="0" data-linkto="/admin/gastos" class="dataLink"><span class="spanStyleMenu"></span><span>Gastos</span><span></span></li>
                 <?php endif; ?>
-                <?php if($_SESSION["idrol"]==1): ?>
-                <li data-functionName="0" data-linkto="/admin/categoriaprecios" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias de precios</span><span></span></li>
+                <?php if ($_SESSION["idrol"] == 1) : ?>
+                    <li data-functionName="0" data-linkto="/admin/categoriaprecios" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias de precios</span><span></span></li>
                 <?php endif; ?>
                 <li data-functionName="0" data-linkto="/admin/categoriastallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
                 <li data-functionName="0" data-linkto="/admin/categoriastallas" class="dataLink"><span class="spanStyleMenu"></span><span>Categorias y Tallas</span><span></span></li>
@@ -80,7 +85,7 @@
         </li>
         <li class="uniq_menu">
             <a href="/logout"><span><?= $icons['exit'] ?></span><span>Cerrar Sesion</span><span class="menu_down"></span></a>
-        </li>    
+        </li>
 
     </ul>
 

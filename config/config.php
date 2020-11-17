@@ -19,9 +19,10 @@ define('DB_HOST', 'localhost');
 // define('DB_USER', 'root');
 define('DB_USER', 'root');
 define('DB_PASS', '');
+$env_test = false;
 if ($env == 1) {
-    $DB_USER ="adminUser";
-    $DB_PASS ="MXx12Lumiere2!#W@rr";
+    $DB_USER = "adminUser";
+    $DB_PASS = "MXx12Lumiere2!#W@rr";
     $DB_NAME = array(
         "Alajuela" => "maindb",
         "Heredia" => "herediadb",
@@ -29,10 +30,10 @@ if ($env == 1) {
         "TestDB" => "testdb"
     );
 } else {
-    $DB_USER ="root";
-    $DB_PASS ="";
+    $DB_USER = "root";
+    $DB_PASS = "";
     $DB_NAME = array(
-        "test" => "maindb"
+        "TestDB" => "maindb"
     );
 }
 

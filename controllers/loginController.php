@@ -28,6 +28,9 @@ class loginController extends view
         $post =  $var['post'];
         if (!empty($post["db"]) && !empty($post["usuario"]) && !empty($post["pass"])) {
             $_SESSION["db"] = $post["db"];
+            if($post["db"]=='TestDB'){
+                $GLOBALS["env_test"]=true;
+            }
             $hash = hash('sha256', $post['pass']);
             $data = user::getUser($post['usuario'], $hash);
             if ($data['rows'] == 1) {
