@@ -71,9 +71,9 @@
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend tagNameGastos">
-                                    <span class="input-group-text " id="">Id Cliente Generico para facturas</span>
+                                    <span class="input-group-text " id="">Id Cliente Generico para facturasstron <strong style="color:red">*</strong> </span>
                                 </div>
-                                <input type="text" class="form-control" name=":idclienteGenerico" value="<?= (!isset($idclienteGenerico) ? "" : $idclienteGenerico) ?>">
+                                <input type="text" class="form-control" name=":idclienteGenerico" value="<?= (!isset($idclienteGenerico) ? 0 : $idclienteGenerico) ?>">
                             </div>
                         </form>
                     </div>
