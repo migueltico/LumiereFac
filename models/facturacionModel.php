@@ -22,8 +22,7 @@ class facturacionModel
             'CALL sp_setFacHeader(:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,:idcaja,:monto_envio)',
             $data
         );
-        print_r($result);
-        die();
+        
         //error_log("result 1: " . json_encode($result) . "\n", 3, "./logs/errors.log");
         if ($result['rows'] == 1) {
             $con2 = new conexion();
