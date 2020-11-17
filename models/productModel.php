@@ -141,8 +141,6 @@ class productModel
             $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
             $result = $con->SPCALL($SqlOneParam);
         }
-        print_r($result);
-        print_r($result);
         if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
             return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
         } else if ($result['error'] !== '00000' || $result['data'] == false) {
