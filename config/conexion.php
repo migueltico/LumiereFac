@@ -66,8 +66,6 @@ class conexion
 			$cuenta = $this->statement->rowCount();
 			$estado = array("rows" => $cuenta, "data" => $row, "SQL" => $this->statement, 'estado' => true, 'generalError' => false, 'rollback' => false,  'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
 			//error_log("estado: " . json_encode($estado) . "\n", 3, "./logs/errors.log");
-			print_r($estado);
-			die();
 			if ($estado['error'] == "00000" && $estado['estado'] == true) {
 				//$this->con->commit();
 				$this->disconnect();
