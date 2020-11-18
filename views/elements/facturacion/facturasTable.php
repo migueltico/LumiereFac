@@ -6,7 +6,7 @@
                 <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Cliente</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Tipo</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Fecha</th>
-                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Pago Adelantado</th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Pago (Envio)</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Total</th>
                 <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Estado</th>
                 <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Accion</th>
@@ -34,8 +34,11 @@
 
                     <td scope="row">
                         <div class="btn-group Editbuttons" aria-label="Grupo edicion">
+                            <?php if ($factura["tipo"] == 2 && !$factura["cancelado"]) :  ?>
+                                <button type="button" class="btn btn-primary BtncancelPendingFac" data-id='<?= $factura["consecutivo"] ?>'><?= $icons['money'] ?></button>
+                            <?php endif; ?>
                             <button type="button" class="btn btn-success productosPendienteBtn" data-id='<?= $factura["consecutivo"] ?>'><?= $icons['eye'] ?></button>
-                            <?php if ($factura["tipo"] == 2) :  ?>
+                            <?php if ($factura["tipo"] == 2 && $factura["cancelado"]) :  ?>
                                 <button type="button" class="btn btn-info facturaChangeState" data-id='<?= $factura["consecutivo"] ?>'><?= $icons['check'] ?></button>
                             <?php endif; ?>
                         </div>

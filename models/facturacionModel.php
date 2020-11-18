@@ -193,8 +193,7 @@ class facturacionModel
     public static function cerrarCajafinal($datos)
     {
         $con = new conexion();
-        $date = date('Y') . "-" . date('m') . "-" . date('d');
-        $data = $con->SQ("UPDATE cajas SET efectivo=:efectivo, tarjetas=:tarjeta, transferencias=:transferencia, diferencia =:diferencia, comentario =:comentario, fecha_close = $date, estado =3 WHERE idcaja=:id ", $datos);
+        $data = $con->SQ("UPDATE cajas SET efectivo=:efectivo, tarjetas=:tarjeta, transferencias=:transferencia, diferencia =:diferencia, comentario =:comentario, estado =3 WHERE idcaja=:id ", $datos);
         return $data;
     }
     public static function cajaAsignada($datos)
