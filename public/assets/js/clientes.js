@@ -81,7 +81,10 @@ $("#bodyContent").on("click", "#clientes_edit_btnAddCliente", function (e) {
     fetch("clientes/updateClienteById", {
             method: "POST",
             body: formData
-        }).then(resp => resp.json())
+        }).then(resp => {
+            console.log(resp);
+           return resp.json()
+        })
         .then(resp => {
             if (resp.error == '00000') {
                 refreshClients()
