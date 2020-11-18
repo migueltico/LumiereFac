@@ -19,7 +19,7 @@ class facturacionModel
         $con = new conexion();
         $conse = $con->SQR_ONEROW("SELECT * FROM consecutivos WHERE idconsecutivos = 1");
         $consecutivo = ((int) $conse['data']['fac']) + 1;
-        $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' =>(int) $consecutivo));
+        $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
         $result = $con->Multitransaction(
             "CALL sp_setFacHeader($consecutivo,:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,:idcaja,:monto_envio)",
             $data
@@ -29,14 +29,6 @@ class facturacionModel
         if ($result['rows'] == 1) {
             $con2 = new conexion();
             $result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
-            // echo "<pre>";
-            // print_r($result);
-            // print_r($result2);
-            // echo "</pre>";
-            // echo "<pre>";
-            // echo "****************";
-            // print_r($result2);
-            // echo "</pre>";
 
             if ($result2['data']['fac'] == $result['data']['fac']) {
 
@@ -110,6 +102,24 @@ class facturacionModel
     {
         $con = new conexion();
         $data = $con->SPCALL("SELECT *,f.estado AS fac_estado FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente WHERE f.estado = 0 AND f.tipo > 1");
+        return $data;
+    }
+    public static function getHistorialDiario()
+    {
+        $con = new conexion();
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas ORDER BY consecutivo DESC LIMIT 100");
+        $data = array();
+        if ($header['rows'] > 0) {
+            $con2 = new conexion();
+            foreach ($header['data'] as $factura) {
+                $id = (int) $factura['consecutivo'];
+                $detalis = $con2->SQND("SELECT d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                if ($detalis['rows'] > 0) {
+                    $factura['details'] = $detalis['data'];
+                    array_push($data, $factura);
+                }
+            }
+        }
         return $data;
     }
     public static function getPendingFac()

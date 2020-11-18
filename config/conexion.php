@@ -176,6 +176,7 @@ class conexion
 			$cuenta = $this->statement->rowCount();
 			//return $row ;
 			$estado = array("rows" => $cuenta, "data" => $row, "SQL" => $this->statement, 'estado' => true, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+			$this->disconnect();
 			return $estado;
 		} catch (\PDOException $e) {
 			$this->disconnect();

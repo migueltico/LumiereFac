@@ -83,6 +83,7 @@ route::group('facturacion', function () {
     route::post('/apartados/getApartadosHasClient', 'facturacionController@getApartadosHasClient');
     route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
     route::post('/apartados/setAbono', 'facturacionController@setAbono');
+    route::post('/historial/diario', 'facturacionController@historialDiario');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {

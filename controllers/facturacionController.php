@@ -39,6 +39,14 @@ class facturacionController extends view
         $data["cajas"] =  $result['data'];
         echo view::renderElement('cajas/cajas', $data);
     }
+    public function historialDiario()
+    {
+        $icon = help::icon();
+        $result = fac::getHistorialDiario();
+        $data["icons"] =  $icon['icons'];
+        $data["facturas"] =  $result;
+        echo view::renderElement('facturacion/historialDiario', $data);
+    }
     public function pendientes()
     {
         $icon = help::icon();
