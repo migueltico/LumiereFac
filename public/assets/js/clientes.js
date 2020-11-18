@@ -16,7 +16,7 @@ $("#bodyContent").on("click", "#clientes_add_btnAddCliente", function (e) {
                     confirmButtonText: 'OK',
                     timer: 2500
                 }, $("#clientes_addCliente").modal("toggle"))
-            } else if(resp.error ==="CLIENTE00002") {
+            } else if (resp.error === "CLIENTE00002") {
                 Swal.fire({
                     position: 'top',
                     title: resp.msg,
@@ -24,7 +24,7 @@ $("#bodyContent").on("click", "#clientes_add_btnAddCliente", function (e) {
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
-            
+
             } else {
                 Swal.fire({
                     position: 'top',
@@ -81,10 +81,7 @@ $("#bodyContent").on("click", "#clientes_edit_btnAddCliente", function (e) {
     fetch("clientes/updateClienteById", {
             method: "POST",
             body: formData
-        }).then(resp => {
-            console.log(resp.text());
-           return resp.json()
-        })
+        }).then(resp => resp.json())
         .then(resp => {
             if (resp.error == '00000') {
                 refreshClients()
