@@ -21,6 +21,7 @@
                                                 <span><strong>Envio: </strong><?= number_format($factura['monto_envio'], 2, '.', ',') ?></span>
                                             <?php endif;  ?>
                                             <span><strong>Tipo de venta: </strong><?= ($factura['total'] == 1 ? 'Local' : ($factura['total'] == 2 ? 'Envio' : "Apartado")) ?></span>
+                                            <span><?= count($factura['details']) ?> Productos</span>
                                             <span><strong>Fecha: </strong><?= $factura['fechaFormat'] ?></span>
                                         </button>
                                     </h2>
