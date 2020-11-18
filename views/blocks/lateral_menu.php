@@ -1,7 +1,10 @@
 <div class="menuContainer">
     <?php if (isset($_SESSION["db"])) :   ?>
         <?php if ($_SESSION["db"] =='TestDB') :   ?>
-            <div style="width: 100%;padding-top:10px;padding-bottom:10px;background:yellow;color:black;text-align:center;">Entorno de Pruebas</div>
+            <div style="font-weight:bold;width: 100%;padding-top:10px;padding-bottom:10px;background:yellow;color:black;text-align:center;">
+            <p class="mb-0">Entorno de Pruebas</p>
+            <span><?=$_SERVER['SERVER_NAME'] ?></span>
+        </div>
         <?php endif;  ?>
     <?php endif;  ?>
     <div>

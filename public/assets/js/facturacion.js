@@ -1307,6 +1307,39 @@ function cerrarCajaFinal(id) {
         }).then(resp => resp.json())
         .then(resp => {
             console.log(resp);
+            if (resp.error == "00000") {
+                $("#cajas_cerrarCaja").modal('toggle')
+                Swal.fire({
+                    position: 'top',
+                    title: `Caja cerrada`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: `Error`,
+                    text: resp.error,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+                console.log(resp);
+            }
+
+        }).catch(error => {
+            Swal.fire({
+                position: 'top',
+                title: `Error`,
+                text: error,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 2500,
+                timerProgressBar: true
+            })
         })
 
 }
