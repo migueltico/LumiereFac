@@ -82,7 +82,7 @@ $("#bodyContent").on("click", "#clientes_edit_btnAddCliente", function (e) {
             method: "POST",
             body: formData
         }).then(resp => {
-            console.log(resp);
+            console.log(resp.text());
            return resp.json()
         })
         .then(resp => {
