@@ -46,8 +46,6 @@ $middleware_array = [];
 $middleware_active = false;
 $error404 = false;
 $errorMsg = ["send_msg" => false, "data" => null, "url" => null];
-date_default_timezone_set('America/Costa_Rica');
-
 use config\view;
 
 class Config

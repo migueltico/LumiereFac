@@ -8,7 +8,7 @@ ini_set('session.gc_maxlifetime', 72000);
 session_set_cookie_params(72000);
 session_start();
 //error_reporting(E_ALL);
-date_default_timezone_set('UTC');
+date_default_timezone_set('America/Costa_Rica');
 require 'config/config.php';
 require_once 'vendor/autoload.php';
 //require_once 'config/autoload.php';
