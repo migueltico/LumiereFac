@@ -176,7 +176,7 @@ class conexion
 			$cuenta = $this->statement->rowCount();
 			//return $row ;
 			$estado = array("rows" => $cuenta, "data" => $row, "SQL" => $this->statement, 'estado' => true, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
-			$this->disconnect();
+			// $this->disconnect();
 			return $estado;
 		} catch (\PDOException $e) {
 			$this->disconnect();
@@ -280,7 +280,7 @@ class conexion
 			}
 			$row = $this->statement->fetch(PDO::FETCH_ASSOC);
 			$cuenta = $this->statement->rowCount();
-			$this->statement->closeCursor();
+			// $this->statement->closeCursor();
 			//return $row ;
 			return array("rows" => $cuenta, "data" => $row,  'estado' => true, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
 			//return array("rows" => $cuenta, "data" => $row);

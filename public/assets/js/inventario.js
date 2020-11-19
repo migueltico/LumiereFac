@@ -279,12 +279,13 @@ function addStock(id) {
 
             Swal.fire({
                 position: 'top',
-                title: 'Stock Actualizado',
+                title: `Stock Actualizado a ${result.value.newStock}`,
                 icon: 'success',
                 confirmButtonText: 'OK',
                 timer: 2500
             })
         } else {
+            console.log(result.value);
             refreshStock()
             Swal.fire({
                 position: 'top',

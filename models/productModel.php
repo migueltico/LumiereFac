@@ -88,7 +88,7 @@ class productModel
     public static function searchCodeProductCtrlQ($data, $nowPage)
     {
         $con = new conexion();
-        $cantToshow =50;
+        $cantToshow = 50;
         $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.descripcion LIKE '%$data%' OR p.marca LIKE '%$data%' AND p.estado = 1");
         $totalRows = $totalRows['data']['cantidad'];
         $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
@@ -118,16 +118,16 @@ class productModel
      *
      * @return void
      */
-    public static function searchProduct($data, $nowPage,$estado)
+    public static function searchProduct($data, $nowPage, $estado)
     {
-        $cantToshow =50;
+        $cantToshow = 50;
         $data = trim($data);
         $con = new conexion();
         $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE (p.descripcion LIKE '%$data%' OR p.marca  LIKE '%$data%' OR p.estilo LIKE '%$data%' OR p.codigo LIKE '%$data%') AND p.estado = $estado");
-       // $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.estado = 1");
-       // $totalRows = $con->SQR_ONEROW("sp_SearchProduct_Inventario('%$data%')");
+        // $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.estado = 1");
+        // $totalRows = $con->SQR_ONEROW("sp_SearchProduct_Inventario('%$data%')");
         $totalRows = $totalRows['data']['cantidad'];
-        $paginacion = helper::paginacion($totalRows, $cantToshow , $nowPage);
+        $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
         $init = $paginacion['InitLimit'];
         if (strpos($data, '%') !== false) {
             $dataArray = explode("%", $data);
@@ -235,9 +235,29 @@ class productModel
     public static function updateStock($datos)
     {
         $con = new conexion();
+        $id =(int) $datos[':id'];
+        $stock = (int)$datos[':stock'];
         $setData = ':id,:stock';
-        $sql = "CALL sp_updateStockProduct($setData)";
-        return $con->SPCALLNR($sql, $datos);
+
+        //obtengo el stock actual
+        $sql = "SELECT stock FROM producto WHERE idproducto=$id;";
+        $stockNow = $con->SQR_ONEROW($sql);
+
+        //actializo la cantidad al nuevo stock
+        $stockNow = (int) $stockNow['data']['stock'];
+        $newStock = ($stockNow + $stock);
+        $result = $con->SQ("UPDATE producto AS p SET p.stock =:stock WHERE p.idproducto=:id;", array(':id' => $id, ":stock" => $newStock));
+
+        //vuelvo a consultar para comprobar
+        $sqlNewStock = "SELECT stock FROM producto WHERE idproducto=$id;";
+        $NowNewStock = $con->SQR_ONEROW($sqlNewStock);
+        $NowNewStock = $NowNewStock['data']['stock'];
+        $result['newStock'] = $NowNewStock;
+        return $result;
+
+        // SET @newStock = (SELECT SUM(p.stock + param2) AS total FROM producto AS p WHERE p.idproducto =param1);
+        // UPDATE producto AS p SET p.stock =@newStock WHERE p.idproducto=param1;
+
     }
     /**
      * Actualiza el stock Minimo
