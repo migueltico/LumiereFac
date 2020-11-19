@@ -34,7 +34,7 @@ route::group('admin', function () {
     route::post('/categoriastallas', 'adminController@indexCategoriasTallas', ['loginMiddleware@auth']);
     route::post('/categoriastallas/AddCategoria', 'adminController@AddCategoria');
     route::post('/categoriastallas/AddTalla', 'adminController@AddTalla');
-    route::post('/descuentos', 'adminController@descuentos');
+    route::post('/descuentos', 'adminController@descuentos', ['loginMiddleware@auth']);
     route::post('/descuentos/lote', 'adminController@descuentosPorLote');
     route::post('/descuentos/addnewDescuento', 'adminController@addnewDescuento');
     route::post('/descuentos/EditarDescuento', 'adminController@EditarDescuento');
@@ -50,7 +50,7 @@ route::group('admin', function () {
 //+++++++++++ INVENTARIO +++++++++++//
 route::group('inventario', function () {
     route::post('/listarproductos', 'inventarioController@index', ['loginMiddleware@auth']);
-    route::post('/addproduct', 'inventarioController@addproduct');
+    route::post('/addproduct', 'inventarioController@addproduct', ['loginMiddleware@auth']);
     route::post('/updateProduct', 'inventarioController@updateProduct');
     route::post('/getProductById', 'inventarioController@getProductById');
     route::post('/refresh/producttable', 'inventarioController@producttable');
@@ -58,13 +58,13 @@ route::group('inventario', function () {
     route::post('/generar/codigobarras', 'inventarioController@generarCodigo');
     route::post('/search', 'inventarioController@searchProduct');
     route::post('/search/stock', 'inventarioController@searchProductstock');
-    route::post('/addstock', 'inventarioController@addstock');
+    route::post('/addstock', 'inventarioController@addstock', ['loginMiddleware@auth']);
     route::post('/refreshProductstock', 'inventarioController@refreshProductstock');
     route::post('/saveProductPrice', 'inventarioController@saveProductPrice');
     route::post('/updateStock', 'inventarioController@updateStock');
     route::post('/updateMinStock', 'inventarioController@updateMinStock');
     route::post('/calcular/sugerido', 'inventarioController@calcular_sugerido');
-    route::post('/impresion/etiquetas', 'inventarioController@indexEtiquetas');
+    route::post('/impresion/etiquetas', 'inventarioController@indexEtiquetas', ['loginMiddleware@auth']);
 });
 //+++++++++++ FACTURACION +++++++++++//
 route::group('facturacion', function () {
@@ -72,10 +72,10 @@ route::group('facturacion', function () {
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
-    route::post('/pendientes', 'facturacionController@pendientes');
+    route::post('/pendientes', 'facturacionController@pendientes', ['loginMiddleware@auth']);
     route::post('/pendientes/productos', 'facturacionController@pendientesProductos');
     route::post('/pendientes/changeStateFac', 'facturacionController@changeStateFac');
-    route::post('/cajas', 'facturacionController@cajas');
+    route::post('/cajas', 'facturacionController@cajas', ['loginMiddleware@auth']);
     route::post('/cajas/abrirCaja', 'facturacionController@abrirCaja');
     route::post('/cajas/abrirCajaEstado', 'facturacionController@abrirCajaEstado');
     route::post('/cajas/obtenerEstadoCajaEstado', 'facturacionController@obtenerEstadoCajaEstado');
@@ -83,7 +83,7 @@ route::group('facturacion', function () {
     route::post('/apartados/getApartadosHasClient', 'facturacionController@getApartadosHasClient');
     route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
     route::post('/apartados/setAbono', 'facturacionController@setAbono');
-    route::post('/historial/diario', 'facturacionController@historialDiario');
+    route::post('/historial/diario', 'facturacionController@historialDiario', ['loginMiddleware@auth']);
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
@@ -105,7 +105,7 @@ route::group('usuarios', function () {
     route::post('/verIdentificador', 'usuariosController@verIdentificador');
 //+++++++++++ ROLES +++++++++++//
 route::group('roles', function () {
-    route::post('/', 'rolesController@index');
+    route::post('/', 'rolesController@index', ['loginMiddleware@auth']);
     route::post('/getRoles', 'rolesController@getRoles');
     route::post('/newRol', 'rolesController@newRol');
     route::post('/saveRoles', 'rolesController@saveRoles');
@@ -113,7 +113,7 @@ route::group('roles', function () {
 });
 //+++++++++++ REPORTES +++++++++++//
 route::group('reportes', function () {
-    route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo');
+    route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo', ['loginMiddleware@auth']);
     route::post('/etiquetas', 'reportesController@etiquetasTallaEstiloPost');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
