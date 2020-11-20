@@ -129,6 +129,9 @@ class facturacionModel
                             FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente 
                             WHERE f.estado = 0 AND NOT(f.tipo= 1) GROUP BY f.consecutivo ORDER BY f.tipo DESC
         ");
+        echo "<pre>";
+        print_r($data);
+        echo "</pre>";
         return $data;
     }
     public static function pendientesProductos($id)
