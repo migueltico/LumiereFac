@@ -56,7 +56,7 @@ class adminController extends view
     {
         $check = (isset($_POST['activo']) ? 1 : 0);
         $data[':descripcion'] = $_POST['descripcion'];
-        $data[':descuento'] = (int) $_POST['descuento'];
+        $data[':descuento'] = (float) $_POST['descuento'];
         $data[':modificado_por'] = (int) $_SESSION['id'];
         $data[':activo'] = (int)  $check;
         $data[':id'] = (int) $_POST['id'];
