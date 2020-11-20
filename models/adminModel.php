@@ -59,9 +59,9 @@ class adminModel
         foreach ($codigos as $codigo) {
             $codigo = (int) $codigo;
             $array[':codigo'] = $codigo;
-            $array[':iddescuento'] = $iddescuento;
+            $array[':iddescuento'] = (int) $iddescuento;
 
-            $result = $con->SQ("UPDATE producto SET iddescuento = :iddescuento WHERE codigo=:codigo", $array);
+            $result = $con->SQNDNR("UPDATE producto SET iddescuento = $iddescuento WHERE codigo=$codigo");
             if ($result['error'] !== '00000') {
                 $ok = false;
             }

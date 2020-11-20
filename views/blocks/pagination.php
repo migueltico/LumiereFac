@@ -1,3 +1,4 @@
+  <?php if($paginationInfo['error'] == 0):  ?>
 <nav aria-label="Page navigation example">
   <ul class="pagination pagination_inventario">
     <li data-page="<?= ($paginationInfo['previouspage'] == 0 ? 1 : $paginationInfo['previouspage']) ?>" class="page-item paginationInventario <?= ($paginationInfo['previouspage'] == 0 ? 'disabled' :"") ?>"><a class="page-link" href="#">Anterior</a></li>
@@ -7,3 +8,4 @@
     <li data-page="<?= ($paginationInfo['nextpage'] >= $maxpage ? $maxpage :  $paginationInfo['nextpage']) ?>" class="page-item paginationInventario <?= ($paginationInfo['nextpage'] >= $maxpage ? 'disabled' : "") ?>"><a class="page-link" href="#">Siguiente</a></li>
   </ul>
 </nav>
+    <?php endif;  ?>

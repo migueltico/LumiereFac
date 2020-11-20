@@ -132,6 +132,32 @@ class conexion
 		}
 	}
 	/**
+	 * SIMPLE QUERY, NO RETORNA DATOS, NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
+	 *
+	 * @param [type] $sql
+	 * @param [type] $datos
+	 * @return void
+	 */
+	public function SQNDNR($sql)
+	{
+		try {
+			$this->statement = $this->con->prepare($sql);
+			$this->statement->execute();
+			if (!$this->statement) {
+				$stm = false;
+			} else {
+				$stm = true;
+			}
+			$estado = array('estado' => $stm, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+			$return = $estado;
+			return $return;
+		} catch (\PDOException $e) {
+
+			$this->disconnect();
+			return $e;
+		}
+	}
+	/**
 	 * SIMPLE QUERY, Si RETORNA DATOS,NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *
 	 * @param [type] $sql

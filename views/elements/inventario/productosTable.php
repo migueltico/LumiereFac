@@ -2,7 +2,7 @@
 $gravado = array("noGravado", "gravado");
 $estado = array("inhabilitado", "habilitado");
 $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-$maxpage = $paginationInfo['paginacion']['paginas'];
+$maxpage = @$paginationInfo['paginacion']['paginas'];
 ?>
 <div class="table-responsive">
 <div class="urlPagination" data-url="/inventario/refresh/producttable">
