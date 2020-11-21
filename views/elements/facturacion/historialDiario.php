@@ -17,10 +17,8 @@
                                         <button class="btn btn-primary btn-block text-left d-flex justify-content-between" type="button" data-toggle="collapse" data-target="#fac<?= $factura['consecutivo'] ?>" aria-expanded="true" aria-controls="collapseOne">
                                             <span><strong>Factura:</strong> <?= $factura['consecutivo'] ?></span>
                                             <span><strong>Caja ID:</strong> <?= $factura['idcaja'] ?></span>
-                                            <span><strong>Total<?= $factura['monto_envio'] > 0 ? " + Envio" : "" ?>: </strong><?= number_format($factura['total'], 2, '.', ',') ?></span>
-                                            <?php if ($factura['monto_envio'] > 0) :  ?>
-                                                <span><strong>Envio: </strong><?= number_format($factura['monto_envio'], 2, '.', ',') ?></span>
-                                            <?php endif;  ?>
+                                            <span><strong>Total<?= $factura['monto_envio'] > 0 ? " - (i.e)" : "" ?>: </strong><?= number_format($factura['total'], 2, '.', ',') ?></span>
+                                            <span><strong>Envio: </strong><?= number_format($factura['monto_envio'], 2, '.', ',') ?></span>
                                             <span><strong>Tipo de venta: </strong><?= ($factura['tipo'] == 1 ? 'Local' : ($factura['tipo'] == 2 ? 'Envio' : "Apartado")) ?></span>
                                             <span><?= count($factura['details']) ?> Productos</span>
                                             <span><strong>Fecha: </strong><?= $factura['fechaFormat'] ?></span>
@@ -34,6 +32,13 @@
                                             <span><strong>Monto Efectivo:</strong> <?= number_format($factura['monto_efectivo'], 2, '.', ',') ?></span>
                                             <span><strong>Monto Tarjeta:</strong> <?= number_format($factura['monto_tarjeta'], 2, '.', ',') ?></span>
                                             <span><strong>Monto: transferencia:</strong> <?= number_format($factura['monto_transferencia'], 2, '.', ',') ?></span>
+                                            <?php if ($factura['tipo'] == 3) : ?>
+                                                <span><strong>Abonado:</strong> <?= number_format($factura['fullAbono'], 2, '.', ',') ?></span>
+                                                <?php
+                                                $pendiente =  ((float) $factura['total'] - (float) $factura['fullAbono']);
+                                                ?>
+                                                <span><strong>Pendiente:</strong> <?= number_format($pendiente, 2, '.', ',') ?></span>
+                                            <?php endif;  ?>
                                         </div>
                                         <?php if ($factura['tipo'] == 3) : ?>
                                             <h4>Recibos por Apartado</h4>

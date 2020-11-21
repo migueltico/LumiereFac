@@ -10,7 +10,6 @@
                         $gravado = array("noGravado", "gravado");
                         $estado = array("inhabilitado", "habilitado");
                         ?>
-                    
                         <?php foreach ($facturas as $factura) : ?>
                             <div class="card">
                                 <div class="card-header" id="headingOne">
@@ -18,7 +17,7 @@
                                         <button class="btn btn-primary btn-block text-left d-flex justify-content-between" type="button" data-toggle="collapse" data-target="#fac<?= $factura['consecutivo'] ?>" aria-expanded="true" aria-controls="collapseOne">
                                             <span><strong>Factura:</strong> <?= $factura['consecutivo'] ?></span>
                                             <span><strong>Caja ID:</strong> <?= $factura['idcaja'] ?></span>
-                                            <span><strong>Total Factura<?= $factura['monto_envio'] > 0 ? " + Envio" : "" ?>: </strong><?= number_format($factura['total'], 2, '.', ',') ?></span>
+                                            <span><strong>Total Factura<?= $factura['monto_envio'] > 0 ? " -  (i.e)" : "" ?>: </strong><?= number_format($factura['total'], 2, '.', ',') ?></span>
                                             <span><strong>Tipo de venta: </strong><?= ($factura['tipo'] == 1 ? 'Local' : ($factura['tipo'] == 2 ? 'Envio' : "Apartado")) ?></span>
                                             <span><?= count($factura['details']) ?> Productos</span>
                                             <span><strong>Fecha: </strong><?= $factura['fechaFormat'] ?></span>
@@ -33,6 +32,13 @@
                                             <span><strong>Monto Efectivo:</strong> <?= number_format($factura['monto_efectivo'], 2, '.', ',') ?></span>
                                             <span><strong>Monto Tarjeta:</strong> <?= number_format($factura['monto_tarjeta'], 2, '.', ',') ?></span>
                                             <span><strong>Monto: transferencia:</strong> <?= number_format($factura['monto_transferencia'], 2, '.', ',') ?></span>
+                                            <?php if ($factura['tipo'] == 3) : ?>
+                                                <span><strong>Abonado:</strong> <?= number_format($factura['fullAbono'], 2, '.', ',') ?></span>
+                                                <?php
+                                                $pendiente =  ((float) $factura['total'] - (float) $factura['fullAbono']);
+                                                ?>
+                                                <span><strong>Pendiente:</strong> <?= number_format($pendiente, 2, '.', ',') ?></span>
+                                            <?php endif;  ?>
                                         </div>
                                         <?php if ($factura['tipo'] == 3) : ?>
                                             <h4>Recibos por Apartado</h4>
@@ -47,7 +53,6 @@
                                                             <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Transferencia</th>
                                                             <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Fecha</th>
                                                             <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Total</th>
-
                                                         </tr>
                                                     </thead>
                                                     <tbody data-sorts="DESC">
@@ -87,7 +92,6 @@
                                                         <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Descuento</th>
                                                         <th data-type="1" data-inner="1" scope="col" style="text-align: center;">IVA</th>
                                                         <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Total</th>
-
                                                     </tr>
                                                 </thead>
                                                 <tbody data-sorts="DESC">

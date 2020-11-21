@@ -108,7 +108,7 @@ class facturacionModel
     {
         $con = new conexion();
         $iduser = $_SESSION['id'];
-        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE tipo = 3 ORDER BY consecutivo DESC");
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE  idusuario = $iduser ORDER BY consecutivo DESC");
         $data = array();
         if ($header['rows'] > 0) {
             foreach ($header['data'] as $factura) {
@@ -119,7 +119,8 @@ class facturacionModel
                     $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {
-                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM recibos r WHERE r.idfactura =$id");
+                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat,  (SELECT SUM(r2.abono) FROM recibos AS r2 WHERE idfactura =$id ) AS fullAbono  FROM recibos r WHERE r.idfactura =$id");
+                    $factura['fullAbono'] = $recibosList['data'][0]['fullAbono'];
                     $factura['recibos'] = $recibosList['data'];
                 }
                 array_push($data, $factura);
@@ -142,7 +143,8 @@ class facturacionModel
                     $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {
-                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM recibos r WHERE r.idfactura =$id");
+                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat,  (SELECT SUM(r2.abono) FROM recibos AS r2 WHERE idfactura =$id ) AS fullAbono  FROM recibos r WHERE r.idfactura =$id");
+                    $factura['fullAbono'] = $recibosList['data'][0]['fullAbono'];
                     $factura['recibos'] = $recibosList['data'];
                 }
                 array_push($data, $factura);
