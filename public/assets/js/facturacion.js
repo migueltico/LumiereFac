@@ -1238,6 +1238,22 @@ $('#bodyContent').on("click", ".facturaChangeState", function (e) {
 $('#bodyContent').on("click", "#btncerrarCajaFinal", function (e) {
     cerrarCajaFinal(parseInt(this.dataset.id))
 })
+$('#bodyContent').on("click", "#BtncancelPendingFac", function (e) {
+    let id = this.dataset.id
+    let formData = new FormData()
+    formData.append('id', id)
+    fetch("/facturacion/pendientes/productos", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.text())
+        .then(resp => {
+            console.log(resp);
+            let productos = resp
+            let wrapper = document.getElementById('productosPendientesRows')
+            wrapper.innerHTML = productos
+            $("#productosPendientesModal").modal("toggle")
+        })
+})
 
 function setAbono() {
     let form = document.getElementById('apartados_form_abonar')
