@@ -66,6 +66,7 @@
                                                                 <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_efectivo"], 2, '.', ',') ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_tarjeta"], 2, '.', ',') ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_transferencia"], 2, '.', ',') ?></td>
+                                                                <td scope="row" style="text-align: left;"><?= $recibos["fechaFormat"]  ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= number_format($total, 2, '.', ',') ?></td>
                                                             </tr>
                                                         <?php endforeach; ?>

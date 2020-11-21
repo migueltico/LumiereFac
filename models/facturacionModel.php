@@ -119,7 +119,7 @@ class facturacionModel
                     $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {
-                    $recibosList = $con->SQND("SELECT * FROM recibos r WHERE r.idfactura =$id");
+                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM recibos r WHERE r.idfactura =$id");
                     $factura['recibos'] = $recibosList['data'];
                 }
                 array_push($data, $factura);
@@ -142,7 +142,7 @@ class facturacionModel
                     $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {
-                    $recibosList = $con->SQND("SELECT * FROM recibos r WHERE r.idfactura =$id");
+                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM recibos r WHERE r.idfactura =$id");
                     $factura['recibos'] = $recibosList['data'];
                 }
                 array_push($data, $factura);
