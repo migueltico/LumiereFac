@@ -47,6 +47,14 @@ class facturacionController extends view
         $data["facturas"] =  $result;
         echo view::renderElement('facturacion/historialDiario', $data);
     }
+    public function apartadosSinCancelar()
+    {
+        $icon = help::icon();
+        $result = fac::apartadosSinCancelar();
+        $data["icons"] =  $icon['icons'];
+        $data["facturas"] =  $result;
+        echo view::renderElement('facturacion/apartadosSinCancelar', $data);
+    }
     public function pendientes()
     {
         $icon = help::icon();

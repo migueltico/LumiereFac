@@ -108,7 +108,30 @@ class facturacionModel
     {
         $con = new conexion();
         $iduser = $_SESSION['id'];
-        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE idusuario=$iduser ORDER BY consecutivo DESC LIMIT 100");
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE tipo = 3 ORDER BY consecutivo DESC");
+        $data = array();
+        if ($header['rows'] > 0) {
+            foreach ($header['data'] as $factura) {
+                $id = (int) $factura['consecutivo'];
+                $tipo = (int) $factura['tipo'];
+                $detalis = $con->SQND("SELECT d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                if ($detalis['rows'] > 0) {
+                    $factura['details'] = $detalis['data'];
+                }
+                if ($tipo == 3) {
+                    $recibosList = $con->SQND("SELECT * FROM recibos r WHERE r.idfactura =$id");
+                    $factura['recibos'] = $recibosList['data'];
+                }
+                array_push($data, $factura);
+            }
+        }
+        return $data;
+    }
+    public static function apartadosSinCancelar()
+    {
+        $con = new conexion();
+        $iduser = $_SESSION['id'];
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, DATE_FORMAT(DATE_ADD(fecha, INTERVAL 30 DAY),'%d-%m-%Y') AS fecha_final FROM facturas  WHERE idusuario=$iduser AND tipo = 3 ORDER BY consecutivo DESC LIMIT 100");
         $data = array();
         if ($header['rows'] > 0) {
             foreach ($header['data'] as $factura) {

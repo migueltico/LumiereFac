@@ -121,6 +121,8 @@
         <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',') ?></p>
         <br>
         <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Apartado**</p>
+        
+        <p class="col-12 text-center" style="font-size: 1rem; margin-top:10px; margin-bottom:10px;">**Productos con descuento, 15 dias de apartado**</p>
 
     </div>
     <div class="row col mt-3">

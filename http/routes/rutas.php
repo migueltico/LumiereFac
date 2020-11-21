@@ -84,6 +84,7 @@ route::group('facturacion', function () {
     route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
     route::post('/apartados/setAbono', 'facturacionController@setAbono');
     route::post('/historial/diario', 'facturacionController@historialDiario', ['loginMiddleware@auth']);
+    route::post('/historial/apartados', 'facturacionController@apartadosSinCancelar', ['loginMiddleware@auth']);
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
