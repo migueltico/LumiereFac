@@ -16,6 +16,7 @@
                                     <h2 class="mb-0">
                                         <button class="btn btn-primary btn-block text-left d-flex justify-content-between" type="button" data-toggle="collapse" data-target="#fac<?= $factura['consecutivo'] ?>" aria-expanded="true" aria-controls="collapseOne">
                                             <span><strong>Factura:</strong> <?= $factura['consecutivo'] ?></span>
+                                            <span><strong>Caja ID:</strong> <?= $factura['idcaja'] ?></span>
                                             <span><strong>Total<?= $factura['monto_envio'] > 0 ? " + Envio" : "" ?>: </strong><?= number_format($factura['total'], 2, '.', ',') ?></span>
                                             <?php if ($factura['monto_envio'] > 0) :  ?>
                                                 <span><strong>Envio: </strong><?= number_format($factura['monto_envio'], 2, '.', ',') ?></span>
@@ -36,7 +37,7 @@
                                         </div>
                                         <?php if ($factura['tipo'] == 3) : ?>
                                             <h4>Recibos por Apartado</h4>
-                                            <div class="table-responsive border border-primary">
+                                            <div class="table-responsive border border-primary mb-2">
                                                 <table class="table sort" id="sortable">
                                                     <thead>
                                                         <tr>
@@ -114,9 +115,6 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <pre>
-                        <?php print_r($facturas) ?>
-                        </pre>
                     </div>
                 </div>
             </div>

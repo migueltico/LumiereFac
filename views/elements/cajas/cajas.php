@@ -15,6 +15,7 @@
                                     <h5>Cajero asignado: <?= $caja['nombre_vendedor'] ?> | <?= $caja['fecha_init'] ?></h5>
                                 </div>
                                 <div class="card-body">
+                                    <h5 class="card-title">Caja ID: <strong> <?= $caja['idcaja'] ?></strong></h5>
                                     <h5 class="card-title">Caja Base: <strong> ₡<?= $caja['caja_base'] ?></strong></h5>
                                     <?php if ($caja['estado'] == 0 && $caja['idvendedor'] == $_SESSION['id']):  ?>
                                         <button class="btn btnAbrirCajaEstado" data-caja="<?= $caja['idcaja'] ?>" style="border:1px solid white;color:white;">Abrir Caja</button>
