@@ -20,7 +20,7 @@
                                             <?php if ($factura['monto_envio'] > 0) :  ?>
                                                 <span><strong>Envio: </strong><?= number_format($factura['monto_envio'], 2, '.', ',') ?></span>
                                             <?php endif;  ?>
-                                            <span><strong>Tipo de venta: </strong><?= ($factura['total'] == 1 ? 'Local' : ($factura['total'] == 2 ? 'Envio' : "Apartado")) ?></span>
+                                            <span><strong>Tipo de venta: </strong><?= ($factura['tipo'] == 1 ? 'Local' : ($factura['tipo'] == 2 ? 'Envio' : "Apartado")) ?></span>
                                             <span><?= count($factura['details']) ?> Productos</span>
                                             <span><strong>Fecha: </strong><?= $factura['fechaFormat'] ?></span>
                                         </button>
@@ -29,8 +29,51 @@
 
                                 <div id="fac<?= $factura['consecutivo'] ?>" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body">
+                                        <div class="alert alert-primary  d-flex justify-content-between" role="alert">
+                                            <span><strong>Monto Efectivo:</strong> <?= number_format($factura['monto_efectivo'], 2, '.', ',') ?></span>
+                                            <span><strong>Monto Tarjeta:</strong> <?= number_format($factura['monto_tarjeta'], 2, '.', ',') ?></span>
+                                            <span><strong>Monto: transferencia:</strong> <?= number_format($factura['monto_transferencia'], 2, '.', ',') ?></span>
+                                        </div>
+                                        <?php if ($factura['tipo'] == 3) : ?>
+                                            <h4>Recibos por Apartado</h4>
+                                            <div class="table-responsive border border-primary">
+                                                <table class="table sort" id="sortable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th data-type="1" data-inner="0" scope="col" style="text-align: left;">#ID recibo</th>
+                                                            <th data-type="1" data-inner="0" scope="col" style="text-align: left;">#Factura</th>
+                                                            <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Efectivo</th>
+                                                            <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Tarjeta</th>
+                                                            <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Transferencia</th>
+                                                            <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Fecha</th>
+                                                            <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Total</th>
 
-                                        <div class="table-responsive">
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody data-sorts="DESC">
+                                                        <?php
+                                                        $gravado = array("noGravado", "gravado");
+                                                        $estado = array("inhabilitado", "habilitado");
+                                                        ?>
+                                                        <?php foreach ($factura['recibos'] as $recibos) : ?>
+                                                            <?php
+                                                            $total = $recibos["monto_efectivo"] + $recibos["monto_tarjeta"] + $recibos["monto_transferencia"];
+                                                            ?>
+                                                            <tr class="TrRow">
+                                                                <td scope="row" style="text-align: left;"><?= $recibos["idrecibo"] ?></td>
+                                                                <td scope="row" style="text-align: left;"><?= $recibos["idfactura"] ?></td>
+                                                                <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_efectivo"], 2, '.', ',') ?></td>
+                                                                <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_tarjeta"], 2, '.', ',') ?></td>
+                                                                <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_transferencia"], 2, '.', ',') ?></td>
+                                                                <td scope="row" style="text-align: left;"><?= number_format($total, 2, '.', ',') ?></td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        <?php endif;  ?>
+                                        <h4>Productos</h4>
+                                        <div class="table-responsive border border-warning">
                                             <table class="table sort" id="sortable">
                                                 <thead>
                                                     <tr>
@@ -71,6 +114,9 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                        <pre>
+                        <?php print_r($facturas) ?>
+                        </pre>
                     </div>
                 </div>
             </div>
