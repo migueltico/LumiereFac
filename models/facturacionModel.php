@@ -21,10 +21,15 @@ class facturacionModel
         $consecutivo = ((int) $conse['data']['fac']) + 1;
         $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
         $result = $con->Multitransaction(
-            "CALL sp_setFacHeader($consecutivo,:idusuario,:idcliente,:impuesto,:descuento,:total,:tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,:monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,:idcaja,:monto_envio)",
+            "CALL sp_setFacHeader($consecutivo,:idusuario,:idcliente,:impuesto,:descuento,:total,
+            :tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,
+            :monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,
+            :idcaja,:monto_envio,:multipago_string,:multipago,:multipago_total)",
             $data
         );
-
+        //    :multipago_string
+        //     :multipago
+        //     :multipago_total
         //error_log("result 1: " . json_encode($result) . "\n", 3, "./logs/errors.log");
         if ($result['rows'] == 1) {
             $con2 = new conexion();
@@ -45,6 +50,7 @@ class facturacionModel
                         ":total" => (float) str_replace(",", "", $item['total_iva'])
                     ));
                 }
+
 
                 $result3 = $con2->Sqlforeach('CALL sp_insertFactDetails(:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)', $itemsSql);
                 return  $result;
@@ -71,8 +77,8 @@ class facturacionModel
         }
         $data[':idcaja'] = $_SESSION['idcaja'];
         $recibo = $con->SQ(
-            "INSERT INTO recibos (idfactura, abono, efectivo, tarjeta, transferencia, monto_transferencia, monto_tarjeta, monto_efectivo,numero_tarjeta,banco_transferencia, referencia_transferencia, idusuario, idcaja) 
-            VALUES (:idfactura, :abono, :efectivo, :tarjeta, :transferencia, :monto_transferencia, :monto_tarjeta, :monto_efectivo,:numero_tarjeta,:banco_transferencia, :referencia_transferencia, :idusuario, :idcaja)",
+            "INSERT INTO recibos (idfactura, abono, efectivo, tarjeta, transferencia, monto_transferencia, monto_tarjeta, monto_efectivo,numero_tarjeta,banco_transferencia, referencia_transferencia, idusuario, idcaja, multipago_string, multipago, multipago_total) 
+            VALUES (:idfactura, :abono, :efectivo, :tarjeta, :transferencia, :monto_transferencia, :monto_tarjeta, :monto_efectivo,:numero_tarjeta,:banco_transferencia, :referencia_transferencia, :idusuario, :idcaja, :multipago_string, :multipago, :multipago_total)",
             $data
         );
         if ($recibo['error'] == '00000') {
@@ -207,17 +213,21 @@ class facturacionModel
         (SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_efectivo, 
         (SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_tarjeta, 
         (SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_transferencia, 
+        (SELECT SUM(multipago_total) FROM recibos WHERE idcaja = :idcaja) AS recibos_multipago_total, 
         (SELECT SUM(monto_efectivo) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_efectivo, 
         (SELECT SUM(monto_transferencia) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_transferencia, 
+        (SELECT SUM(multipago_total) FROM facturas WHERE idcaja = :idcaja) AS facturas_multipago_total, 
         (SELECT SUM(monto_tarjeta) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_tarjeta", $data);
         $recibos_monto_efectivo = $totales['data']['recibos_monto_efectivo'];
         $recibos_monto_tarjeta = $totales['data']['recibos_monto_tarjeta'];
         $recibos_monto_transferencia = $totales['data']['recibos_monto_transferencia'];
+        $recibos_multipago_total = $totales['data']['recibos_multipago_total'];
         $facturas_monto_transferencia = $totales['data']['facturas_monto_transferencia'];
         $facturas_monto_efectivo = $totales['data']['facturas_monto_efectivo'];
         $facturas_monto_tarjeta = $totales['data']['facturas_monto_tarjeta'];
+        $facturas_multipago_total = $totales['data']['facturas_multipago_total'];
         $totalEfectivo = (float)($recibos_monto_efectivo + $facturas_monto_efectivo);
-        $totalTarjeta = (float)($recibos_monto_tarjeta + $facturas_monto_tarjeta);
+        $totalTarjeta = (float)($recibos_monto_tarjeta + $facturas_monto_tarjeta + $facturas_multipago_total + $recibos_multipago_total);
         $totalTransferencia = (float)($recibos_monto_transferencia + $facturas_monto_transferencia);
         $totales['efectivo'] = $totalEfectivo;
         $totales['tarjeta'] = $totalTarjeta;
@@ -227,7 +237,12 @@ class facturacionModel
     public static function getCajas()
     {
         $con = new conexion();
-        $data = $con->SQND("SELECT c.*,u.nombre, u2.nombre AS nombre_vendedor FROM  cajas AS c INNER JOIN usuario AS u ON u.idusuario = c.idusuario_openbox INNER JOIN usuario AS u2 ON u2.idusuario = c.idvendedor");
+        $data = $con->SQND("SELECT c.*,u.nombre, u2.nombre AS nombre_vendedor 
+        FROM  cajas AS c 
+        INNER JOIN usuario AS u 
+        ON u.idusuario = c.idusuario_openbox 
+        INNER JOIN usuario AS u2 
+        ON u2.idusuario = c.idvendedor WHERE NOT c.estado =3");
         return $data;
     }
     public static function cerrarCajafinal($datos)

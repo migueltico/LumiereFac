@@ -30,7 +30,7 @@
                                     <div class="card-body">
                                         <div class="alert alert-primary  d-flex justify-content-between" role="alert">
                                             <span><strong>Monto Efectivo:</strong> <?= number_format($factura['monto_efectivo'], 2, '.', ',') ?></span>
-                                            <span><strong>Monto Tarjeta:</strong> <?= number_format($factura['monto_tarjeta'], 2, '.', ',') ?></span>
+                                            <span><strong>Monto Tarjeta:</strong> <?= number_format(($factura['monto_tarjeta'] + $factura['multipago_total']), 2, '.', ',') ?></span>
                                             <span><strong>Monto: transferencia:</strong> <?= number_format($factura['monto_transferencia'], 2, '.', ',') ?></span>
                                             <?php if ($factura['tipo'] == 3) : ?>
                                                 <span><strong>Abonado:</strong> <?= number_format($factura['fullAbono'], 2, '.', ',') ?></span>
@@ -62,13 +62,13 @@
                                                         ?>
                                                         <?php foreach ($factura['recibos'] as $recibos) : ?>
                                                             <?php
-                                                            $total = $recibos["monto_efectivo"] + $recibos["monto_tarjeta"] + $recibos["monto_transferencia"];
+                                                            $total = $recibos["monto_efectivo"] + $recibos["monto_tarjeta"] + $recibos["monto_transferencia"] + $recibos['multipago_total'];
                                                             ?>
                                                             <tr class="TrRow">
                                                                 <td scope="row" style="text-align: left;"><?= $recibos["idrecibo"] ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= $recibos["idfactura"] ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_efectivo"], 2, '.', ',') ?></td>
-                                                                <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_tarjeta"], 2, '.', ',') ?></td>
+                                                                <td scope="row" style="text-align: left;"><?= number_format(($recibos['monto_tarjeta'] + $recibos['multipago_total']), 2, '.', ',') ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= number_format($recibos["monto_transferencia"], 2, '.', ',') ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= $recibos["fechaFormat"]  ?></td>
                                                                 <td scope="row" style="text-align: left;"><?= number_format($total, 2, '.', ',') ?></td>

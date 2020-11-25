@@ -29,7 +29,13 @@
                                 <input type="number" id="descuentos_descuento" name="descuento" class="form-control  p-3">
                             </div>
                         </div>
-                    </div>                
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name="show" id="descuentos_show">
+                            <label class="custom-control-label" for="descuentos_show">Mostrar en Facturacion</label>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">

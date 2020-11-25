@@ -41,8 +41,10 @@
                             <h5 class="">Tarjeta</h5>
                         </div>
                         <div class="card-body">
+                            <label for="addNewTarjeta">Añadir mas tarjetas</label>
+                            <a class="btn btn-warning btn-sm ml-2" id="addNewTarjeta2"><?= $icons['plus'] ?></a>
                             <div class="row">
-                                <div class="input-group mb-3 mt-3  col-lg-6 col-md-6 col-sm-12">
+                                <div class="input-group mb-3 mt-3  col-lg-5 col-md-5 col-sm-11">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"># Tarjeta</span>
                                     </div>
@@ -53,6 +55,11 @@
                                         <span class="input-group-text">Monto</span>
                                     </div>
                                     <input type="text" class="form-control abonoMontosModal" name="tarjetaMontoAbono" id="tarjetaMontoAbono" value="0.00">
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div id="addrowtarjeta2">
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

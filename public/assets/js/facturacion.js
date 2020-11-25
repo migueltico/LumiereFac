@@ -4,11 +4,104 @@ $('#bodyContent').on("change", ".cantInputFact", function (e) {
     RefreshCalcTotalRowPrice(tr, 0)
     getSubTotalAndTotal()
 })
+$('#bodyContent').on("click", ".btnDeleteRowTarjeta", function (e) {
+    let id = this.dataset.id
+    let cb = document.getElementById('MultiTipoPagoFact');
+    let allMonto = document.getElementsByClassName('tarjertaInputs_monto')[0]
+    let rowtarjetas = document.getElementsByClassName('rowtarjetas')
+    let totalFactAmount = document.getElementById('totalFactAmount').textContent
+    let row = document.getElementById(id)
+    row.remove()
+    if (!cb.checked) {
+        if (rowtarjetas.length == 0) {
+            allMonto.disabled = true;
+            allMonto.value = totalFactAmount
+        }
+    }
+})
+$('#bodyContent').on("click", "#addNewTarjeta", function (e) {
+    let allMonto = document.getElementsByClassName('tarjertaInputs_monto')[0]
+    let cb = document.getElementById('MultiTipoPagoFact');
+    let d = new Date();
+    let n = d.getSeconds();
+    let letras = ['a', 'b', 'c', 'd']
+    let randID = letras[Math.floor(Math.random() * 4)] + Math.floor(Math.random() * 100) + n;
+    let mainRow = document.createElement('div')
+    let inputGroup1 = document.createElement('div')
+    let inputGroup2 = document.createElement('div')
+    let inputGroup3 = document.createElement('div')
+    let prepend1 = document.createElement('div')
+    let prepend2 = document.createElement('div')
+    let input1 = document.createElement('input')
+    let input2 = document.createElement('input')
+    let span1 = document.createElement('span')
+    let span2 = document.createElement('span')
+    let button = document.createElement('button')
+    let = document.createElement('div')
+    mainRow.classList.add('row', 'rowtarjetas')
+    mainRow.id = randID
+
+    // *****GROUP 1*****/
+    inputGroup1.classList.add('input-group', 'mb-3', 'mt-3', 'col-lg-5', 'col-md-5', 'col-sm-11')
+    prepend1.classList.add('input-group-prepend')
+    input1.classList.add('form-control', 'tarjertaInputs_tarjeta', 'inputRowsTarjeta')
+    input1.type = 'text'
+    input1.maxLength = 4
+    input1.placeholder = 'Ultimos 4 Digitos'
+    input1.dataset.id = randID
+    span1.classList.add('input-group-text')
+
+
+    span1.textContent = '# Tarjeta'
+    prepend1.appendChild(span1)
+    inputGroup1.appendChild(prepend1)
+    inputGroup1.appendChild(input1)
+    // *****GROUP 2*****/
+    inputGroup2.classList.add('input-group', 'mb-3', 'mt-3', 'col-lg-6', 'col-md-6', 'col-sm-12')
+    prepend2.classList.add('input-group-prepend')
+    input2.classList.add('form-control', 'tarjertaInputs_monto', 'inputRowsTarjetaMonto', 'lbMontoToPay')
+    input2.value = '0.00'
+    input2.id = 'tarjetaMonto_' + randID
+    input2.type = 'text'
+    input2.placeholder = 'Ultimos 4 Digitos'
+    span2.classList.add('input-group-text')
+
+    span2.textContent = 'Monto'
+    prepend2.appendChild(span2)
+    inputGroup2.appendChild(prepend2)
+    inputGroup2.appendChild(input2)
+
+    // *****BTN*****/
+    inputGroup3.classList.add('input-group', 'mb-3', 'mt-3', 'col-lg-1', 'col-md-1', 'col-sm-1')
+    button.textContent = 'X'
+    button.dataset.id = randID
+    button.classList.add('btn', 'btn-danger', 'btnDeleteRowTarjeta')
+
+    inputGroup3.appendChild(button)
+    mainRow.appendChild(inputGroup1)
+    mainRow.appendChild(inputGroup2)
+    mainRow.appendChild(inputGroup3)
+    let addrowtarjeta = document.getElementById('addrowtarjeta')
+    let pagoContraEntrega = document.getElementById('pagoContraEntrega')
+    if (!pagoContraEntrega.checked) {
+        addrowtarjeta.appendChild(mainRow)
+        if (!cb.checked) {
+            allMonto.disabled = false;
+            allMonto.value = '0.00';
+        }
+    }
+})
 $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
+    multiState(e)
+})
+
+function multiState(e) {
     const cb = document.getElementById('MultiTipoPagoFact');
+    let rowtarjetas = document.querySelectorAll(".rowtarjetas")
     const InputSwitch = document.getElementsByClassName('fact_switchBtns');
     const InputRadio = document.getElementsByClassName('fact_rbRadiosBtns');
-
+    const removeElements = (elms) => elms.forEach(el => el.remove())
+    removeElements(rowtarjetas)
     $(".cardHeaderSwitch").removeClass('selectedMethodPay')
     let pago = document.getElementById("pagoContraEntrega").checked
     if (!pago) {
@@ -36,14 +129,14 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
             }
         }
     }
-
-
-})
+}
 $("#bodyContent").on("change", "#pagoContraEntrega", function (e) {
     let tr = document.getElementById("appendItemRowProduct")
     let Multi = document.getElementById("MultiTipoPagoFact").checked
+    let rowtarjetas = document.querySelectorAll(".rowtarjetas")
     let count = tr.getElementsByTagName("tr")
-
+    const removeElements = (elms) => elms.forEach(el => el.remove())
+    removeElements(rowtarjetas)
     if (Multi && this.checked) {
         $(".lbMontoToPay").prop("disabled", true)
     } else {
@@ -64,6 +157,9 @@ $("#bodyContent").on("change", "#pagoContraEntrega", function (e) {
 $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
     let tr = document.getElementById("appendItemRowProduct")
     let count = tr.getElementsByTagName("tr")
+    let Multi = document.getElementById("MultiTipoPagoFact")
+    Multi.checked = false
+    multiState(e)
     if (count.length == 0) {
         Swal.fire({
             position: 'top',
@@ -279,21 +375,20 @@ function getProductsRowsForFac(method, pago, typeAbono) {
         estado: (tipoVenta == 1 ? 1 : 0),
         hasPay: pago
     }
-
+    console.log("final Json", finalJson);
     printFact(finalJson)
 }
 
 
 function PagoUnicoFac() {
     let InputsRadio = document.querySelectorAll(".fact_rbRadiosBtns")
-
     for (let input of InputsRadio) {
         if (input.checked) {
             let inputClass = input.dataset.inputval
-            let result = verificaCamposPago(inputClass)
+            let result = verificaCamposPago(inputClass, false)
             if (result.state) {
                 return [result]
-            } else {
+            } else if (!result.campos) {
                 Swal.fire({
                     position: 'top',
                     title: 'Campos Incompletos',
@@ -303,6 +398,18 @@ function PagoUnicoFac() {
                     timerProgressBar: true
                 })
                 return [result]
+            } else if (result.methods.hasMore && !result.methods.total) {
+                Swal.fire({
+                    position: 'top',
+                    title: 'Monto no coincide con total de factura',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+                return [result]
+
+
             }
         }
     }
@@ -318,14 +425,20 @@ function PagoMultipleFac(pago, abono) {
     for (let switchItem of Allswitch) {
         if (switchItem.checked) {
             let itemId = switchItem.dataset.inputval
-            result = verificaCamposPago(itemId)
+            console.log("CHECK", itemId);
+            result = verificaCamposPago(itemId, true)
             if (result.state) {
                 let monto = document.getElementsByClassName(`${itemId}_monto`)[0].value
 
                 let valor = monto
 
                 valor = valor.replace(',', "");
-                finalAmount = parseInt(finalAmount) + parseInt(valor)
+                valor = parseFloat(valor)
+                if (result.methods.hasMore) {
+                    valor += result.methods.totalExtraCards
+                }
+                console.log("with Extra mount", valor);
+                finalAmount = parseFloat(finalAmount) + parseFloat(valor)
                 methodsArray.push(result)
             } else {
                 methodsArray.push(result)
@@ -341,7 +454,7 @@ function PagoMultipleFac(pago, abono) {
             }
         }
     }
-    if (parseInt(finalAmount) == parseInt(amounts.replace(',', "")) && pago == 1) {
+    if (parseFloat(finalAmount) == parseFloat(amounts.replace(',', "")) && pago == 1) {
         return {
             state: true,
             methodsArray
@@ -367,10 +480,11 @@ function PagoMultipleFac(pago, abono) {
     return methodsArray
 }
 
-function verificaCamposPago(inputClass) {
+function verificaCamposPago(inputClass, multi) {
     switch (inputClass) {
         case 'efectivoInputs':
             let Emonto = document.getElementsByClassName(`${inputClass}_monto`)[0].value
+
             if (Emonto.length > 0) {
                 let methods = {
                     tipo: "efectivo",
@@ -388,22 +502,101 @@ function verificaCamposPago(inputClass) {
             }
             break;
         case 'tarjertaInputs':
+            let pagoContraEntrega = document.getElementById('pagoContraEntrega').checked;
+            let abono = btnTypeApartado.classList.contains("active");
             let Tmonto = document.getElementsByClassName(`${inputClass}_monto`)[0].value
             let tarjeta = document.getElementsByClassName(`${inputClass}_tarjeta`)[0].value
-            if (Tmonto.length > 0 && tarjeta.length > 0) {
+            let tarjetaIds = document.getElementsByClassName(`inputRowsTarjeta`)
+            let rowtarjetas = document.getElementsByClassName('rowtarjetas')
+            allLength = true
+            for (tarjetId of tarjetaIds) {
+                if (tarjetId.value.length == 0) {
+                    allLength = false
+                }
+            }
+
+
+            // tarjetaMonto_
+            let hasMore = rowtarjetas.length !== 0 ? true : false
+            let totalGroup = 0.00
+            Tmontolength = Tmonto.length > 0 ? true : false
+            tarjetalength = tarjeta.length > 0 ? true : false
+            if (pagoContraEntrega || abono) {
+                Tmontolength = true
+                tarjetalength = true
+                allLength = true
+            }
+
+            if (Tmonto.length > 0 && tarjeta.length > 0 && allLength) {
                 let methods = {
                     tipo: "tarjeta",
                     monto: parseFloat(Tmonto.replace(",", "")).toFixed(2),
                     tarjeta,
-                    montoWithFormat: Tmonto
+                    montoWithFormat: Tmonto,
+                    hasMore
                 }
-                return {
-                    state: true,
-                    methods
+                if (hasMore) {
+                    let extras = []
+
+                    let inputRowsTarjeta = document.getElementsByClassName('inputRowsTarjeta')
+                    for (tarjeta of inputRowsTarjeta) {
+                        console.log("Rows value", tarjeta.value);
+                        let montoId = `tarjetaMonto_${tarjeta.dataset.id}`
+                        let monto = document.getElementById(montoId).value
+                        let withOutFormatMonto = parseFloat(monto.replace(",", "")).toFixed(2)
+                        totalGroup = (totalGroup + parseFloat(withOutFormatMonto))
+                        console.log(monto);
+                        let newTarjeta = {
+                            tipo: "tarjeta",
+                            tarjeta: tarjeta.value,
+                            monto: parseFloat(withOutFormatMonto),
+                            montoWithFormat: monto
+
+                        }
+                        extras.push(newTarjeta)
+                    }
+                    methods.extraCards = extras
+                    methods.totalExtraCards = totalGroup
+                    console.log("Set News tarjetas", methods);
+                }
+                if (hasMore) {
+                    let btnTypeApartado = document.getElementById('btnTypeApartado');
+                    let abono = btnTypeApartado.classList.contains("active");
+                    let amounts = document.getElementById('totalFactAmount').dataset.amount
+                    let montoTarjetaId = document.getElementById('montoTarjetaId').value
+                    amounts = amounts.replace(",", "")
+                    amounts = parseFloat(amounts)
+                    montoTarjetaId = montoTarjetaId.replace(",", "")
+                    montoTarjetaId = parseFloat(montoTarjetaId)
+                    totalGroup = (totalGroup + montoTarjetaId)
+                    if (amounts !== totalGroup && !multi && !abono && !pagoContraEntrega) {
+                        return {
+                            state: false,
+                            methods,
+                            total: false,
+                            campos: true
+                        }
+                    } else {
+                        return {
+                            state: true,
+                            methods,
+                            total: true,
+                            campos: true
+                        }
+                    }
+
+                } else {
+
+                    return {
+                        state: true,
+                        methods,
+                        campos: true
+                    }
                 }
             } else {
                 return {
-                    state: false
+                    state: false,
+                    campos: false
                 }
             }
             break;
@@ -450,14 +643,13 @@ function printFact(datos) {
         .then(resp => {
 
             if (Okprint.checked) {
-                $(`#FacSendModal`).modal('toggle')
-                //$('#printContainer').html(resp)
+                // $(`#FacSendModal`).modal('toggle')
                 let h = resp;
                 let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
                 window.print();
                 d.remove();
             } else {
-                $(`#FacSendModal`).modal('toggle')
+                // $(`#FacSendModal`).modal('toggle')
                 Swal.fire({
                     position: 'top',
                     title: "Factura",
@@ -469,7 +661,7 @@ function printFact(datos) {
                 })
                 Okprint.checked = true
             }
-            resetFactScreen()
+            // resetFactScreen()
         })
 
 }
@@ -592,7 +784,10 @@ $('#bodyContent').on("keypress", "#ScanCode", function (e) {
     }
 
 })
-
+/**
+ * *************************************************************************************
+ * *************************************************************************************
+ */
 
 function getProductFact(e) {
     let element = document.getElementById('ScanCode')
@@ -634,7 +829,7 @@ function getProductFact(e) {
                     let des_descuento = (data.descuento_descripcion == null ? 'Sin Descuento' : data.descuento_descripcion)
                     let precios = calcTotalRowPrice(data.precio_venta, (data.descuento == null ? 0 : data.descuento), (data.activado_iva == 0 ? 0 : data.iva))
                     let row = /*html*/ `
-                        <tr class="productRowFac" id="itemRowProduct_${data.idproducto}">
+                        <tr class="productRowFac ${data.descuento == null ? 'trNotDiscount':''}" id="itemRowProduct_${data.idproducto}">
                             <td scope="row" data-id="${data.idproducto}" data-toggle="tooltip"data-placement="bottom" title="${data.idproducto}">${data.codigo}</td>
                             <td scope="row">${data.descripcion_short} | ${data.marca}</td>
                             <td scope="row">${data.talla}</td>
@@ -642,7 +837,7 @@ function getProductFact(e) {
                             <td scope="row"><input type="number" min="1" class="cantInputFact" id="id_${data.idproducto}" style="width: 43px !important;text-align:center" name="" id="" value="1"></td>
                             <td scope="row">${data.stock}</td>
                             <td scope="row" ${(data.precio_venta < 1 ?'style="color:red;"':"")}>${data.precio_venta}</td>
-                            <td scope="row" data-toggle="tooltip" data-descuento="${(data.descuento == null ? 0 : data.descuento)}" data-placement="bottom" title="${des_descuento}">${descuento}</td>
+                            <td scope="row" ${data.descuento == null ? 'class="tdNotDiscount"':''} data-toggle="tooltip" data-descuento="${(data.descuento == null ? 0 : data.descuento)}" data-placement="bottom" title="${des_descuento}">${descuento}</td>
                             <td scope="row" class="productRowFac_subtotal">${precios[0]}</td>
                             <td scope="row" class="productRowFac_total">${precios[1]}</td>
                             <td scope="row"><button class="btn btn-danger removeItemProductBtn" data-id="${data.idproducto}">X</button></td>
@@ -724,7 +919,7 @@ function calcTotalRowPrice(precio, descuento, iva) {
 
         TotaliVa = parseFloat(precioVentaSub + parseFloat(precioVentaSub * ivaPorcent))
     }
-
+    console.log(precioVentaSub);
 
     return [precioVentaSub.toFixed(2), TotaliVa.toFixed(2)]
 }
@@ -733,7 +928,7 @@ function RefreshCalcTotalRowPrice(tds, sum) {
     let cant = $(tds[4]).children().val()
     let total = parseInt(cant) + parseInt(sum)
     let precio = parseFloat($(tds[6]).text())
-    let descuento = $(tds[8]).data('descuento')
+    let descuento = tds[7].dataset.descuento
     let descuento_porcentaje = 0
     let monto_reducir = 0
     let totalAll = 0
@@ -774,6 +969,42 @@ function existProductRow(toSearch) {
     return true
 }
 
+/**
+ * *************************************************************************************
+ * *************************************************************************************
+ */
+
+$('#bodyContent').on("change", "#descuentosSelect", function (e) {
+    let descuento = this.value
+    let tds = document.getElementsByClassName('tdNotDiscount')
+    let trs = document.getElementsByClassName('trNotDiscount')
+    console.log(descuento);
+    for (td of tds) {
+        td.dataset.descuento = descuento
+        td.textContent = descuento + '%'
+    }
+    RefreshCalcTotalRowPrice($(trs).children(), 0)
+    getSubTotalAndTotal()
+
+})
+$('#bodyContent').on("change", "#canDiscountFac", function (e) {
+    let descuentos = document.getElementById('descuentosSelect')
+    let tds = document.getElementsByClassName('tdNotDiscount')
+    let trs = document.getElementsByClassName('trNotDiscount')
+    if (this.checked) {
+        descuentos.disabled = false
+    } else {
+        descuentos.disabled = true
+        for (td of tds) {
+            td.dataset.descuento = 0
+            td.textContent = 'N/A'
+        }
+        descuentos.options[0].selected = true
+        RefreshCalcTotalRowPrice($(trs).children(), 0)
+        getSubTotalAndTotal()
+    }
+
+})
 $('#bodyContent').on("keypress", "#SearchProductInputCtrlQ", function (e) {
     if (e.charCode == 13) {
         SearchProductModalFact(this.value, 1)
@@ -1262,9 +1493,26 @@ function setAbono() {
     let bancoAbono = document.getElementById('bancoAbono')
     let banco = bancoAbono.options[bancoAbono.selectedIndex].textContent
     let formData = new FormData(form)
+    banco = banco == 'Seleccione' ? '' : banco
+    let extras = []
+    let totalGroup = 0
+    let inputRowsTarjeta = document.getElementsByClassName('inputRowsTarjeta2')
+    let stringCards = ''
+    for (tarjeta of inputRowsTarjeta) {
+        console.log("Rows value", tarjeta.value);
+        let montoId = `tarjetaMonto_${tarjeta.dataset.id}`
+        let monto = document.getElementById(montoId).value
+        let withOutFormatMonto = parseFloat(monto.replace(",", "")).toFixed(2)
+        totalGroup = (totalGroup + parseFloat(withOutFormatMonto))
+        stringCards += tarjeta.value + ',' + parseFloat(withOutFormatMonto) + ",tarjeta;"
+    }
+
+
     formData.append('vendedor', InputVendedorFact)
     formData.append('cliente', fac_cliente_input)
     formData.append('banco', banco)
+    formData.append('cards', stringCards)
+    formData.append('totalCards', totalGroup)
     fetch("/facturacion/apartados/setAbono", {
             method: "POST",
             body: formData
@@ -1274,7 +1522,7 @@ function setAbono() {
             let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
             window.print();
             d.remove();
-            resetFactScreen()
+            // resetFactScreen()
 
         })
 }
@@ -1325,6 +1573,7 @@ function cerrarCajaFinal(id) {
             console.log(resp);
             if (resp.error == "00000") {
                 $("#cajas_cerrarCaja").modal('toggle')
+                loadPage(null, '/facturacion/cajas')
                 Swal.fire({
                     position: 'top',
                     title: `Caja cerrada`,
@@ -1359,3 +1608,75 @@ function cerrarCajaFinal(id) {
         })
 
 }
+
+$('#bodyContent').on("click", ".btnDeleteRowTarjeta2", function (e) {
+    let id = this.dataset.id
+    let row = document.getElementById(id)
+    row.remove()
+})
+$('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
+    console.log('CLICK');
+    let allMonto = document.getElementsByClassName('tarjertaInputs_monto2')[0]
+    let d = new Date();
+    let n = d.getSeconds();
+    let letras = ['a', 'b', 'c', 'd']
+    let randID = letras[Math.floor(Math.random() * 4)] + Math.floor(Math.random() * 100) + n;
+    let mainRow = document.createElement('div')
+    let inputGroup1 = document.createElement('div')
+    let inputGroup2 = document.createElement('div')
+    let inputGroup3 = document.createElement('div')
+    let prepend1 = document.createElement('div')
+    let prepend2 = document.createElement('div')
+    let input1 = document.createElement('input')
+    let input2 = document.createElement('input')
+    let span1 = document.createElement('span')
+    let span2 = document.createElement('span')
+    let button = document.createElement('button')
+    let = document.createElement('div')
+    mainRow.classList.add('row', 'rowtarjetas2')
+    mainRow.id = randID
+
+    // *****GROUP 1*****/
+    inputGroup1.classList.add('input-group', 'mb-3', 'mt-3', 'col-lg-5', 'col-md-5', 'col-sm-11')
+    prepend1.classList.add('input-group-prepend')
+    input1.classList.add('form-control', 'tarjertaInputs_tarjeta2', 'inputRowsTarjeta2')
+    input1.type = 'text'
+    input1.maxLength = 4
+    input1.placeholder = 'Ultimos 4 Digitos'
+    input1.dataset.id = randID
+    span1.classList.add('input-group-text')
+
+
+    span1.textContent = '# Tarjeta'
+    prepend1.appendChild(span1)
+    inputGroup1.appendChild(prepend1)
+    inputGroup1.appendChild(input1)
+    // *****GROUP 2*****/
+    inputGroup2.classList.add('input-group', 'mb-3', 'mt-3', 'col-lg-6', 'col-md-6', 'col-sm-12')
+    prepend2.classList.add('input-group-prepend')
+    input2.classList.add('form-control', 'tarjertaInputs_monto2', 'inputRowsTarjetaMonto2', 'lbMontoToPay')
+    input2.value = '0.00'
+    input2.id = 'tarjetaMonto_' + randID
+    input2.type = 'text'
+    input2.placeholder = 'Ultimos 4 Digitos'
+    span2.classList.add('input-group-text')
+
+    span2.textContent = 'Monto'
+    prepend2.appendChild(span2)
+    inputGroup2.appendChild(prepend2)
+    inputGroup2.appendChild(input2)
+
+    // *****BTN*****/
+    inputGroup3.classList.add('input-group', 'mb-3', 'mt-3', 'col-lg-1', 'col-md-1', 'col-sm-1')
+    button.textContent = 'X'
+    button.dataset.id = randID
+    button.classList.add('btn', 'btn-danger', 'btnDeleteRowTarjeta2')
+
+    inputGroup3.appendChild(button)
+    mainRow.appendChild(inputGroup1)
+    mainRow.appendChild(inputGroup2)
+    mainRow.appendChild(inputGroup3)
+    let addrowtarjeta = document.getElementById('addrowtarjeta2')
+    addrowtarjeta.appendChild(mainRow)
+
+})

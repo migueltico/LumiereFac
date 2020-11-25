@@ -33,6 +33,12 @@
                     </div>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name="show" id="descuentos_Edit_show">
+                            <label class="custom-control-label" for="descuentos_Edit_show">Mostrar en Facturacion</label>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" name="activo" id="descuentos_Edit_activo">
                             <label class="custom-control-label" for="descuentos_Edit_activo">Activo</label>
                         </div>
@@ -41,7 +47,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" id="btnEditarDescuento" class="btn btn-primary">Crear</button>
+                <button type="button" id="btnEditarDescuento" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>

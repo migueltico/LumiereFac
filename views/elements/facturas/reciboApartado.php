@@ -105,6 +105,17 @@
         <?php foreach ($methodPay as $method) : ?>
             <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
             <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $method['methods']['montoWithFormat'] ?></p>
+            <?php if ($method['methods']['tipo'] == "tarjeta") : ?>
+                <?php if ($method['methods']['hasMore']) : ?>
+                    <?php foreach ($method['methods']['extraCards'] as $card) : ?>
+                        <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($card['tipo']) . ($card['tipo'] == "tarjeta" ? "-" . $card['tarjeta'] : "") ?>:</p>
+                        <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $card['montoWithFormat'] ?></p>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                <?php
+                $montoAbono += (float)($method['methods']['totalExtraCards']);
+                ?>
+            <?php endif; ?>
             <?php
             $montoAbono += (float)($method['methods']['monto']);
 
@@ -121,9 +132,9 @@
         <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',') ?></p>
         <br>
         <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Apartado**</p>
-        
-        <p class="col-12 text-center" style="font-size: 1rem; margin-top:10px; margin-bottom:10px;">**Productos con descuento, 15 dias de apartado**</p>
-
+        <?php if ($HasDescuento) :  ?>
+            <p class="col-12 text-center" style="font-size: 1rem; margin-top:10px; margin-bottom:10px;">**Productos con descuento, 15 dias de apartado**</p>
+        <?php endif;  ?>
     </div>
     <div class="row col mt-3">
         <p class="col-12 text-center colFac" style="font-size: 1.3rem;"><?= $info['mensaje_footer_fac'] ?></p>

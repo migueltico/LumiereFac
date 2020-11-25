@@ -23,10 +23,11 @@ class facturacionController extends view
         $info = admin::infoSucursal();
         $info = $info['data'];
         $cliente = cliente::getClienteById(array(":id" => $info['idclienteGenerico']));
-
+        $descuentos = admin::descuentosOnlyFac();
         $icon = help::icon();
         $data["icons"] =  $icon['icons'];
         $data["cliente"] =  $cliente['data'];
+        $data["descuentos"] =  $descuentos['data'];
         echo view::renderElement('facturacion/facturacion', $data);
     }
     public function cajas()
@@ -116,7 +117,7 @@ class facturacionController extends view
         $data[':transferencia'] = (float) $_POST['transferencia'];
         $data[':diferencia'] = (float) $_POST['diferencia'];
         $data[':comentario'] = $_POST['comentario'];
-        $data[':id'] =(int)  $_POST['id'];
+        $data[':id'] = (int)  $_POST['id'];
         $result = fac::cerrarCajafinal($data);
         header('Content-Type: application/json');
         echo json_encode($result);
@@ -138,7 +139,7 @@ class facturacionController extends view
     }
     public function getFact()
     {
-        $data = json_decode(file_get_contents("php://input"), true);        
+        $data = json_decode(file_get_contents("php://input"), true);
         $result = $this->setFacHeader($data);
         $data["data"] = admin::infoSucursal();
         $data["factura"] =  ($result[1]['rows'] == 1 ? $result[1]['data'] : "error");
@@ -153,7 +154,7 @@ class facturacionController extends view
         }
     }
     public function setFacHeader($datos)
-    {        
+    {
         if (isset($_SESSION['hasCaja']) &&  $_SESSION['hasCaja'] == true) {
 
             //efectivo
@@ -163,6 +164,9 @@ class facturacionController extends view
             $data[':tarjeta'] = 0;
             $data[':numero_tarjeta'] = null;
             $data[':monto_tarjeta'] = (float) 0.00;
+            $data[':multipago_string'] = ''; //string de tarjetas
+            $data[':multipago'] = 0;
+            $data[':multipago_total'] = (float) 0.00;
             //transferencia
             $data[':transferencia'] = 0;
             $data[':banco_transferencia'] = "";
@@ -190,6 +194,15 @@ class facturacionController extends view
                         $data[':tarjeta'] = 1;
                         $data[':numero_tarjeta'] = (int) $metodo['methods']['tarjeta'];
                         $data[':monto_tarjeta'] = (float) $metodo['methods']['monto'];
+                        if ($metodo['methods']['hasMore']) {
+                            $data[':multipago_total'] =  $metodo['methods']['totalExtraCards'];
+                            $data[':multipago'] = 1;
+
+                            foreach ($metodo['methods']['extraCards'] as $cards) { //extraCards
+                                $data[':multipago_string'] .= $cards['tarjeta'] . ',' . $cards['monto'] . ',' . $cards['tipo'] . ';';
+                            }
+                            $data[':multipago_string'] = rtrim($data[':multipago_string'], ';');
+                        }
                     } else if ($metodo['methods']['tipo'] == "transferencia") {
                         $data[':transferencia'] = 1;
                         $data[':banco_transferencia'] = $metodo['methods']['banco'];
@@ -198,6 +211,7 @@ class facturacionController extends view
                     }
                 }
             }
+
             if ($datos['tipoVenta'] == 3 && $datos['firstAbono'] == 1) {
                 //efectivo
                 $data[':efectivo'] = 0;
@@ -206,6 +220,9 @@ class facturacionController extends view
                 $data[':tarjeta'] = 0;
                 $data[':numero_tarjeta'] = null;
                 $data[':monto_tarjeta'] = (float) 0.00;
+                $data[':multipago_string'] = ''; //string de tarjetas
+                $data[':multipago'] = 0;
+                $data[':multipago_total'] = (float) 0.00;
                 //transferencia
                 $data[':transferencia'] = 0;
                 $data[':banco_transferencia'] = "";
@@ -220,6 +237,15 @@ class facturacionController extends view
                         $data[':tarjeta'] = 1;
                         $data[':numero_tarjeta'] = (int) $metodo['methods']['tarjeta'];
                         $data[':monto_tarjeta'] = (float) $metodo['methods']['monto'];
+                        if ($metodo['methods']['hasMore']) {
+                            $data[':multipago_total'] =  $metodo['methods']['totalExtraCards'];
+                            $data[':multipago'] = 1;
+
+                            foreach ($metodo['methods']['extraCards'] as $cards) { //extraCards
+                                $data[':multipago_string'] .= $cards['tarjeta'] . ',' . $cards['monto'] . ',' . $cards['tipo'] . ';';
+                            }
+                            $data[':multipago_string'] = rtrim($data[':multipago_string'], ';');
+                        }
                     } else if ($metodo['methods']['tipo'] == "transferencia") {
                         $data[':transferencia'] = 1;
                         $data[':banco_transferencia'] = $metodo['methods']['banco'];
@@ -227,7 +253,7 @@ class facturacionController extends view
                         $data[':monto_transferencia'] = (float)  $metodo['methods']['monto'];
                     }
                 }
-                $data[':abono'] = (float) ($data[':monto_efectivo'] + $data[':monto_transferencia'] + $data[':monto_tarjeta']);
+                $data[':abono'] = (float) ($data[':monto_efectivo'] + $data[':monto_transferencia'] + $data[':monto_tarjeta'] + $data[':multipago_total']);
                 $data[':idfactura'] = (int) $fac['data']['fac'];
                 $abono = fac::setAbonoRecibo($data, false); //False para que elimine los campos extras y true porque ya no los lleva el array
                 $abono['fac'] = (int) $fac['data']['fac'];
@@ -253,6 +279,11 @@ class facturacionController extends view
     }
     public function setAbono()
     {
+        $cards = rtrim($_POST['cards'], ';');
+        $totalCards = (float) $_POST['totalCards'];
+        $cards = explode(";", $cards);
+
+
         $montoEfectivo = str_replace(",", "", ($_POST['efectivoMontoAbono']));
         $montoTarjeta = str_replace(",", "", $_POST['tarjetaMontoAbono']);
         $montoTransferencia = str_replace(",", "", $_POST['bancoMontoAbono']);
@@ -273,6 +304,14 @@ class facturacionController extends view
         $data[':tarjeta'] = (int)($montoTarjeta > 0 ? 1 : 0);
         $data[':numero_tarjeta'] = (int)($montoTarjeta > 0 ? $_POST['tarjetaAbono'] : null);
         $data[':monto_tarjeta'] = (float)($montoTarjeta > 0 ? $montoTarjeta : 0.00);
+        if ($totalCards > 0) {
+            $data[':multipago_total'] = (float) $totalCards;
+            $data[':multipago_string'] = rtrim($_POST['cards'], ';');
+            $data[':multipago'] = 1;
+            $data[':abono'] = (float)($data[':abono'] + $totalCards);
+        } else {
+            $data[':multipago'] = 0;
+        }
         //transferencia
         $data[':transferencia'] = (int)($montoTransferencia > 0 ? 1 : 0);
         $data[':banco_transferencia'] = ($_POST['banco'] !== "" ? $_POST['banco'] : "");
@@ -281,6 +320,11 @@ class facturacionController extends view
         //demas datos
         $data[':idusuario'] = (int)$_SESSION['id'];
         $NewData['methods'] = [];
+
+
+
+
+
         $apartados =  fac::setAbonoRecibo($data, true);
         $NewData["data"] = admin::infoSucursal();
         if ($montoEfectivo > 0) {
@@ -307,6 +351,7 @@ class facturacionController extends view
         $NewData["fecha_final"] = $apartados['fecha_final'];
         $NewData["total"] = $apartados['total'];
         $NewData['idrecibo'] = $apartados['idrecibo'];
+        $NewData['cards'] = $cards;
         echo view::renderElement('facturas/reciboSinproducto', $NewData);
     }
 }

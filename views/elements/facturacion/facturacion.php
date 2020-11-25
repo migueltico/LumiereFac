@@ -24,6 +24,17 @@
                             </div>
                             <input type="text" disabled id="datePickerInput" class="form-control text-right" data-cliente="1" value="<?= date('d-m-Y'); ?>">
                         </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <input type="checkbox" id="canDiscountFac"></span>
+                            </div>
+                            <select class="custom-select" id="descuentosSelect" disabled>
+                                <option selected disabled>Seleccione un descuento</option>
+                                <?php foreach ($descuentos as $descuento) :  ?>
+                                    <option value="<?= $descuento['descuento'] ?>"><?= $descuento['descripcion']  ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-12">
 
@@ -66,7 +77,7 @@
                         <div class="input-group-prepend">
                             <label class="btn btn-outline-secondary" id="btnCodigoBarrasModal" type="button">Buscar</label>
                         </div>
-                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" autofocus="on" placeholder="Escanea o Digita el codigo" value="">
+                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" autofocus="on" placeholder="Escanea o Digita el codigo" value="179404928">
                         <input type="hidden" name="" id="bodyFactMain" data-number="1">
                     </div>
 

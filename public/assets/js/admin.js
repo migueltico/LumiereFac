@@ -578,14 +578,17 @@ $('#bodyContent').on("click", ".EditDescuentoBtn", function (e) {
 	let descripcion = document.getElementById('descuentos_Edit_descripcion')
 	let descuento = document.getElementById('descuentos_Edit_descuento')
 	let activo = document.getElementById('descuentos_Edit_activo')
+	let show = document.getElementById('descuentos_Edit_show')
 	let Btn_id = this.dataset.id
 	let Btn_descripcion = this.dataset.descripcion
 	let Btn_descuento = this.dataset.descuento
 	let Btn_activo = this.dataset.activo
+	let Btn_show = this.dataset.show
 	id.value = Btn_id
 	descripcion.value = Btn_descripcion
 	descuento.value = Btn_descuento
 	activo.checked = (Btn_activo == 1 ? true : false)
+	show.checked = (Btn_show == 1 ? true : false)
 	$("#descuentos_EditDescuento").modal("toggle")
 
 })

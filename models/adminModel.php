@@ -43,12 +43,12 @@ class adminModel
     public static function addnewDescuento($datos)
     {
         $con = new conexion();
-        return $con->SQ("INSERT INTO descuentos (descripcion, descuento, creado_por, modificado_por, activo) VALUE (:descripcion, :descuento, :creado_por, :modificado_por, :activo)", $datos);
+        return $con->SQ("INSERT INTO descuentos (descripcion, descuento, showFac, creado_por, modificado_por, activo) VALUE (:descripcion, :descuento, :show, :creado_por, :modificado_por, :activo)", $datos);
     }
     public static function updateDescuento($datos)
     {
         $con = new conexion();
-        return $con->SQ("UPDATE descuentos SET descripcion = :descripcion, descuento = :descuento, modificado_por =:modificado_por, activo = :activo WHERE iddescuento = :id", $datos);
+        return $con->SQ("UPDATE descuentos SET descripcion = :descripcion, descuento = :descuento, showFac = :show, modificado_por =:modificado_por, activo = :activo WHERE iddescuento = :id", $datos);
     }
     public static function aplicarDescuentoEnLote($datos)
     {
@@ -81,6 +81,11 @@ class adminModel
     {
         $con = new conexion();
         return $con->SPCALL("SELECT * FROM descuentos");
+    }
+    public static function descuentosOnlyFac()
+    {
+        $con = new conexion();
+        return $con->SPCALL("SELECT * FROM descuentos WHERE showFac=1");
     }
     public static function getCategoriaPrecios()
     {

@@ -43,6 +43,8 @@ class adminController extends view
     }
     public function addnewDescuento($var)
     {
+        $show = (isset($_POST['show']) ? 1 : 0);
+        $data[':show'] = (int) $show;
         $data[':descripcion'] = $_POST['descripcion'];
         $data[':descuento'] = (int) $_POST['descuento'];
         $data[':creado_por'] = (int) $_SESSION['id'];
@@ -55,6 +57,8 @@ class adminController extends view
     public function EditarDescuento($var)
     {
         $check = (isset($_POST['activo']) ? 1 : 0);
+        $show = (isset($_POST['show']) ? 1 : 0);
+        $data[':show'] = (int) $show;
         $data[':descripcion'] = $_POST['descripcion'];
         $data[':descuento'] = (float) $_POST['descuento'];
         $data[':modificado_por'] = (int) $_SESSION['id'];

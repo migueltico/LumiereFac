@@ -16,8 +16,8 @@
                         <label class="custom-control-label" for="MultiTipoPagoFact">Habilitar Seleccion Multiple</label>
                     </div>
                     <div class="custom-control custom-switch mb-3 ml-2" style="display: none;" id="pagoContraEntregaContainer">
-                        <input type="checkbox" class="custom-control-input"  id="pagoContraEntrega">
-                        <label class="custom-control-label"  for="pagoContraEntrega">Pago Contra Entrega</label>
+                        <input type="checkbox" class="custom-control-input" id="pagoContraEntrega">
+                        <label class="custom-control-label" for="pagoContraEntrega">Pago Contra Entrega</label>
                     </div>
                 </div>
                 <div class="card">
@@ -44,7 +44,7 @@
                 </div>
                 <div class="card">
                     <div class="cardHeaderSwitch">
-                        <h5 class="">Tarjeta</h5>
+                        <h5 class="">Tarjeta </h5>
                         <div class="inputGroupFact">
                             <input class="fact_rbRadiosBtns" type="radio" name="tipoVenta" data-inputval="tarjertaInputs" id="fact_rbRadioTarjeta">
                             <div class="custom-control custom-switch fact_switchBtns">
@@ -54,8 +54,10 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        <label for="addNewTarjeta">Añadir mas tarjetas</label>
+                        <button class="btn btn-warning btn-sm ml-2" id="addNewTarjeta"><?= $icons['plus'] ?></button>
                         <div class="row">
-                            <div class="input-group mb-3 mt-3  col-lg-6 col-md-6 col-sm-12">
+                            <div class="input-group mb-3 mt-3  col-lg-5 col-md-5 col-sm-11">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"># Tarjeta</span>
                                 </div>
@@ -65,8 +67,11 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Monto</span>
                                 </div>
-                                <input type="text" class="form-control lbMontoToPay tarjertaInputs_monto" value="0.00">
+                                <input type="text" id="montoTarjetaId" class="form-control lbMontoToPay tarjertaInputs_monto" value="0.00">
                             </div>
+                        </div>
+                        <div id="addrowtarjeta">
+
                         </div>
                     </div>
                 </div>

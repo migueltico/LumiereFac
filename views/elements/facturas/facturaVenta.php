@@ -94,7 +94,7 @@
         <?php endif;  ?>
         <?php if ($tipoVenta == 2) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">ENVIO: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?=number_format($monto_envio, 2, '.', ',')?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($monto_envio, 2, '.', ',') ?> </div>
         <?php endif;  ?>
         <div class="col-9 text-right" style="font-size: 1.1rem;">TOTAL A PAGAR: </div>
         <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $total ?> </div>
@@ -105,11 +105,27 @@
                 <?php foreach ($methodPay as $method) : ?>
                     <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
                     <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $method['methods']['montoWithFormat'] ?></p>
+                    <?php if ($method['methods']['tipo'] == "tarjeta") : ?>
+                        <?php if ($method['methods']['hasMore']) : ?>
+                            <?php foreach ($method['methods']['extraCards'] as $card) : ?>
+                                <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($card['tipo']) . ($card['tipo'] == "tarjeta" ? "-" . $card['tarjeta'] : "") ?>:</p>
+                                <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $card['montoWithFormat'] ?></p>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             <?php elseif ($tipoVenta == 2) : ?>
                 <?php foreach ($methodPay as $method) : ?>
                     <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
                     <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $method['methods']['montoWithFormat'] ?></p>
+                    <?php if ($method['methods']['tipo'] == "tarjeta") : ?>
+                        <?php if ($method['methods']['hasMore']) : ?>
+                            <?php foreach ($method['methods']['extraCards'] as $card) : ?>
+                                <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($card['tipo']) . ($card['tipo'] == "tarjeta" ? "-" . $card['tarjeta'] : "") ?>:</p>
+                                <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= $card['montoWithFormat'] ?></p>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             <?php endif; ?>
         <?php else : ?>
