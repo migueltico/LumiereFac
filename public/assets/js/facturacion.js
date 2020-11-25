@@ -643,13 +643,13 @@ function printFact(datos) {
         .then(resp => {
 
             if (Okprint.checked) {
-                // $(`#FacSendModal`).modal('toggle')
+                $(`#FacSendModal`).modal('toggle')
                 let h = resp;
                 let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
                 window.print();
                 d.remove();
             } else {
-                // $(`#FacSendModal`).modal('toggle')
+                $(`#FacSendModal`).modal('toggle')
                 Swal.fire({
                     position: 'top',
                     title: "Factura",
@@ -661,7 +661,7 @@ function printFact(datos) {
                 })
                 Okprint.checked = true
             }
-            // resetFactScreen()
+            resetFactScreen()
         })
 
 }
@@ -1522,7 +1522,7 @@ function setAbono() {
             let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
             window.print();
             d.remove();
-            // resetFactScreen()
+            resetFactScreen()
 
         })
 }

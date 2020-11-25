@@ -28,7 +28,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"> <input type="checkbox" id="canDiscountFac"></span>
                             </div>
-                            <select class="custom-select" id="descuentosSelect" disabled>
+                            <select class="custom-select" id="descuentosSelect" disabled  data-toggle="tooltip" data-placement="top" title="En caso de aplicar descuento seleccione el descuento al tener todos los articulos seleccionados. (Desactive y vuelva a seleccionar para aplicar a nuevos articulos agregados)">
                                 <option selected disabled>Seleccione un descuento</option>
                                 <?php foreach ($descuentos as $descuento) :  ?>
                                     <option value="<?= $descuento['descuento'] ?>"><?= $descuento['descripcion']  ?></option>
@@ -77,7 +77,7 @@
                         <div class="input-group-prepend">
                             <label class="btn btn-outline-secondary" id="btnCodigoBarrasModal" type="button">Buscar</label>
                         </div>
-                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" autofocus="on" placeholder="Escanea o Digita el codigo" value="179404928">
+                        <input type="text" autocomplete="on" class="form-control" id="ScanCode" autofocus="on" placeholder="Escanea o Digita el codigo" value="">
                         <input type="hidden" name="" id="bodyFactMain" data-number="1">
                     </div>
 
