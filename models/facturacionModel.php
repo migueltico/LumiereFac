@@ -79,8 +79,10 @@ class facturacionModel
         }
         $data[':idcaja'] = $_SESSION['idcaja'];
         $recibo = $con->SQ(
-            "INSERT INTO recibos (idfactura, abono, efectivo, tarjeta, transferencia, monto_transferencia, monto_tarjeta, monto_efectivo,numero_tarjeta,banco_transferencia, referencia_transferencia, idusuario, idcaja, multipago_string, multipago, multipago_total) 
-            VALUES (:idfactura, :abono, :efectivo, :tarjeta, :transferencia, :monto_transferencia, :monto_tarjeta, :monto_efectivo,:numero_tarjeta,:banco_transferencia, :referencia_transferencia, :idusuario, :idcaja, :multipago_string, :multipago, :multipago_total)",
+            "INSERT INTO recibos (idfactura, abono, efectivo, tarjeta, transferencia, monto_transferencia, monto_tarjeta, monto_efectivo,
+            numero_tarjeta,banco_transferencia, referencia_transferencia, idusuario, idcaja, multipago_string, multipago, multipago_total) 
+            VALUES (:idfactura, :abono, :efectivo, :tarjeta, :transferencia, :monto_transferencia, :monto_tarjeta, :monto_efectivo,:numero_tarjeta,:banco_transferencia,
+             :referencia_transferencia, :idusuario, :idcaja, :multipago_string, :multipago, :multipago_total)",
             $data
         );
         if ($recibo['error'] == '00000') {

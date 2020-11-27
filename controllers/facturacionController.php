@@ -311,6 +311,8 @@ class facturacionController extends view
             $data[':abono'] = (float)($data[':abono'] + $totalCards);
         } else {
             $data[':multipago'] = 0;
+            $data[':multipago_total'] = (float) 0.00;
+            $data[':multipago_string'] = '';
         }
         //transferencia
         $data[':transferencia'] = (int)($montoTransferencia > 0 ? 1 : 0);
