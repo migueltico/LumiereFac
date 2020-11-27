@@ -20,11 +20,12 @@ class facturacionModel
         $conse = $con->SQR_ONEROW("SELECT * FROM consecutivos WHERE idconsecutivos = 1");
         $consecutivo = ((int) $conse['data']['fac']) + 1;
         $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
+        $data[':formatDate'] = date("Y-m-d");
         $result = $con->Multitransaction(
             "CALL sp_setFacHeader($consecutivo,:idusuario,:idcliente,:impuesto,:descuento,:total,
             :tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,
             :monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,
-            :idcaja,:monto_envio,:multipago_string,:multipago,:multipago_total)",
+            :idcaja,:monto_envio,:multipago_string,:multipago,:multipago_total,:formatDate)",
             $data
         );
         //    :multipago_string
@@ -87,7 +88,7 @@ class facturacionModel
             $sql = "SELECT MAX(r.idrecibo)  AS idrecibo,
                     (SELECT SUM(sr.abono) FROM recibos AS sr WHERE sr.idfactura =$idfactura GROUP BY sr.idfactura) AS AbonoTotal,
                     (SELECT f.total FROM facturas AS f WHERE f.consecutivo =$idfactura) AS total, 
-                    (SELECT DATE_FORMAT(DATE_ADD(f2.fecha, INTERVAL 31 DAY),'%d-%m-%Y') FROM facturas AS f2 WHERE f2.consecutivo =$idfactura) AS fecha_final,
+                    (SELECT DATE_FORMAT(DATE_ADD(f1.fecha, INTERVAL 31 DAY),'%d-%m-%Y') FROM facturas AS f1 WHERE f1.consecutivo =$idfactura) AS fecha_final,
                     (SELECT DATE_FORMAT(DATE_ADD(f2.fecha, INTERVAL 31 DAY),'%d-%m-%Y') AS fecha_final FROM facturas AS f2 WHERE f2.consecutivo =$idfactura)
                     FROM recibos AS r WHERE r.idfactura =$idfactura";
 

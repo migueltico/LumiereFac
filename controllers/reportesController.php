@@ -39,3 +39,4 @@ class reportesController extends view
         echo view::renderElement('reportes/etiquetasTallaEstilo', $datos);
     }
 }
+
