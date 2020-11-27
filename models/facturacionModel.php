@@ -19,45 +19,46 @@ class facturacionModel
         $con = new conexion();
         $conse = $con->SQR_ONEROW("SELECT * FROM consecutivos WHERE idconsecutivos = 1");
         $consecutivo = ((int) $conse['data']['fac']) + 1;
-        $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
+        $data[':consecutivo'] = $consecutivo;
         $data[':formatDate'] = date("Y-m-d");
-        $result = $con->Multitransaction(
-            "CALL sp_setFacHeader($consecutivo,:idusuario,:idcliente,:impuesto,:descuento,:total,
-            :tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,
-            :monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,
-            :idcaja,:monto_envio,:multipago_string,:multipago,:multipago_total,:formatDate)",
-            $data
-        );
-        //    :multipago_string
-        //     :multipago
-        //     :multipago_total
-        //error_log("result 1: " . json_encode($result) . "\n", 3, "./logs/errors.log");
-        if ($result['rows'] == 1) {
+        $headerSql = "
+        INSERT INTO facturas 
+        (consecutivo,idcaja,idusuario,idcliente,impuesto,descuento,total,tipo,efectivo,tarjeta,transferencia,banco_transferencia,
+        referencia_transferencia,monto_transferencia,numero_tarjeta,monto_tarjeta,monto_efectivo,monto_envio,estado,comentario,multipago_String,multipago,multipago_total,formatDate) 
+        VALUE (:consecutivo, :idcaja, :idusuario, :idcliente, :impuesto, :descuento, :total, :tipo, :efectivo, :tarjeta, :transferencia, :banco_transferencia, :referencia_transferencia, :monto_transferencia, :numero_tarjeta, 
+        :monto_tarjeta, :monto_efectivo, :monto_envio, :estado, :comentario, :multipago_string, :multipago, :multipago_total, :formatDate);";
+        $result = $con->SQ($headerSql, $data);
+
+        $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
+        if ($result['error'] == '00000') {
             $con2 = new conexion();
-            $result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
+            //$result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
+            $itemsSql = [];
 
-            if ($result2['data']['fac'] == $result['data']['fac']) {
-
-                $itemsSql = [];
-
-                foreach ($items['items'] as $item) {
-                    array_push($itemsSql, array(
-                        ":idfactura" => $result['data']['fac'],
-                        ":idproducto" => (int) $item['id'],
-                        ":cantidad" => (int) $item['cantidad'],
-                        ":precio" => (float) str_replace(",", "", $item['precio']),
-                        ":descuento" => (int) (rtrim($item['descuento'], "%")),
-                        ":iva" => (int) $item['iva'],
-                        ":total" => (float) str_replace(",", "", $item['total_iva'])
-                    ));
-                }
+            foreach ($items['items'] as $item) {
+                array_push($itemsSql, array(
+                    ":idfactura" => $consecutivo,
+                    ":idproducto" => (int) $item['id'],
+                    ":cantidad" => (int) $item['cantidad'],
+                    ":precio" => (float) str_replace(",", "", $item['precio']),
+                    ":descuento" => (int) (rtrim($item['descuento'], "%")),
+                    ":iva" => (int) $item['iva'],
+                    ":total" => (float) str_replace(",", "", $item['total_iva'])
+                ));
+            }
 
 
-                $result3 = $con2->Sqlforeach('CALL sp_insertFactDetails(:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)', $itemsSql);
+            $result3 = $con2->Sqlforeach('CALL sp_insertFactDetails(:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)', $itemsSql);
+            if ($result3['error'] == '00000') {
+                $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
+                $result['data']['fac'] = $consecutivo;
                 return  $result;
             } else {
-                return   array("rows" => 0, 'estado' => false, 'generalError' => false, 'rollback' => true,  'error' => 'rollback');
+                $delete = $con->SQ("DELETE *   FROM facturas WHERE consecutivo=:consecutivo", array(":consecutivo" => $consecutivo));
+                return  $result3;
             }
+        } else {
+            return  $result;
         }
     }
     public static function setAbonoRecibo($data, $abono)

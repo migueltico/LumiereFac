@@ -142,7 +142,7 @@ class facturacionController extends view
         $data = json_decode(file_get_contents("php://input"), true);
         $result = $this->setFacHeader($data);
         $data["data"] = admin::infoSucursal();
-        $data["factura"] =  ($result[1]['rows'] == 1 ? $result[1]['data'] : "error");
+        $data["factura"] =  ($result[1]['data']['fac'] > 0 ? $result[1]['data'] : "error");
         // die();
         if ($result[0] == 0) {
             if ($data['sendFac']) {
