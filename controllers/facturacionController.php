@@ -9,6 +9,7 @@ use models\usuariosModel as user;
 use models\adminModel as admin;
 use models\clientesModel as cliente;
 use models\facturacionModel as fac;
+use models\reportesModel as reports;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 //Funciones de ayuda
@@ -355,5 +356,11 @@ class facturacionController extends view
         $NewData['idrecibo'] = $apartados['idrecibo'];
         $NewData['cards'] = $cards;
         echo view::renderElement('facturas/reciboSinproducto', $NewData);
+    }
+    public function facturacion()
+    {
+        $icon = help::icon();
+        $data["icons"] =  $icon['icons'];
+        echo view::renderElement('facturacion/facturacionReportes', $data);
     }
 }

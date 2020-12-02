@@ -49,7 +49,7 @@
                 <li data-functionName="0" data-linkto="/facturacion/pendientes" class="dataLink"><span class="spanStyleMenu"></span><span>Facturas Pendientes</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion/historial/diario" class="dataLink"><span class="spanStyleMenu"></span><span>Historial Diario</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion/historial/apartados" class="dataLink"><span class="spanStyleMenu"></span><span>Apartados</span><span></span></li>
-                <li data-functionName="0" data-linkto="/facturacion" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
+                <li data-functionName="0" data-linkto="/facturacion/reportes" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>
         <li>

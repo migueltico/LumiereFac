@@ -20,7 +20,7 @@ class dashboardController extends view
     }
     public function general($var)
     {
-        // $icon = help::icon();
+         $icon = help::icon();
         // $users = users::getUsers();
         // $rols = users::getRols();
         // $data["icons"] =  $icon['icons'];

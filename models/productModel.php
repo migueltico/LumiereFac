@@ -120,7 +120,7 @@ class productModel
      */
     public static function searchProduct($data, $nowPage, $estado)
     {
-        $cantToshow = 50;
+        $cantToshow = 100;
         $data = trim($data);
         $con = new conexion();
         $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE (p.descripcion LIKE '%$data%' OR p.marca  LIKE '%$data%' OR p.estilo LIKE '%$data%' OR p.codigo LIKE '%$data%') AND p.estado = $estado");

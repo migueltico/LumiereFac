@@ -68,7 +68,7 @@ route::group('inventario', function () {
 });
 //+++++++++++ FACTURACION +++++++++++//
 route::group('facturacion', function () {
-    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth','cajasMiddleware@cajaAsignada']);
+    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth', 'cajasMiddleware@cajaAsignada']);
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
@@ -85,6 +85,7 @@ route::group('facturacion', function () {
     route::post('/apartados/setAbono', 'facturacionController@setAbono');
     route::post('/historial/diario', 'facturacionController@historialDiario', ['loginMiddleware@auth']);
     route::post('/historial/apartados', 'facturacionController@apartadosSinCancelar', ['loginMiddleware@auth']);
+    route::post('/reportes', 'facturacionController@facturacion');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
@@ -101,9 +102,9 @@ route::group('usuarios', function () {
     route::post('/setUser', 'usuariosController@setUser');
 });
 //+++++++++++ SERVER +++++++++++//
-    route::get('/getPassword/:db/:identificador', 'usuariosController@getNewPassword');
-    route::post('/setPassword', 'usuariosController@setNewPassword');
-    route::post('/verIdentificador', 'usuariosController@verIdentificador');
+route::get('/getPassword/:db/:identificador', 'usuariosController@getNewPassword');
+route::post('/setPassword', 'usuariosController@setNewPassword');
+route::post('/verIdentificador', 'usuariosController@verIdentificador');
 //+++++++++++ ROLES +++++++++++//
 route::group('roles', function () {
     route::post('/', 'rolesController@index', ['loginMiddleware@auth']);

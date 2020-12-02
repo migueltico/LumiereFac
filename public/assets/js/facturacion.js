@@ -356,12 +356,14 @@ function getProductsRowsForFac(method, pago, typeAbono) {
     }
     let Okprint = document.getElementById('SendFactBoolean');
     let tipoVenta = parseInt($("#group_type_fac .active").data("tipo"))
+    let totalAmountWithOutFormat = parseFloat(amounts.replace(",", ""))
+    let iva = (totalAmountWithOutFormat - gran_subtotal_descuento - monto_envio)
     let finalJson = {
         items: itemsFac,
         total: amounts,
         subtotal_descuento: ConvertLabelFormat(gran_subtotal_descuento),
         descuento: ConvertLabelFormat((gran_subtotal - gran_subtotal_descuento)), // precio sin descuento menos precio con descuento
-        iva: ConvertLabelFormat((parseFloat(amounts.replace(",", "")) - gran_subtotal_descuento)),
+        iva,
         idCliente: idCliente,
         nameCliente: nameCliente,
         idVendedor,
@@ -865,8 +867,8 @@ function getProductFact(e) {
     getSubTotalAndTotal()
 }
 
-function ConvertLabelFormat(amount) {
-    let valor = amount;
+function ConvertLabelFormat(amountValue) {
+    let valor = amountValue;
     valor = valor
         .toFixed(2)
         .toString()
@@ -919,7 +921,6 @@ function calcTotalRowPrice(precio, descuento, iva) {
 
         TotaliVa = parseFloat(precioVentaSub + parseFloat(precioVentaSub * ivaPorcent))
     }
-    console.log(precioVentaSub);
 
     return [precioVentaSub.toFixed(2), TotaliVa.toFixed(2)]
 }
@@ -978,12 +979,13 @@ $('#bodyContent').on("change", "#descuentosSelect", function (e) {
     let descuento = this.value
     let tds = document.getElementsByClassName('tdNotDiscount')
     let trs = document.getElementsByClassName('trNotDiscount')
-    console.log(descuento);
     for (td of tds) {
         td.dataset.descuento = descuento
         td.textContent = descuento + '%'
     }
-    RefreshCalcTotalRowPrice($(trs).children(), 0)
+    for (tr of trs) {
+        RefreshCalcTotalRowPrice($(tr).children(), 0)
+    }
     getSubTotalAndTotal()
 
 })
@@ -1000,7 +1002,9 @@ $('#bodyContent').on("change", "#canDiscountFac", function (e) {
             td.textContent = 'N/A'
         }
         descuentos.options[0].selected = true
-        RefreshCalcTotalRowPrice($(trs).children(), 0)
+        for (tr of trs) {
+            RefreshCalcTotalRowPrice($(tr).children(), 0)
+        }
         getSubTotalAndTotal()
     }
 

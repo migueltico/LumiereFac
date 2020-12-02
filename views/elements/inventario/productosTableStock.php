@@ -117,7 +117,10 @@
                     </td>
                     <td scope="row" style="font-size:1.2rem" class="itemLeftData"><strong id="MinStockInner_<?= $product["idproducto"] ?>"><?= $product["min_stock"] ?> </strong> <button id="btnAddMinStock_<?= $product["idproducto"] ?>" class="ml-2  btn btn-sm btn-primary addMinStockBtn itemLeftDataBtn" data-id="<?= $product["idproducto"] ?>"><?= $icons['plus'] ?></button></td>
 
-                    <td scope="row" style="font-size:1.2rem" class="itemLeftData"><strong id="StockInner_<?= $product["idproducto"] ?>" class="<?= ($product["stock"] <= $product["min_stock"] ? "text-danger" : "text-success") ?> innerStock"><?= $product["stock"] ?> </strong> <button class="itemLeftDataBtn ml-2 btn btn-sm btn-primary addStockBtn" data-id="<?= $product["idproducto"] ?>" id="btnAddStock_<?= $product["idproducto"] ?>"><?= $icons['plus'] ?></button></td>
+                    <td scope="row" style="font-size:1.2rem" class="itemLeftData">
+                    <strong id="StockInner_<?= $product["idproducto"] ?>" class="<?= ($product["stock"] <= $product["min_stock"] ? "text-danger" : "text-success") ?> innerStock">
+                    <?= $product["stock"] == null || ''? 0: $product["stock"]?> </strong>
+                     <button class="itemLeftDataBtn ml-2 btn btn-sm btn-primary addStockBtn" data-id="<?= $product["idproducto"] ?>" id="btnAddStock_<?= $product["idproducto"] ?>"><?= $icons['plus'] ?></button></td>
                     <td scope="row">
                         <div class="btn-group Editbuttons" aria-label="Grupo edicion">
                             <button type="button" class="btn btn-success btnSaveProductPrice" id="btnSaveProductPrice<?= $product["idproducto"] ?>" data-id='<?= $product["idproducto"] ?>'><?= $icons['save'] ?> Guardar</button>
