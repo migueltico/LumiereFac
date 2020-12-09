@@ -18,8 +18,8 @@ class reportesController extends view
     {
         ob_start();
         $data = json_decode(file_get_contents("php://input"), true);
-        $datos['items'] =$data;
-       //print_r($data);
+        $datos['items'] = $data;
+        //print_r($data);
         echo view::renderElement('reportes/etiquetasTallaEstilo', $datos);
         $dompdf = new Dompdf();
         $dompdf->loadHtml(ob_get_clean());
@@ -32,10 +32,43 @@ class reportesController extends view
         $dompdf->stream($filename);
     }
     public function etiquetasTallaEstiloPost()
-    { 
+    {
         $data = json_decode(file_get_contents("php://input"), true);
-        $datos['items'] =$data;
-       //print_r($data);
+        $datos['items'] = $data;
+        //print_r($data);
+        echo view::renderElement('reportes/etiquetasTallaEstilo', $datos);
+    }
+    public function ReportesFacturacion()
+    {
+        $reporte = $_POST['tipoReporte'];
+        switch ($reporte) {
+            case 1:
+                return false;
+              break;
+            case 2:
+                return true;
+              break;
+            case 3:
+                return false;
+              break;
+            case 4:
+                return false;
+              break;
+            case 5:
+                return false;
+              break;
+            case 6:
+                return false;
+              break;
+            default:
+            return false
+          }
+    }
+    public function Rxtipo()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $datos['items'] = $data;
+        //print_r($data);
         echo view::renderElement('reportes/etiquetasTallaEstilo', $datos);
     }
 }

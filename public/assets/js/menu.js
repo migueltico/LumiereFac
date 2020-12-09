@@ -29,6 +29,13 @@ $("#btn_menu_toggle").click((e) => {
     $(".lateral").toggle(100)
     console.log('click');
 })
+
+$(".dataLink").click((e) => {
+    let w = $(window).width()
+    if (w <= 768) {
+        $(".lateral").toggle(500)
+    }
+})
 $(window).resize(function (e) {
     let w = $(window).width()
     if (w > 768) {

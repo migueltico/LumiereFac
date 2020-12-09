@@ -1684,3 +1684,13 @@ $('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
     addrowtarjeta.appendChild(mainRow)
 
 })
+
+
+
+/**
+ * *************************************************************************************
+ * ***************************REPORTES**********************************************************
+ */
+
+$('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
+})
