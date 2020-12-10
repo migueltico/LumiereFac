@@ -7,7 +7,7 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="inputGroupSelect01">Reportes</label>
                     </div>
-                    <select class="custom-select" id="inputGroupSelect01">
+                    <select class="custom-select" id="reportTypeSelect">
                         <option selected disabled>Seleccione un reporte</option>
                         <option value="1">1-Reporte de Facturas</option>
                         <option value="2">2-Reporte de Facturas por Tipo de venta</option>

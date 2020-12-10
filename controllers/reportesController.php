@@ -61,7 +61,7 @@ class reportesController extends view
                 return false;
               break;
             default:
-            return false
+            return false;
           }
     }
     public function Rxtipo()

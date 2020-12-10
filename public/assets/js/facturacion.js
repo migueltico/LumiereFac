@@ -1692,5 +1692,7 @@ $('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
  * ***************************REPORTES**********************************************************
  */
 
-$('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
+$('#bodyContent').on("change", "#reportTypeSelect", function (e) {
+    let reportTypeSelect = document.getElementById('reportTypeSelect')
+    console.log(reportTypeSelect.selectedOptions[0].value);
 })
