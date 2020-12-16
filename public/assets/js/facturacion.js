@@ -1,3 +1,112 @@
+$('#bodyContent').on("click", "#btnCambios_fac", function (e) {
+    $('#rowsFactDetailsSearch').html('')
+    $('#SearchFacModal').modal('toggle')
+    resetFactSearchCambios()
+
+})
+$('#bodyContent').on("keypress", "#SearchFac_input", function (e) {
+    if (e.keyCode == 13) {
+        getFacData(this.value)
+    }
+})
+function resetFactSearchCambios() {
+    let idclienteFacCambio = document.getElementById('idclienteFacCambio')
+    let selectClienteGroupSaldo = document.getElementById('selectClienteGroupSaldo')
+    let ckAsignarSaldoCliente = document.getElementById('ckAsignarSaldoCliente')
+    idclienteFacCambio.value = ''
+    selectClienteGroupSaldo.hidden = true
+    ckAsignarSaldoCliente.checked = false
+}
+//1000000256
+function getFacData(fac) {
+    let idGenerico = document.getElementById('fac_cliente_input').dataset.idgenerico
+    let regex = '^[+]?([0-9]+(?:[0-9]*)?|[0-9]+)$'
+    let resultRegex = fac.match(regex)
+    console.log(resultRegex);
+    if (resultRegex) {
+        let formData = new FormData()
+        formData.append('fac', fac)
+        fetch('facturacion/consultar/factura', {
+                method: 'POST',
+                body: formData
+            }).then(resp => resp.json())
+            .then(resp => {
+                console.log(resp);
+                if (resp !== null) {
+
+                    resetFactSearchCambios()
+                    let dataClienteFac = document.getElementById('dataClienteFac')
+                    let AsignarsaldoGroup = document.getElementById('AsignarsaldoGroup')
+                    dataClienteFac.innerHTML = `${idGenerico !==resp.idcliente ?`<span>Cliente: ${resp.nombre}</span>`:''}<span>Saldo Actual: ${resp.saldo ==null || resp.saldo =='' ? '0.00': resp.saldo}</span><span>Saldo Añadido: 0.00</span>`
+                    let trs = ''
+                    AsignarsaldoGroup.style.display = idGenerico !== resp.idcliente ? 'none' : 'block'
+                    resp.details.forEach((element, index) => {
+                        let row = `
+                <tr>
+                    <td>${element.codigo}</td>
+                    <td>${element.descripcion}</td>
+                    <td>${element.cantidad}</td>
+                    <td>${element.precio}</td>
+                    <td class='text-center'>${element.descuento}%</td>
+                    <td class='text-center'>${element.iva}%</td>
+                    <td>${element.total}</td>
+                    <td><input style='text-align:center' type="number" name="" id="" min='1' max='${element.cantidad}' value='1'></td>
+                    <td class='text-center'><input type='checkbox'></td>
+                </tr>
+                `
+                        trs += row
+                    })
+                    $('#rowsFactDetailsSearch').html(trs)
+                } else {
+                    $('#rowsFactDetailsSearch').html('')
+                    Swal.fire({
+                        position: 'top',
+                        title: `No existe`,
+                        text: `La factura #${fac} no se encuentra o no existe en la Base de datos. Por favor verifica e intenta de nuevo.`,
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        // timer: 8000,
+                        // timerProgressBar: true
+                    })
+                }
+
+            })
+    } else {
+        $('#rowsFactDetailsSearch').html('')
+        if (fac == '') {
+            Swal.fire({
+                position: 'top',
+                title: `Error`,
+                html: `Por favor escriba el numero de la factura a consultar.`,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                // timer: 8000,
+                // timerProgressBar: true
+            })
+        } else {
+
+            Swal.fire({
+                position: 'top',
+                title: `Error`,
+                html: `La factura "<strong>${fac}</strong>" solo debe contener caracteres numericos.`,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                // timer: 8000,
+                // timerProgressBar: true
+            })
+        }
+    }
+}
+
+$('#bodyContent').on("change", "#ckCambios", function (e) {
+    let groupCambiosBtn = document.getElementById('groupCambiosBtn')
+    groupCambiosBtn.style.display = this.checked ? 'block' : 'none'
+})
+
+$('#bodyContent').on("change", "#ckAsignarSaldoCliente", function (e) {
+    let selectClienteGroupSaldo = document.getElementById('selectClienteGroupSaldo')
+    selectClienteGroupSaldo.hidden = this.checked ? false : true
+})
 //SE EJECUTA AL PRESIONAR ENTER EN EL INPUT DE BUSQUEDA EN INVENTARIO
 $('#bodyContent').on("change", ".cantInputFact", function (e) {
     let tr = $(e.target).parent().parent().children()
@@ -1080,8 +1189,11 @@ $('#bodyContent').on("click", ".codeToAddInputSearchClient", function (e) {
     let id = e.target.dataset.id
     let name = e.target.dataset.name
     let inputCliente = document.getElementById("fac_cliente_input")
+    let idclienteFacCambio = document.getElementById('idclienteFacCambio')
     inputCliente.value = name
     inputCliente.dataset.cliente = id
+    idclienteFacCambio.dataset.cliente = id
+    idclienteFacCambio.value = name
 
     $("#SearchClientModal").modal('toggle')
 

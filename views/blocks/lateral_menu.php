@@ -1,16 +1,16 @@
 <div class="menuContainer">
     <?php if (isset($_SESSION["db"])) :   ?>
-        <?php if ($_SESSION["db"] =='TestDB') :   ?>
+        <?php if ($_SESSION["db"] == 'TestDB') :   ?>
             <div style="font-weight:bold;width: 100%;padding-top:10px;padding-bottom:10px;background:yellow;color:black;text-align:center;">
-            <p class="mb-0">Entorno de Pruebas</p>
-            <span><?=$_SERVER['SERVER_NAME'] ?></span>
-        </div>
+                <p class="mb-0">Entorno de Pruebas</p>
+                <span><?= $_SERVER['SERVER_NAME'] ?></span>
+            </div>
         <?php endif;  ?>
     <?php endif;  ?>
     <div>
         <div class="perfil mt-3 mb-1">
             <img src="public/assets/img/perfil_no_found.jpg" alt="Perfil">
-            <p class="mt-1"><?= $_SESSION["nombre"] ?></p>
+            <p class="mt-1"><?= isset($_SESSION["nombre"]) ? $_SESSION["nombre"] : 'Usuario' ?></p>
         </div>
     </div>
     <ul class="main_menu" id="main_menu">

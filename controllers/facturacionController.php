@@ -138,6 +138,12 @@ class facturacionController extends view
         header('Content-Type: application/json');
         echo json_encode($product);
     }
+    public function consultarFactura()
+    {
+        $data = fac::getFactura(trim($_POST['fac']));
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
     public function getFact()
     {
         $data = json_decode(file_get_contents("php://input"), true);

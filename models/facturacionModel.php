@@ -108,6 +108,32 @@ class facturacionModel
         }
         return $recibo;
     }
+    public static function getFactura($fac)
+    {
+        $con = new conexion();
+        $header = $con->SQR_ONEROW("SELECT *, DATE_FORMAT(f.fecha,'%d-%m-%Y') fechaFormat 
+        FROM facturas f
+        INNER JOIN cliente c 
+        ON c.idcliente = f.idcliente 
+        WHERE  consecutivo = $fac");
+        $data = array();
+        if ($header['rows'] > 0) {
+            $factura = $header['data'];
+            $id = (int) $factura['consecutivo'];
+            $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total 
+            FROM detalle_factura d 
+            INNER JOIN producto p 
+            ON p.idproducto = d.idproducto 
+            WHERE d.idfactura =$id");
+            if ($detalis['rows'] > 0) {
+                $factura['details'] = $detalis['data'];
+            }
+            $data = $factura;
+        }else{
+            $data = null;
+        }
+        return $data;
+    }
     public static function setFirstAbonoRecibo()
     {
         $con = new conexion();

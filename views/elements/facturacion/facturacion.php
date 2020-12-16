@@ -24,11 +24,12 @@
                             </div>
                             <input type="text" disabled id="datePickerInput" class="form-control text-right" data-cliente="1" value="<?= date('d-m-Y'); ?>">
                         </div>
+
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"> <input type="checkbox" id="canDiscountFac"></span>
                             </div>
-                            <select class="custom-select" id="descuentosSelect" disabled  data-toggle="tooltip" data-placement="top" title="En caso de aplicar descuento seleccione el descuento al tener todos los articulos seleccionados. (Desactive y vuelva a seleccionar para aplicar a nuevos articulos agregados)">
+                            <select class="custom-select" id="descuentosSelect" disabled data-toggle="tooltip" data-placement="top" title="En caso de aplicar descuento seleccione el descuento al tener todos los articulos seleccionados. (Desactive y vuelva a seleccionar para aplicar a nuevos articulos agregados)">
                                 <option selected disabled>Seleccione un descuento</option>
                                 <?php foreach ($descuentos as $descuento) :  ?>
                                     <option value="<?= $descuento['descuento'] ?>"><?= $descuento['descripcion']  ?></option>
@@ -36,6 +37,7 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="col-lg-4 col-md-6 col-sm-12">
 
                         <div class="btn-group " role="group" id="group_type_fac">
@@ -45,6 +47,10 @@
                             <div class="custom-control custom-switch mt-2 ml-3" style="display: none;" id="ckAbonoSwWrapper">
                                 <input type="checkbox" class="custom-control-input" id="ckAbonoSw">
                                 <label class="custom-control-label" for="ckAbonoSw">Abono</label>
+                            </div>
+                            <div class="custom-control custom-switch mt-2 ml-3" id="ckCambiosWrapper">
+                                <input type="checkbox" class="custom-control-input" id="ckCambios">
+                                <label class="custom-control-label" for="ckCambios">Cambio o devoluciones</label>
                             </div>
                         </div>
                         <div class="input-group mb-3 mt-3" id="apartadosWrapper" style="display: none;">
@@ -62,11 +68,21 @@
                                 <input type="text" class="form-control text-right" id="precioEnvio" value="0.00">
                             </div>
                         </div>
+                        <div id="groupCambiosBtn" class="form-group p-2 pr-4 pt-3 mr-3 mt-3"  style="display: none;">
+                            <div class="input-group mb-3">
 
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="btn btn-outline-secondary" id="btnCambios_fac" type="button" class="input-group-text">Buscar Factura</span>
+                                    </div>
+                                    <input type="text" class="form-control  p-3" placeholder="# factura para cambio o devolucion" disabled>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-5 col-md-12 col-sm-12">
 
-                        <div class="totalFactAmount" data-amount="0.00" id="totalFactAmount">0.00</div>
+                        <div class="totalFactAmount" data-amount="0.00" style="max-height: 150px;" id="totalFactAmount">0.00</div>
 
                     </div>
 
@@ -122,6 +138,7 @@
         </div>
     </div>
     <?php include_once(self::modal('modalSearchProductFact')) ?>
+    <?php include_once(self::modal('modalSearchFac')) ?>
     <?php include_once(self::modal('modalSearchClient')) ?>
     <?php include_once(self::modal('modalAddCliente')) ?>
     <?php include_once(self::modal('modalFacSend')) ?>
