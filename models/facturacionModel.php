@@ -46,16 +46,31 @@ class facturacionModel
                     ":total" => (float) str_replace(",", "", $item['total_iva'])
                 ));
             }
+            $isOk = true;
+            foreach ($itemsSql as $detail) {
+                $insert = $con->SQ(
+                    "INSERT INTO detalle_factura (idfactura, idproducto, cantidad, precio, descuento, iva, total)
+                    VALUE (:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)",
+                    $detail
+                );
+                $codigo = $detail[':idproducto'];
+                $cantidad = (int) $detail[':cantidad'];
+                $stock = $con->SQR_ONEROW("SELECT stock FROM producto WHERE idproducto = $codigo");
+                $stockNow = (int) $stock['data']['stock'];
+                $newSotck = $stockNow - $cantidad;
+                $UpdateStock = $con->SQ("UPDATE producto SET stock = :newSotck WHERE idproducto = $codigo", array(":newSotck" => $newSotck));
 
-
-            $result3 = $con2->Sqlforeach('CALL sp_insertFactDetails(:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)', $itemsSql);
-            if ($result3['error'] == '00000') {
+                if ($insert['error'] != '00000') $isOk = false;
+                if ($stock['error'] != '00000') $isOk = false;
+                if ($UpdateStock['error'] != '00000') $isOk = false;
+            }
+            if ($isOk) {
                 $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
                 $result['data']['fac'] = $consecutivo;
                 return  $result;
             } else {
                 $delete = $con->SQ("DELETE *   FROM facturas WHERE consecutivo=:consecutivo", array(":consecutivo" => $consecutivo));
-                return  $result3;
+                return  $result;
             }
         } else {
             return  $result;
@@ -129,7 +144,7 @@ class facturacionModel
                 $factura['details'] = $detalis['data'];
             }
             $data = $factura;
-        }else{
+        } else {
             $data = null;
         }
         return $data;
