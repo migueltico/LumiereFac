@@ -13,7 +13,8 @@ $('#bodyContent').on("click", "#addProduct #addProduct_generarCodigo", function 
 $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
     e.preventDefault();
     if (!$(this).hasClass("disabled")) {
-        loadTable(e, 1, '')
+        let page = document.querySelector(".paginationBtn.active")
+        loadTable(e, page.dataset.page, "")
     }
 })
 
@@ -714,7 +715,8 @@ function UpdateEditModal(e, modalId) {
                     })
                 }
                 $(`#EditProduct`).modal('toggle')
-                loadTable(e, 1, "")
+                let page = document.querySelector(".paginationBtn.active")
+                loadTable(e, page.dataset.page, "")
             }).catch((err) => {
                 console.log('error en FETCH:', err);
                 loadTable(e, 1, "")
