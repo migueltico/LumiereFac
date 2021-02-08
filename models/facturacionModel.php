@@ -19,44 +19,61 @@ class facturacionModel
         $con = new conexion();
         $conse = $con->SQR_ONEROW("SELECT * FROM consecutivos WHERE idconsecutivos = 1");
         $consecutivo = ((int) $conse['data']['fac']) + 1;
+        $data[':consecutivo'] = $consecutivo;
+        $data[':formatDate'] = date("Y-m-d");
+        $headerSql = "
+        INSERT INTO facturas 
+        (consecutivo,idcaja,idusuario,idcliente,impuesto,descuento,total,tipo,efectivo,tarjeta,transferencia,banco_transferencia,
+        referencia_transferencia,monto_transferencia,numero_tarjeta,monto_tarjeta,monto_efectivo,monto_envio,estado,comentario,multipago_String,multipago,multipago_total,formatDate) 
+        VALUE (:consecutivo, :idcaja, :idusuario, :idcliente, :impuesto, :descuento, :total, :tipo, :efectivo, :tarjeta, :transferencia, :banco_transferencia, :referencia_transferencia, :monto_transferencia, :numero_tarjeta, 
+        :monto_tarjeta, :monto_efectivo, :monto_envio, :estado, :comentario, :multipago_string, :multipago, :multipago_total, :formatDate);";
+        $result = $con->SQ($headerSql, $data);
+
         $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
-        $result = $con->Multitransaction(
-            "CALL sp_setFacHeader($consecutivo,:idusuario,:idcliente,:impuesto,:descuento,:total,
-            :tipo,:efectivo,:tarjeta,:transferencia,:banco_transferencia,:referencia_transferencia,
-            :monto_transferencia,:numero_tarjeta,:monto_tarjeta,:monto_efectivo,:estado,:comentario,
-            :idcaja,:monto_envio,:multipago_string,:multipago,:multipago_total)",
-            $data
-        );
-        //    :multipago_string
-        //     :multipago
-        //     :multipago_total
-        //error_log("result 1: " . json_encode($result) . "\n", 3, "./logs/errors.log");
-        if ($result['rows'] == 1) {
+        if ($result['error'] == '00000') {
             $con2 = new conexion();
-            $result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
+            //$result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
+            $itemsSql = [];
 
-            if ($result2['data']['fac'] == $result['data']['fac']) {
+            foreach ($items['items'] as $item) {
+                array_push($itemsSql, array(
+                    ":idfactura" => $consecutivo,
+                    ":idproducto" => (int) $item['id'],
+                    ":cantidad" => (int) $item['cantidad'],
+                    ":precio" => (float) str_replace(",", "", $item['precio']),
+                    ":descuento" => (int) (rtrim($item['descuento'], "%")),
+                    ":iva" => (int) $item['iva'],
+                    ":total" => (float) str_replace(",", "", $item['total_iva'])
+                ));
+            }
+            $isOk = true;
+            foreach ($itemsSql as $detail) {
+                $insert = $con->SQ(
+                    "INSERT INTO detalle_factura (idfactura, idproducto, cantidad, precio, descuento, iva, total)
+                    VALUE (:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)",
+                    $detail
+                );
+                $codigo = $detail[':idproducto'];
+                $cantidad = (int) $detail[':cantidad'];
+                $stock = $con->SQR_ONEROW("SELECT stock FROM producto WHERE idproducto = $codigo");
+                $stockNow = (int) $stock['data']['stock'];
+                $newSotck = $stockNow - $cantidad;
+                $UpdateStock = $con->SQ("UPDATE producto SET stock = :newSotck WHERE idproducto = $codigo", array(":newSotck" => $newSotck));
 
-                $itemsSql = [];
-
-                foreach ($items['items'] as $item) {
-                    array_push($itemsSql, array(
-                        ":idfactura" => $result['data']['fac'],
-                        ":idproducto" => (int) $item['id'],
-                        ":cantidad" => (int) $item['cantidad'],
-                        ":precio" => (float) str_replace(",", "", $item['precio']),
-                        ":descuento" => (int) (rtrim($item['descuento'], "%")),
-                        ":iva" => (int) $item['iva'],
-                        ":total" => (float) str_replace(",", "", $item['total_iva'])
-                    ));
-                }
-
-
-                $result3 = $con2->Sqlforeach('CALL sp_insertFactDetails(:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)', $itemsSql);
+                if ($insert['error'] != '00000') $isOk = false;
+                if ($stock['error'] != '00000') $isOk = false;
+                if ($UpdateStock['error'] != '00000') $isOk = false;
+            }
+            if ($isOk) {
+                $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
+                $result['data']['fac'] = $consecutivo;
                 return  $result;
             } else {
-                return   array("rows" => 0, 'estado' => false, 'generalError' => false, 'rollback' => true,  'error' => 'rollback');
+                $delete = $con->SQ("DELETE *   FROM facturas WHERE consecutivo=:consecutivo", array(":consecutivo" => $consecutivo));
+                return  $result;
             }
+        } else {
+            return  $result;
         }
     }
     public static function setAbonoRecibo($data, $abono)
@@ -77,8 +94,10 @@ class facturacionModel
         }
         $data[':idcaja'] = $_SESSION['idcaja'];
         $recibo = $con->SQ(
-            "INSERT INTO recibos (idfactura, abono, efectivo, tarjeta, transferencia, monto_transferencia, monto_tarjeta, monto_efectivo,numero_tarjeta,banco_transferencia, referencia_transferencia, idusuario, idcaja, multipago_string, multipago, multipago_total) 
-            VALUES (:idfactura, :abono, :efectivo, :tarjeta, :transferencia, :monto_transferencia, :monto_tarjeta, :monto_efectivo,:numero_tarjeta,:banco_transferencia, :referencia_transferencia, :idusuario, :idcaja, :multipago_string, :multipago, :multipago_total)",
+            "INSERT INTO recibos (idfactura, abono, efectivo, tarjeta, transferencia, monto_transferencia, monto_tarjeta, monto_efectivo,
+            numero_tarjeta,banco_transferencia, referencia_transferencia, idusuario, idcaja, multipago_string, multipago, multipago_total) 
+            VALUES (:idfactura, :abono, :efectivo, :tarjeta, :transferencia, :monto_transferencia, :monto_tarjeta, :monto_efectivo,:numero_tarjeta,:banco_transferencia,
+             :referencia_transferencia, :idusuario, :idcaja, :multipago_string, :multipago, :multipago_total)",
             $data
         );
         if ($recibo['error'] == '00000') {
@@ -87,7 +106,7 @@ class facturacionModel
             $sql = "SELECT MAX(r.idrecibo)  AS idrecibo,
                     (SELECT SUM(sr.abono) FROM recibos AS sr WHERE sr.idfactura =$idfactura GROUP BY sr.idfactura) AS AbonoTotal,
                     (SELECT f.total FROM facturas AS f WHERE f.consecutivo =$idfactura) AS total, 
-                    (SELECT DATE_FORMAT(DATE_ADD(f2.fecha, INTERVAL 31 DAY),'%d-%m-%Y') FROM facturas AS f2 WHERE f2.consecutivo =$idfactura) AS fecha_final,
+                    (SELECT DATE_FORMAT(DATE_ADD(f1.fecha, INTERVAL 31 DAY),'%d-%m-%Y') FROM facturas AS f1 WHERE f1.consecutivo =$idfactura) AS fecha_final,
                     (SELECT DATE_FORMAT(DATE_ADD(f2.fecha, INTERVAL 31 DAY),'%d-%m-%Y') AS fecha_final FROM facturas AS f2 WHERE f2.consecutivo =$idfactura)
                     FROM recibos AS r WHERE r.idfactura =$idfactura";
 
@@ -103,6 +122,32 @@ class facturacionModel
             }
         }
         return $recibo;
+    }
+    public static function getFactura($fac)
+    {
+        $con = new conexion();
+        $header = $con->SQR_ONEROW("SELECT *, DATE_FORMAT(f.fecha,'%d-%m-%Y') fechaFormat 
+        FROM facturas f
+        INNER JOIN cliente c 
+        ON c.idcliente = f.idcliente 
+        WHERE  consecutivo = $fac");
+        $data = array();
+        if ($header['rows'] > 0) {
+            $factura = $header['data'];
+            $id = (int) $factura['consecutivo'];
+            $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total 
+            FROM detalle_factura d 
+            INNER JOIN producto p 
+            ON p.idproducto = d.idproducto 
+            WHERE d.idfactura =$id");
+            if ($detalis['rows'] > 0) {
+                $factura['details'] = $detalis['data'];
+            }
+            $data = $factura;
+        } else {
+            $data = null;
+        }
+        return $data;
     }
     public static function setFirstAbonoRecibo()
     {
@@ -120,7 +165,7 @@ class facturacionModel
             foreach ($header['data'] as $factura) {
                 $id = (int) $factura['consecutivo'];
                 $tipo = (int) $factura['tipo'];
-                $detalis = $con->SQND("SELECT d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
                 }
@@ -144,7 +189,7 @@ class facturacionModel
             foreach ($header['data'] as $factura) {
                 $id = (int) $factura['consecutivo'];
                 $tipo = (int) $factura['tipo'];
-                $detalis = $con->SQND("SELECT d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
                 }

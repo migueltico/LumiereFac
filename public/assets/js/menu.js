@@ -25,6 +25,25 @@ $("#main_menu li.uniq_menu").click(function (e) {
 $("li.dataLink").click((e) => {
     loadPage(e, null)
 })
+$("#btn_menu_toggle").click((e) => {
+    $(".lateral").toggle(100)
+    console.log('click');
+})
+
+$(".dataLink").click((e) => {
+    let w = $(window).width()
+    if (w <= 768) {
+        $(".lateral").toggle(500)
+    }
+})
+$(window).resize(function (e) {
+    let w = $(window).width()
+    if (w > 768) {
+        $(".lateral").css({
+            display: 'block'
+        })
+    }
+});
 
 function scrollToTop() {
     let BodyMain = document.getElementsByClassName('bodyMain')[0];
@@ -45,6 +64,12 @@ function loadPage(e, link) {
         .then((result) => result.text())
         .then((html) => {
             $(".bodyContent").html(html)
+            let w = $(window).width()
+            // if (w > 768) {
+            //     $(".lateral").css({
+            //         display: 'none'
+            //     })
+            // }
         })
         .catch((err) => {
             console.log('error en FETCH:', err);

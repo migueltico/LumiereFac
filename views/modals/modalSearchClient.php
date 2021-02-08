@@ -1,5 +1,5 @@
 <div class="modal fade" id="SearchClientModal">
-    <div class="modal-dialog modal-dialog-top modal-lg">
+    <div class="modal-dialog modal-dialog-top modal-lg"  style="background:red;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 id="galleryShowTitle" class="modal-title">Buscar Cliente</h5>
@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="min-height: 200px;">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <label id="SearchClient_inputBtn" class="btn btn-outline-secondary" type="button">Buscar</label>

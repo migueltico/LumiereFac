@@ -41,14 +41,16 @@
             <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['tipo']) . ($method['tipo'] == "tarjeta" ? "-" . $method['tarjeta'] : "") ?>:</p>
             <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($method['monto'], 2, '.', ',') ?></p>
             <?php if (count($cards) > 0) : ?>
-                <?php foreach ($cards as $card) : ?>
-                    <?php
-                    $card = explode(',', $card);
-                    $card[1] = (float)  $card[1];
-                    ?>
-                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($card[2]) . ($card[2] == "tarjeta" ? "-" . $card[0] : "") ?>:</p>
-                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($card[1], 2, '.', ',') ?></p>
-                <?php endforeach; ?>
+                <?php if ($cards[0] != '') : ?>
+                    <?php foreach ($cards as $card) : ?>
+                        <?php
+                        @$card = explode(',', $card);
+                        @$card[1] = (float)  $card[1];
+                        ?>
+                        <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($card[2]) . ($card[2] == "tarjeta" ? "-" . $card[0] : "") ?>:</p>
+                        <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($card[1], 2, '.', ',') ?></p>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             <?php endif; ?>
             <?php
             $montoAbono += (float)($method['monto']);

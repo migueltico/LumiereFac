@@ -49,9 +49,9 @@ class clientesModel
         $con = new conexion();
         $totalRows = $con->SQR_ONEROW("SELECT COUNT(c.idcliente) AS cantidad FROM cliente AS c WHERE c.nombre LIKE '%$data%' OR c.cedula LIKE '%$data%' AND c.estado = 1");
         $totalRows = $totalRows['data']['cantidad'];
-        $paginacion = help::paginacion($totalRows, 4, $nowPage);
+        $paginacion = help::paginacion($totalRows, 16, $nowPage);
         $init = $paginacion['InitLimit'];
-        $result = $con->SPCALL("CALL sp_searchClient('%$data%',$init ,4)");
+        $result = $con->SPCALL("CALL sp_searchClient('%$data%',$init ,16)");
 
         if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
             return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");

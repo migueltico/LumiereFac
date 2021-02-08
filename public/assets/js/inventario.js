@@ -12,8 +12,10 @@ $('#bodyContent').on("click", "#addProduct #addProduct_generarCodigo", function 
 //REFRESCA LA TABLA EN INVENTARIO
 $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
     e.preventDefault();
+    let input = document.getElementById("productSearch").value
     if (!$(this).hasClass("disabled")) {
-        loadTable(e, 1, '')
+        let page = document.querySelector(".paginationBtn.active")
+        loadTable(e, page.dataset.page, input)
     }
 })
 
@@ -714,7 +716,9 @@ function UpdateEditModal(e, modalId) {
                     })
                 }
                 $(`#EditProduct`).modal('toggle')
-                loadTable(e, 1, "")
+                let page = document.querySelector(".paginationBtn.active")
+                let input = document.getElementById("productSearch").value
+                loadTable(e, page.dataset.page, input)
             }).catch((err) => {
                 console.log('error en FETCH:', err);
                 loadTable(e, 1, "")

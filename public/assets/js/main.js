@@ -13,6 +13,9 @@ $(document).on('click', '.pass_show .ptxt', function () {
 
 });
 
+$("#bodyHtml").on("click", "#subirBtn", function () {
+    $("#bodyMain").scrollTop(0)
+})
 $("#bodyContent").on("click", ".table.sort thead tr th", function () {
     let columnId = $(".table.sort thead tr th").index(this)
     let tipo = $(this).data('type')

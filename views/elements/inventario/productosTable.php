@@ -5,10 +5,10 @@ $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
 $maxpage = @$paginationInfo['paginacion']['paginas'];
 ?>
 <div class="table-responsive">
-<div class="urlPagination" data-url="/inventario/refresh/producttable">
-  <?php include(self::block('pagination')) ?>
-</div>
-  <p>Total de productos: <?=$paginationInfo['cantidad']?></p>
+  <div class="urlPagination" data-url="/inventario/refresh/producttable">
+    <?php include(self::block('pagination')) ?>
+  </div>
+  <p>Total de productos: <?= $paginationInfo['cantidad'] ?></p>
   <table class="table sort" id="sortable">
     <thead>
       <tr>
@@ -63,12 +63,12 @@ $maxpage = @$paginationInfo['paginacion']['paginas'];
           <td scope="row"><?= $product["marca"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["estilo"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["talla"] ?></td>
-          <td scope="row" style="text-align: center;"><?= ($product["descuento"]==0 || $product["descuento"]== null?"N/A":$product["descuento"]."%") ?></td>
+          <td scope="row" style="text-align: center;"><?= ($product["descuento"] == 0 || $product["descuento"] == null ? "N/A" : $product["descuento"] . "%") ?></td>
           <td scope="row" data-value="<?= $product["activado_iva"] ?>" style="text-align: center;margin:0 auto">
             <div class="<?= $gravado[$product["activado_iva"]] ?>" data-toggle="tooltip" data-placement="top" title="<?= $product["iva"] . ' - ' . $product["activado_iva"] ?>"></div>
           </td>
           <td scope="row" data-value="<?= $product["precio_venta"] ?>" style="text-align: center;margin:0 auto"><strong><?= sprintf("%s " . number_format($product["precio_venta"], 2, '.', ','), "	₡") ?></strong></td>
-          <td scope="row" style="text-align: center;margin:0 auto"><strong><?= $product["stock"] ?></strong></td>
+          <td scope="row" style="text-align: center;margin:0 auto"><strong><?= $product["stock"] == null || '' ? 0 : $product["stock"] ?></strong></td>
           <td scope="row" style="text-align: center;"><?= $newDate ?></td>
           <td scope="row" data-value="<?= $product["estado"] ?>" data-toggle="tooltip" data-placement="top" title="">
             <div class="<?= $estado[$product["estado"]] ?>"></div>
@@ -87,5 +87,5 @@ $maxpage = @$paginationInfo['paginacion']['paginas'];
   </table>
 </div>
 <div class="urlPagination" data-url="/inventario/refresh/producttable">
-<?php include(self::block('pagination')) ?>
+  <?php include(self::block('pagination')) ?>
 </div>

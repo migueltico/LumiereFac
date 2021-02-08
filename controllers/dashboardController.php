@@ -14,13 +14,15 @@ class dashboardController extends view
 
     public function index($var)
     {
+        $icons = help::icon();
         $var["Variable"] = "NewArr";
         $block = array("dashboard/body");
-        view::renderT("main",  $block, help::icon());
+        //view::renderT("main",  $block, help::icon());
+        view::renderT("main",  $block, $icons);
     }
     public function general($var)
     {
-        // $icon = help::icon();
+         $icon = help::icon();
         // $users = users::getUsers();
         // $rols = users::getRols();
         // $data["icons"] =  $icon['icons'];

@@ -5,4 +5,5 @@
 		
     </section>
 </section>
+
 <?php include_once (self::block('footer')) ?>

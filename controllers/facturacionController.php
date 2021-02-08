@@ -9,6 +9,7 @@ use models\usuariosModel as user;
 use models\adminModel as admin;
 use models\clientesModel as cliente;
 use models\facturacionModel as fac;
+use models\reportesModel as reports;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 //Funciones de ayuda
@@ -137,12 +138,18 @@ class facturacionController extends view
         header('Content-Type: application/json');
         echo json_encode($product);
     }
+    public function consultarFactura()
+    {
+        $data = fac::getFactura(trim($_POST['fac']));
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
     public function getFact()
     {
         $data = json_decode(file_get_contents("php://input"), true);
         $result = $this->setFacHeader($data);
         $data["data"] = admin::infoSucursal();
-        $data["factura"] =  ($result[1]['rows'] == 1 ? $result[1]['data'] : "error");
+        $data["factura"] =  ($result[1]['data']['fac'] > 0 ? $result[1]['data'] : "error");
         // die();
         if ($result[0] == 0) {
             if ($data['sendFac']) {
@@ -311,6 +318,8 @@ class facturacionController extends view
             $data[':abono'] = (float)($data[':abono'] + $totalCards);
         } else {
             $data[':multipago'] = 0;
+            $data[':multipago_total'] = (float) 0.00;
+            $data[':multipago_string'] = null;
         }
         //transferencia
         $data[':transferencia'] = (int)($montoTransferencia > 0 ? 1 : 0);
@@ -353,5 +362,11 @@ class facturacionController extends view
         $NewData['idrecibo'] = $apartados['idrecibo'];
         $NewData['cards'] = $cards;
         echo view::renderElement('facturas/reciboSinproducto', $NewData);
+    }
+    public function facturacion()
+    {
+        $icon = help::icon();
+        $data["icons"] =  $icon['icons'];
+        echo view::renderElement('facturacion/facturacionReportes', $data);
     }
 }
