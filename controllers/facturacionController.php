@@ -61,7 +61,7 @@ class facturacionController extends view
     {
         $icon = help::icon();
         $fac = fac::getPendingFac();
-        $data["facturas"] = $fac['data'];
+        $data["facturas"] = $fac['data'];  
         $data["icons"] =  $icon['icons'];
         echo view::renderElement('facturacion/facturas_pendientes', $data);
     }
@@ -73,11 +73,17 @@ class facturacionController extends view
         $data['productos'] = $result['data'];
         echo view::renderElement('facturacion/tablaProductosPendientes', $data);
     }
-
     public function changeStateFac()
     {
         $id[':consecutivo'] = (int) $_POST['id'];
         $result = fac::changeStateFac($id);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+    public function devolucion()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $result = fac::setDevolucion($data);
         header('Content-Type: application/json');
         echo json_encode($result);
     }
@@ -140,7 +146,7 @@ class facturacionController extends view
     }
     public function consultarFactura()
     {
-        $data = fac::getFactura(trim($_POST['fac']));
+        $data = fac::getFacturaForDevolution(trim($_POST['fac']));
         header('Content-Type: application/json');
         echo json_encode($data);
     }

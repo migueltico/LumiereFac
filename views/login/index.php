@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/img/favicon.ico" />
   <title>Inicio de sesion</title>
 </head>
 
@@ -19,9 +20,9 @@
         <input type="text" name="usuario" placeholder="Usuario" value="">
         <input type="password" name="pass" placeholder="Contraseña" value="">
         <select id="selected" name="db" id="">
-        <option value="0">Seleccione una Sucursal</option>
+          <option value="0">Seleccione una Sucursal</option>
           <?php
-          foreach ($GLOBALS['DB_NAME'] as $key=> $db) : ?>
+          foreach ($GLOBALS['DB_NAME'] as $key => $db) : ?>
             <option value="<?= $key ?>"><?= $key ?></option>
           <?php endforeach; ?>
         </select>
@@ -49,7 +50,7 @@
 		</div>
     </section> -->
   <Style>
-    HTML CSS JSResult @font-face {
+    @font-face {
       font-family: 'Source Sans Pro';
       font-style: normal;
       font-weight: 200;
@@ -165,6 +166,7 @@
       transition-duration: 0.25s;
       font-weight: 300;
     }
+
     form #selected {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -184,15 +186,18 @@
       transition-duration: 0.25s;
       font-weight: 300;
     }
-    form #selected{
-      text-align-last:center;
+
+    form #selected {
+      text-align-last: center;
     }
-    form #selected:hover{
-      text-align-last:center;
-     
+
+    form #selected:hover {
+      text-align-last: center;
+
     }
-    form #selected option{
-      text-align-last:center;
+
+    form #selected option {
+      text-align-last: center;
       color: #14a6ff;
     }
 

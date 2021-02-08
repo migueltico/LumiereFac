@@ -4,6 +4,7 @@ namespace models;
 
 use config\helper as h;
 use config\conexion;
+use DateTime;
 
 class facturacionModel
 {
@@ -123,10 +124,10 @@ class facturacionModel
         }
         return $recibo;
     }
-    public static function getFactura($fac)
+    public static function getFacturaForDevolution($fac)
     {
         $con = new conexion();
-        $header = $con->SQR_ONEROW("SELECT *, DATE_FORMAT(f.fecha,'%d-%m-%Y') fechaFormat 
+        $header = $con->SQR_ONEROW("SELECT *, DATE_FORMAT(f.fecha,'%d-%m-%Y') fechaFormat, DATE_FORMAT(DATE_ADD(f.fecha, INTERVAL 30 DAY),'%d-%m-%Y') AS fecha_final
         FROM facturas f
         INNER JOIN cliente c 
         ON c.idcliente = f.idcliente 
@@ -134,8 +135,10 @@ class facturacionModel
         $data = array();
         if ($header['rows'] > 0) {
             $factura = $header['data'];
+            $factura['dateNow'] = date("d-m-Y");
+            // $factura['dateNow'] = "12-12-2020";
             $id = (int) $factura['consecutivo'];
-            $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total 
+            $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion,p.descripcion_short, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total 
             FROM detalle_factura d 
             INNER JOIN producto p 
             ON p.idproducto = d.idproducto 
@@ -144,10 +147,108 @@ class facturacionModel
                 $factura['details'] = $detalis['data'];
             }
             $data = $factura;
+            $data['hasDevolution'] = false;
+            //verificamos si existe una devolucion ligada a la factura
+            $facDevolution = $con->SQR_ONEROW("SELECT * FROM devoluciones WHERE fac = $fac");
+            if ($facDevolution['rows'] > 0) {
+                $data['hasDevolution'] = true;
+                $data['devolucion_details'] = $facDevolution['data'];
+                $idDevolucion = $facDevolution['data']['idDevolucion'];
+                $facDevolution = $con->SQND("SELECT * FROM detalles_devoluciones WHERE idDevolucion= $idDevolucion");
+                $data['productosDevoluciones'] =  $facDevolution['data'];
+                $data['detailsOriginal'] = $data['details'];
+                //recorre cada row de productos de la factura
+                foreach ($data['details'] as $key => $product) {
+                    $data['details'][$key]['originalCant'] = $product['cantidad'];
+                    //recorre por cada producto de la factura original, recorre las devoluciones y verifica si son iguales y le reduce la cantidad
+                    foreach ($data['productosDevoluciones'] as $productDevolution) {
+                        if ($product['idproducto'] == $productDevolution['idProducto']) {
+                            $data['details'][$key]['originalCant'] = $product['cantidad'];
+                            if ($product['cantidad'] > 0) {
+                                $data['details'][$key]['cantidad'] = (int)($data['details'][$key]['cantidad'] - $productDevolution['cantidad']);
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             $data = null;
         }
         return $data;
+    }
+    public static function setDevolucion($data)
+    {
+        $fac = trim($data['fac']);
+        $date = DateTime::createFromFormat('d-m-Y', $data['fechaMax']);
+        $fechaMax = $date->format('Y-m-d');
+        $iduser = $_SESSION['id'];
+        $total = (float) $data['total'];
+        $con = new conexion();
+        $ok = true;
+        //verificamos si existe una devolucion ligada a la factura
+        $result = $con->SQR_ONEROW("SELECT * FROM devoluciones WHERE fac = $fac");
+        //validamos si encontro algun registro relacionado
+        if ($result['rows'] == 0) {
+            //Insertamos la devolucion nueva
+            $newDevolucion = $con->SQNDNR("INSERT INTO devoluciones (fac, fechaMaxReclamo, idUsuario, total, Saldo) VALUE ($fac, '$fechaMax', $iduser, $total, $total)");
+            //verificamos que no haya errores
+            if ($newDevolucion['error'] == '00000' && $newDevolucion['estado'] == true) {
+                //obtener el IdDevolucion para asignar al detalle de productos
+                $result = $con->SQR_ONEROW("SELECT idDevolucion FROM devoluciones WHERE fac = $fac");
+                $idDevolucion = $result['data']['idDevolucion'];
+                foreach ($data['items'] as $row) {
+                    $idproducto = $row['idproducto'];
+                    $cant = $row['cant'];
+                    $total = $row['total'];
+                    $newDetalles = $con->SQNDNR("INSERT INTO detalles_devoluciones (idDevolucion, idProducto, cantidad, monto) VALUE ($idDevolucion, '$idproducto', $cant, $total)");
+                    //validamos por cada insercion que no haya errores
+                    if ($newDetalles['error'] != '00000' && $newDetalles['estado'] != true) {
+                        $ok = false;
+                    } else {
+                        //por cada devolucion se retorna la cantidad de producto especificado al stock
+                        $stockNow = $con->SQR_ONEROW("SELECT stock FROM producto  WHERE idproducto=$idproducto");
+                        $newStock = (int)$stockNow['data']['stock'] + (int)$cant;
+                        $sql = "UPDATE producto SET stock=$newStock WHERE idproducto=$idproducto";
+                        $updateProduct = $con->SQNDNR($sql);
+                        if ($updateProduct['error'] != '00000') {
+                            $ok = false;
+                        }
+                    }
+                }
+            }
+            //verificamos si la factura ya tiene una devolucion ligada
+        } else if ($result['rows'] == 1) {
+
+            $saldo  = (float) $result['data']['Saldo'];
+            $NowTotal  = (float) $result['data']['total'];
+            $newSaldo =  (float) ($saldo + $total);
+            $newTotal =  (float) ($NowTotal + $total);
+            //obtener el IdDevolucion
+            $idDevolucion = $result['data']['idDevolucion'];
+            foreach ($data['items'] as $row) {
+                $idproducto = $row['idproducto'];
+                $cant = $row['cant'];
+                $total = $row['total'];
+                $newDetalles = $con->SQNDNR("INSERT INTO detalles_devoluciones (idDevolucion, idProducto, cantidad, monto) VALUE ($idDevolucion, '$idproducto', $cant, $total)");
+                //validamos por cada insercion que no haya errores
+                if ($newDetalles['error'] != '00000' && $newDetalles['estado'] != true) {
+                    $ok = false;
+                } else {
+                    //por cada devolucion se retorna la cantidad de producto especificado al stock
+                    $stockNow = $con->SQR_ONEROW("SELECT stock FROM producto  WHERE idproducto=$idproducto");
+                    $newStock = (int)$stockNow['data']['stock'] + (int)$cant;
+                    $sql = "UPDATE producto SET stock=$newStock WHERE idproducto=$idproducto";
+                    $updateProduct = $con->SQNDNR($sql);
+                    if ($updateProduct['error'] != '00000') {
+                        $ok = false;
+                    }
+                }
+            }
+            if ($ok) {
+                $newDetalles = $con->SQNDNR("UPDATE devoluciones SET total =$newTotal, Saldo = $newSaldo WHERE fac =$fac");
+            }
+        }
+        return array("estado" => $ok);
     }
     public static function setFirstAbonoRecibo()
     {

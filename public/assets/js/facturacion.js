@@ -1,28 +1,128 @@
 $('#bodyContent').on("click", "#btnCambios_fac", function (e) {
     $('#rowsFactDetailsSearch').html('')
     $('#SearchFacModal').modal('toggle')
-    resetFactSearchCambios()
 
+})
+$('#bodyContent').on("click", "#btnAplicarDevolucion", function (e) {
+    aplicarDevolucion()
 })
 $('#bodyContent').on("keypress", "#SearchFac_input", function (e) {
     if (e.keyCode == 13) {
         getFacData(this.value)
     }
 })
-function resetFactSearchCambios() {
-    let idclienteFacCambio = document.getElementById('idclienteFacCambio')
-    let selectClienteGroupSaldo = document.getElementById('selectClienteGroupSaldo')
-    let ckAsignarSaldoCliente = document.getElementById('ckAsignarSaldoCliente')
-    idclienteFacCambio.value = ''
-    selectClienteGroupSaldo.hidden = true
-    ckAsignarSaldoCliente.checked = false
+$('#bodyContent').on("change", ".inputCantFactRow", function (e) {
+    validateInputCantRow(this)
+})
+$('#bodyContent').on("blur", ".inputCantFactRow", function (e) {
+    validateInputCantRow(this)
+})
+$('#bodyContent').on("change", ".inputSelectRowFact", function (e) {
+    calcAmountAllRowDevolution()
+})
+
+function aplicarDevolucion() {
+    let rows = document.querySelector("#rowsFactDetailsSearch")
+    let fac = document.querySelector("#idfacDevolucion").value
+    let childs = rows.children
+    let selecteds = []
+    let total = 0.00
+    for (const child of childs) {
+        if (child.children[8].children[0].checked) {
+            let totalRow = child.children[9].children[0].value
+            let rows = {
+                idproducto: child.children[0].dataset.id,
+                cant: child.children[7].children[0].value,
+                total: totalRow
+            }
+            total += parseFloat(totalRow)
+            selecteds.push(rows)
+        }
+    }
+    let fecha_max_devolucion = document.getElementById("fecha_max_devolucion")
+    let json = {
+        items: selecteds,
+        fac: fac,
+        fechaMax: fecha_max_devolucion.dataset.fecha,
+        total
+    }
+    // console.log(json)
+    let headers = {
+        "Content-Type": "application/json"
+    }
+    fetch("/facturacion/agregar/devolucion", {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(json)
+        }).then(resp => resp.json())
+        .then(resp => {
+            getFacData(fac)
+            console.log(resp)
+        })
+
 }
-//1000000256
+
+function validateInputCantRow(input) {
+    let max = parseInt(input.max)
+    let value = parseInt(input.value)
+    if (max >= value) {
+        calcAmountAllRowDevolution()
+    } else {
+        Swal.fire({
+            position: 'top',
+            title: `Cantidad maxima superada`,
+            text: `La cantidad de ${input.value} Unidad${input.value>1?"es":""} supera la cantidad de ${input.max} Unidad${input.max>1?"es":""} facturada${input.max>1?"s":""} del producto.`,
+            icon: 'error',
+            confirmButtonText: 'OK',
+            // timer: 8000,
+            // timerProgressBar: true
+        })
+        input.value = input.max
+    }
+}
+
+function calcAmountAllRowDevolution() {
+    let rows = document.querySelector("#rowsFactDetailsSearch")
+    let childs = rows.children
+    let totalSpan = document.getElementById('NewCreditTotal')
+    let saldoActual_devolucion = document.getElementById('saldoActual_devolucion').innerHTML
+    let newTotal = 0.00
+    for (const child of childs) {
+        if (child.children[8].children[0].checked) {
+            let amountBack = 0.00
+            let totalRow = parseFloat(child.children[6].textContent)
+            let cant = parseInt(child.children[2].dataset.realcant)
+            let NewCant = parseFloat(child.children[7].children[0].value)
+            amountBack = totalRow / cant * NewCant
+            // console.table([totalRow, cant, NewCant, amountBack])
+            child.children[9].children[0].value = amountBack
+            newTotal += parseFloat(amountBack)
+        } else {
+            child.children[9].children[0].value = "0.00"
+        }
+    }
+    if (newTotal > 0) {
+        newTotal += parseFloat(saldoActual_devolucion)
+        totalSpan.innerText = ConvertLabelFormat(newTotal)
+        totalSpan.dataset.total = newTotal
+
+    } else {
+        totalSpan.innerText = "0.00"
+        totalSpan.dataset.total = "0.00"
+    }
+}
+
+function formatDate(dateString, symbol, returnSymbol) {
+    let dataArray = dateString.split(symbol)
+    let returnDate = ''
+    returnDate = dataArray[2] + returnSymbol + dataArray[0] + returnSymbol + dataArray[1]
+    return returnDate
+
+}
+
 function getFacData(fac) {
-    let idGenerico = document.getElementById('fac_cliente_input').dataset.idgenerico
     let regex = '^[+]?([0-9]+(?:[0-9]*)?|[0-9]+)$'
     let resultRegex = fac.match(regex)
-    console.log(resultRegex);
     if (resultRegex) {
         let formData = new FormData()
         formData.append('fac', fac)
@@ -31,27 +131,46 @@ function getFacData(fac) {
                 body: formData
             }).then(resp => resp.json())
             .then(resp => {
-                console.log(resp);
                 if (resp !== null) {
-
-                    resetFactSearchCambios()
-                    let dataClienteFac = document.getElementById('dataClienteFac')
-                    let AsignarsaldoGroup = document.getElementById('AsignarsaldoGroup')
-                    dataClienteFac.innerHTML = `${idGenerico !==resp.idcliente ?`<span>Cliente: ${resp.nombre}</span>`:''}<span>Saldo Actual: ${resp.saldo ==null || resp.saldo =='' ? '0.00': resp.saldo}</span><span>Saldo Añadido: 0.00</span>`
+                    let idfacDevolucion = document.getElementById("idfacDevolucion")
+                    let fecha_max_devolucion = document.getElementById("fecha_max_devolucion")
+                    let fecha_venta_devolucion = document.getElementById("fecha_venta_devolucion")
+                    let saldoActual_devolucion = document.getElementById('saldoActual_devolucion')
+                    
+                    saldoActual_devolucion.innerText =resp.hasDevolution ? resp.devolucion_details.Saldo : '0.00'
+                    fecha_venta_devolucion.innerText = resp.fechaFormat
+                    fecha_max_devolucion.innerText = resp.fecha_final
+                    fecha_max_devolucion.dataset.fecha = resp.fecha_final
+                    let d1 = new Date(formatDate(resp.dateNow, '-', '-'))
+                    let d2 = new Date(formatDate(resp.fecha_final, '-', '-'))
+                    if (d1 > d2) {
+                        fecha_max_devolucion.style.color = 'red'
+                    } else {
+                        fecha_max_devolucion.style.color = 'blue'
+                    }
                     let trs = ''
-                    AsignarsaldoGroup.style.display = idGenerico !== resp.idcliente ? 'none' : 'block'
+                    idfacDevolucion.value = fac
                     resp.details.forEach((element, index) => {
+                        let cantidadModificada = ``
+                        if (element.originalCant != undefined && element.originalCant != element.cantidad) {
+                            cantidadModificada = `<strong style="color:red;">(${element.cantidad})</strong>`
+                        }
+                        if (element.originalCant == undefined) {
+                            cantidadModificada = ``
+                            element.originalCant = element.cantidad
+                        }
                         let row = `
-                <tr>
-                    <td>${element.codigo}</td>
-                    <td>${element.descripcion}</td>
-                    <td>${element.cantidad}</td>
+                <tr id="ChangesRow_${element.idproducto}">
+                    <td data-id="${element.idproducto}">${element.codigo}</td>
+                    <td>${element.descripcion_short}</td>
+                    <td data-realcant="${element.cantidad}">${element.originalCant} ${cantidadModificada}</td>
                     <td>${element.precio}</td>
                     <td class='text-center'>${element.descuento}%</td>
                     <td class='text-center'>${element.iva}%</td>
                     <td>${element.total}</td>
-                    <td><input style='text-align:center' type="number" name="" id="" min='1' max='${element.cantidad}' value='1'></td>
-                    <td class='text-center'><input type='checkbox'></td>
+                    <td><input class="inputCantFactRow" style='text-align:center' ${element.cantidad == 0 ?'disabled': ''} type="number" min='${element.cantidad > 0 ? 1: 0}' max='${element.cantidad}' value='${element.cantidad > 0 ? 1: 0}'></td>
+                    <td class='text-center'><input class="inputSelectRowFact" type='checkbox' ${element.cantidad == 0 ?'disabled': ''} data-codigo="${element.idproducto}" data-cantidad="${element.cantidad}" data-precio="${element.precio}" data-descuento="${element.descuento}" data-iva="${element.iva}" data-total="${element.total}" ></td>
+                    <td><input style='text-align:center;max-width:80px' type="text" disabled value='0.00'></td>
                 </tr>
                 `
                         trs += row
@@ -103,10 +222,6 @@ $('#bodyContent').on("change", "#ckCambios", function (e) {
     groupCambiosBtn.style.display = this.checked ? 'block' : 'none'
 })
 
-$('#bodyContent').on("change", "#ckAsignarSaldoCliente", function (e) {
-    let selectClienteGroupSaldo = document.getElementById('selectClienteGroupSaldo')
-    selectClienteGroupSaldo.hidden = this.checked ? false : true
-})
 //SE EJECUTA AL PRESIONAR ENTER EN EL INPUT DE BUSQUEDA EN INVENTARIO
 $('#bodyContent').on("change", ".cantInputFact", function (e) {
     let tr = $(e.target).parent().parent().children()

@@ -7,6 +7,9 @@
             </div>
         <?php endif;  ?>
     <?php endif;  ?>
+    <div style="font-weight:bold;width: 100%;padding-top:10px;padding-bottom:10px;margin-top:10px;text-align:center;">
+        <p class="mb-0"><?= $_SESSION["db"] ?></p>
+    </div>
     <div>
         <div class="perfil mt-3 mb-1">
             <img src="public/assets/img/perfil_no_found.jpg" alt="Perfil">
