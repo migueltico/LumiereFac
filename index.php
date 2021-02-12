@@ -3,7 +3,7 @@
 // session_set_cookie_params($expire);
 // server should keep session data for AT LEAST 1 hour
 ini_set('session.gc_maxlifetime', 72000);
-
+set_include_path('/var/www/soporte');
 // each client should remember their session id for EXACTLY 1 hour
 session_set_cookie_params(72000);
 session_start();
