@@ -39,8 +39,8 @@ class facturacionModel
         :monto_tarjeta, :monto_efectivo, :monto_envio, :estado, :comentario, :multipago_string, :multipago, :multipago_total, :formatDate, :saldo, :saldo_ref);";
         $result = $con->SQ($headerSql, $data);
 
-        $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
         if ($result['error'] == '00000') {
+            $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
             if ($hasSaldo) {
                 $con1 = new conexion();
                 $sqlTransaccion = "INSERT INTO transacciones_saldos (fac, ref, saldoUsado, saldoPendiente, idusuario) VALUE ($consecutivo, $saldo_ref, $saldo, $newSaldo, $idusuario) ";
@@ -279,7 +279,7 @@ class facturacionModel
     }
     public static function saldoDevoluciones($fac)
     {
-        
+
         $con = new conexion();
         $data = $con->SQR_ONEROW("SELECT * FROM  devoluciones WHERE fac = $fac");
         return $data;

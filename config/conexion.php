@@ -101,7 +101,7 @@ class conexion
 			$return = $estado;
 			return $return;
 		} catch (\PDOException $e) {
-			return $e;
+			return ["error" => $e];
 		}
 	}
 
