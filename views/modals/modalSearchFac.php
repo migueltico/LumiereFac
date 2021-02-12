@@ -12,8 +12,7 @@
                     <div class="input-group-prepend">
                         <label id="SearchFac_inputBtn" class="btn btn-outline-secondary" type="button">Buscar</label>
                     </div>
-                    <input type="text" name="" id="" value="1000000256">
-                    <input type="text" autocomplete="off" id="SearchFac_input" class="form-control text-left" data-cliente="1" autofocus="on" placeholder="Buscar Factura" value="1000000779">
+                    <input type="text" autocomplete="off" id="SearchFac_input" class="form-control text-left" data-cliente="1" autofocus="on" placeholder="Buscar Factura" value="">
                 </div>
                 <div class="alert alert-primary  d-flex justify-content-between" role="alert">
                     <div class="col-4"><strong>Fecha Venta:</strong> <span id="fecha_venta_devolucion"></span></div>
