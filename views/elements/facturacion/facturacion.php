@@ -50,7 +50,7 @@
                             </div>
                             <div class="custom-control custom-switch mt-2 ml-3" id="ckCambiosWrapper">
                                 <input type="checkbox" class="custom-control-input" id="ckCambios">
-                                <label class="custom-control-label" for="ckCambios">Cambio o devoluciones</label>
+                                <label class="custom-control-label" for="ckCambios">Cambio o devoluciones <input type="text" placeholder="Inhabilitado" disable></label>
                             </div>
                         </div>
                         <div class="input-group mb-3 mt-3" id="apartadosWrapper" style="display: none;">
