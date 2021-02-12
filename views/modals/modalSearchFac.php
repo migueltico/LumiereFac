@@ -14,6 +14,7 @@
                     </div>
                     <input type="text" autocomplete="off" id="SearchFac_input" class="form-control text-left" data-cliente="1" autofocus="on" placeholder="Buscar Factura" value="">
                 </div>
+                
                 <div class="alert alert-primary  d-flex justify-content-between" role="alert">
                     <div class="col-4"><strong>Fecha Venta:</strong> <span id="fecha_venta_devolucion"></span></div>
                     <div class="col-4"><strong>Saldo:</strong> <span id="saldoActual_devolucion">0.00</span></div>

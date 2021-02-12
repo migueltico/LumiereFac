@@ -19,7 +19,8 @@
         <div class="col-lg-4 col-md-6 col-sm-12 mb-1">
             <button data-type="html" class="btn btn-primary generarReportesFac">Generar</button>
             <button data-type="pdf" class="btn btn-info generarReportesFac">PDF</button>
+            
         </div>
     </div>
-    
+
 </div>

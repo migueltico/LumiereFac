@@ -21,6 +21,7 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
         default:
             break;
     }
+    
     switch (type) {
         case 'html':
             let formData = new FormData()

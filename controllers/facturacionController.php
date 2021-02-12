@@ -21,6 +21,7 @@ class facturacionController extends view
 
     public function index()
     {
+        
         $info = admin::infoSucursal();
         $info = $info['data'];
         $cliente = cliente::getClienteById(array(":id" => $info['idclienteGenerico']));
@@ -86,6 +87,7 @@ class facturacionController extends view
         $result = fac::setDevolucion($data);
         header('Content-Type: application/json');
         echo json_encode($result);
+        
     }
     public function saldoDevoluciones()
     {
@@ -93,6 +95,7 @@ class facturacionController extends view
         $result = fac::saldoDevoluciones($fac);
         header('Content-Type: application/json');
         echo json_encode($result);
+
     }
     public function abrirCaja()
     {

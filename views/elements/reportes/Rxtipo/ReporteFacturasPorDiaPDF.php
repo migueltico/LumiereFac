@@ -16,6 +16,7 @@
                 <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Total Diario</th>
             </tr>
         </thead>
+
         
         <tbody data-sorts="DESC">
             <?php

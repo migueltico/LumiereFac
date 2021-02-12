@@ -50,7 +50,7 @@
                             </div>
                             <div class="custom-control custom-switch mt-2 ml-3" id="ckCambiosWrapper">
                                 <input type="checkbox" class="custom-control-input" id="ckCambios">
-                                <label class="custom-control-label" for="ckCambios">Cambio o devoluciones <input type="text" placeholder="Inhabilitado" disable></label>
+                                <label class="custom-control-label" for="ckCambios">Cambio o devoluciones <button type="text" placeholder="Inhabilitado" disable></button></label>
                             </div>
                         </div>
                         <div class="input-group mb-3 mt-3" id="apartadosWrapper" style="display: none;">
@@ -76,7 +76,7 @@
                                         <span class="btn btn-info" id="btnCambios_fac" type="button" class="input-group-text" data-toggle="tooltip" data-placement="top" title="Busqueda de factura y aplicacion de devoluciones">Devoluciones</span>
                                     </div>
                                     <input id="inputSearchFacSaldo" type="text" class="form-control  p-3" placeholder="# factura para cambio o devolucion" data-toggle="tooltip" data-placement="top" title="presione ENTER para consultar la factura con saldo">
-                                    <button id="resetSaldostatus" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cancelar uso de saldo"><?= $icons['xcircle'] ?></button>
+                                    <button id="resetSaldostatus" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cancelar uso de saldo"><?=$icons['xcircle'] ?></button>
                                 </div>
                             </div>
                             <div class="input-group mb-3 hiddenSaldosInput" style="display: none;">

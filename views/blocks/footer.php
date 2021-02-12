@@ -18,4 +18,5 @@
 <script src="/public/assets/js/menu.js?v=<?= rand(1, 1000) ?>"></script>
 </body>
 
+
 </html>

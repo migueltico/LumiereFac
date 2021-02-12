@@ -13,8 +13,6 @@
                         <!-- <option value="2">2-Reporte de Facturas Diario</option> -->
                         <!-- <option value="3">3-Reporte de Facturas con envios pendientes</option> -->
                         <!-- <option value="4">4-Reporte de Apartados completados</option> -->
-                        <!-- <option value="5">5-Reporte de Apartados vencidos</option> -->
-                        <!-- <option value="6">6-Reporte de Apartados sin cancelar</option> -->
                     </select>
                 </div>
             </div>

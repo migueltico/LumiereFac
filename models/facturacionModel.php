@@ -18,6 +18,7 @@ class facturacionModel
      */
     public static function setFacHeader($data, $items)
     {
+
         $con = new conexion();
         $conse = $con->SQR_ONEROW("SELECT * FROM consecutivos WHERE idconsecutivos = 1");
         $consecutivo = ((int) $conse['data']['fac']) + 1;
@@ -95,6 +96,7 @@ class facturacionModel
     }
     public static function setAbonoRecibo($data, $abono)
     {
+
         $con = new conexion();
         if (!$abono) {
             unset($data[':idusuario']);
@@ -142,6 +144,7 @@ class facturacionModel
     }
     public static function getFacturaForDevolution($fac)
     {
+
         $con = new conexion();
         $header = $con->SQR_ONEROW("SELECT *, DATE_FORMAT(f.fecha,'%d-%m-%Y') fechaFormat, DATE_FORMAT(DATE_ADD(f.fecha, INTERVAL 15 DAY),'%d-%m-%Y') AS fecha_final
         FROM facturas f
@@ -194,6 +197,7 @@ class facturacionModel
     }
     public static function setDevolucion($data)
     {
+
         $fac = trim($data['fac']);
         $date = DateTime::createFromFormat('d-m-Y', $data['fechaMax']);
         $fechaMax = $date->format('Y-m-d');
@@ -275,6 +279,7 @@ class facturacionModel
     }
     public static function saldoDevoluciones($fac)
     {
+        
         $con = new conexion();
         $data = $con->SQR_ONEROW("SELECT * FROM  devoluciones WHERE fac = $fac");
         return $data;
