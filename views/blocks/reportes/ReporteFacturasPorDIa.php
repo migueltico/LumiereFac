@@ -21,7 +21,5 @@
             <button data-type="pdf" class="btn btn-info generarReportesFac">PDF</button>
         </div>
     </div>
-
-
-
+    
 </div>

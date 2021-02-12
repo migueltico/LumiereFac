@@ -20,8 +20,6 @@
             </div>
         </div>
         <?php include(self::block('reportes/ReporteFacturasPorDia')) ?>
-
-
     </div>
     <div class="card-body loadTable" id="loadTable">
     </div>

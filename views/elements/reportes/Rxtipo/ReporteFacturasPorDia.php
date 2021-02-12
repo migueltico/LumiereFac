@@ -1,6 +1,7 @@
 <div class="table-responsive">
     <table class="table sort" id="sortable">
         <thead>
+            
             <tr>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Fecha</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Cantidad</th>
