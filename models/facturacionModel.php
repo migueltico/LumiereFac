@@ -91,6 +91,9 @@ class facturacionModel
                 return  $result;
             }
         } else {
+            echo '<pre>';
+            print_r($result);
+            echo '</pre>';
             return  $result;
         }
     }
