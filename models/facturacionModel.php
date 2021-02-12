@@ -143,7 +143,7 @@ class facturacionModel
     public static function getFacturaForDevolution($fac)
     {
         $con = new conexion();
-        $header = $con->SQR_ONEROW("SELECT *, DATE_FORMAT(f.fecha,'%d-%m-%Y') fechaFormat, DATE_FORMAT(DATE_ADD(f.fecha, INTERVAL 30 DAY),'%d-%m-%Y') AS fecha_final
+        $header = $con->SQR_ONEROW("SELECT *, DATE_FORMAT(f.fecha,'%d-%m-%Y') fechaFormat, DATE_FORMAT(DATE_ADD(f.fecha, INTERVAL 15 DAY),'%d-%m-%Y') AS fecha_final
         FROM facturas f
         INNER JOIN cliente c 
         ON c.idcliente = f.idcliente 
