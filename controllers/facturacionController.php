@@ -206,7 +206,7 @@ class facturacionController extends view
             $data[':estado'] = (int) $datos['estado'];
             $data[':comentario'] = 'Sin comentarios';
             $data[':saldo'] = $datos['hasSaldo'] == true ? (float) $datos['saldo'] : 0;
-            $data[':saldo_ref'] = $datos['hasSaldo'] == true ? (float) $datos['saldo_ref'] : '';
+            $data[':saldo_ref'] = $datos['hasSaldo'] == true ? (float) $datos['saldo_ref'] : 0;
             $data[':new_saldo'] = $datos['hasSaldo'] == true ? (float) $datos['new_saldo'] : '';
             $data[':hasSaldo'] = $datos['hasSaldo'];
             $data[':idcaja'] = $_SESSION['idcaja'];
