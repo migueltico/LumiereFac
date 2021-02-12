@@ -21,7 +21,7 @@ class facturacionController extends view
 
     public function index()
     {
-        
+
         $info = admin::infoSucursal();
         $info = $info['data'];
         $cliente = cliente::getClienteById(array(":id" => $info['idclienteGenerico']));
@@ -205,7 +205,7 @@ class facturacionController extends view
             $data[':tipo'] = (int) $datos['tipoVenta'];
             $data[':estado'] = (int) $datos['estado'];
             $data[':comentario'] = 'Sin comentarios';
-            $data[':saldo'] = $datos['hasSaldo'] == true ? (float) $datos['saldo'] : '';
+            $data[':saldo'] = $datos['hasSaldo'] == true ? (float) $datos['saldo'] : 0;
             $data[':saldo_ref'] = $datos['hasSaldo'] == true ? (float) $datos['saldo_ref'] : '';
             $data[':new_saldo'] = $datos['hasSaldo'] == true ? (float) $datos['new_saldo'] : '';
             $data[':hasSaldo'] = $datos['hasSaldo'];
