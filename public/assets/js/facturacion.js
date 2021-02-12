@@ -46,7 +46,8 @@ function aplicarDevolucion() {
         fechaMax: fecha_max_devolucion.dataset.fecha,
         total
     }
-    // console.log(json)
+    console.log(json)
+    if (json.items.length == 0) return
     let headers = {
         "Content-Type": "application/json"
     }
@@ -57,6 +58,14 @@ function aplicarDevolucion() {
         }).then(resp => resp.json())
         .then(resp => {
             getFacData(fac)
+            Swal.fire({
+                position: 'top',
+                title: `Devolucion aplicada correctamente`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                timer: 3000,
+                timerProgressBar: true
+            })
             console.log(resp)
         })
 
@@ -136,8 +145,8 @@ function getFacData(fac) {
                     let fecha_max_devolucion = document.getElementById("fecha_max_devolucion")
                     let fecha_venta_devolucion = document.getElementById("fecha_venta_devolucion")
                     let saldoActual_devolucion = document.getElementById('saldoActual_devolucion')
-                    
-                    saldoActual_devolucion.innerText =resp.hasDevolution ? resp.devolucion_details.Saldo : '0.00'
+
+                    saldoActual_devolucion.innerText = resp.hasDevolution ? resp.devolucion_details.Saldo : '0.00'
                     fecha_venta_devolucion.innerText = resp.fechaFormat
                     fecha_max_devolucion.innerText = resp.fecha_final
                     fecha_max_devolucion.dataset.fecha = resp.fecha_final
@@ -234,12 +243,13 @@ $('#bodyContent').on("click", ".btnDeleteRowTarjeta", function (e) {
     let allMonto = document.getElementsByClassName('tarjertaInputs_monto')[0]
     let rowtarjetas = document.getElementsByClassName('rowtarjetas')
     let totalFactAmount = document.getElementById('totalFactAmount').textContent
+    let amountsaldo = document.getElementById('totalFactAmount').dataset.amountsaldo
     let row = document.getElementById(id)
     row.remove()
     if (!cb.checked) {
         if (rowtarjetas.length == 0) {
             allMonto.disabled = true;
-            allMonto.value = totalFactAmount
+            allMonto.value = localStorage.saldo != 'false' && localStorage.saldo != undefined ? amountsaldo : totalFactAmount
         }
     }
 })
@@ -340,7 +350,12 @@ function multiState(e) {
             }
         } else {
             let amounts = document.getElementById('totalFactAmount')
-            $(".lbMontoToPay").val(amounts.dataset.amount)
+            console.log(localStorage.saldo, localStorage.saldo != 'false' && localStorage.saldo != undefined)
+            if (localStorage.saldo != 'false' && localStorage.saldo != undefined) {
+                $(".lbMontoToPay").val(amounts.dataset.amountsaldo)
+            } else {
+                $(".lbMontoToPay").val(amounts.dataset.amount)
+            }
             $(".cardHeaderSwitch").first().addClass('selectedMethodPay')
             $(".fact_switchBtns input[type='checkbox").prop("checked", false)
             $('.lbMontoToPay').prop('disabled', true)
@@ -495,6 +510,7 @@ $("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
 })
 
 function resetFactScreen() {
+    localStorage.removeItem('saldo')
     $(`.modal-backdrop`).remove()
     loadPage(null, "facturacion/facturar")
 }
@@ -582,6 +598,9 @@ function getProductsRowsForFac(method, pago, typeAbono) {
     let tipoVenta = parseInt($("#group_type_fac .active").data("tipo"))
     let totalAmountWithOutFormat = parseFloat(amounts.replace(",", ""))
     let iva = (totalAmountWithOutFormat - gran_subtotal_descuento - monto_envio)
+    let saldoUsed = parseFloat(localStorage.saldo)
+    let inputSearchFacSaldo = document.getElementById('inputSearchFacSaldo').value
+    let inputFacNewSaldoNow = document.getElementById('inputFacNewSaldoNow').value
     let finalJson = {
         items: itemsFac,
         total: amounts,
@@ -599,7 +618,12 @@ function getProductsRowsForFac(method, pago, typeAbono) {
         firstAbono: typeAbono,
         sendFac: (Okprint.checked ? 1 : 0),
         estado: (tipoVenta == 1 ? 1 : 0),
-        hasPay: pago
+        hasPay: pago,
+        hasSaldo: localStorage.saldo != 'false' && localStorage.saldo != undefined ? true : false,
+        saldo: localStorage.saldo != 'false' && localStorage.saldo != undefined ? parseFloat(saldoUsed) : false,
+        saldo_ref: inputSearchFacSaldo.trim(),
+        new_saldo: inputFacNewSaldoNow.trim()
+
     }
     console.log("final Json", finalJson);
     printFact(finalJson)
@@ -1114,9 +1138,11 @@ function removeItemProduct(id) {
     $(`#itemRowProduct_${id}`).remove()
     getSubTotalAndTotal()
 }
-
+//total
 function getSubTotalAndTotal() {
     let monto_envio = document.getElementById('precioEnvio').value
+    let inputFacSaldoNow = document.getElementById('inputFacSaldoNow').value
+    let inputFacNewSaldoNow = document.getElementById('inputFacNewSaldoNow')
     let total = parseFloat(monto_envio)
     let cantRow = 0
     $(".productRowFac .productRowFac_total").each((i, element) => {
@@ -1125,13 +1151,42 @@ function getSubTotalAndTotal() {
         cantRow++
     })
     $("#CantidadFooterFact").text(`Cantidad de Lineas: ${cantRow}`)
+    let saldo = parseFloat(inputFacSaldoNow)
+    let totalLessSaldo = 0
+    let saldoUsed = 0
+    if (localStorage.saldo != 'false' && localStorage.saldo != undefined) {
+        if (saldo < total) {
+            totalLessSaldo = total - saldo
+            saldoUsed = saldo
+            inputFacNewSaldoNow.value = '0.00'
+        } else if (saldo > total) {
+            totalLessSaldo = 0
+            saldoUsed = parseFloat((saldo - (saldo - total)))
+            inputFacNewSaldoNow.value = parseFloat(saldo - total).toFixed(2)
+        }
+    }
     let numRound = roundHundred(total, 5, 5)
     let newFormat = ConvertLabelFormat(numRound)
-
+    console.log(newFormat)
     $("#totalFactAmount").text(newFormat)
     $("#totalFactAmount").attr("data-amount", newFormat)
-    $(".lbMontoToPay").val(newFormat)
-    $("#amountModalTitle").text(newFormat)
+
+    if (localStorage.saldo != 'false' && localStorage.saldo != undefined) {
+        let numRoundSaldo = roundHundred(totalLessSaldo, 5, 5)
+        let newFormatSaldo = ConvertLabelFormat(numRoundSaldo)
+        let saldoData = localStorage.saldo
+        console.log(saldoData)
+        saldoData = saldoUsed
+        console.log(saldoData)
+        localStorage.saldo = parseFloat(saldoData).toFixed(2)
+        $("#totalFactAmount").attr("data-amountsaldo", newFormatSaldo)
+        $(".lbMontoToPay").val(newFormatSaldo)
+        $("#amountModalTitle").text(newFormatSaldo)
+    } else {
+
+        $(".lbMontoToPay").val(newFormat)
+        $("#amountModalTitle").text(newFormat)
+    }
 }
 
 function calcTotalRowPrice(precio, descuento, iva) {
@@ -1307,8 +1362,8 @@ $('#bodyContent').on("click", ".codeToAddInputSearchClient", function (e) {
     let idclienteFacCambio = document.getElementById('idclienteFacCambio')
     inputCliente.value = name
     inputCliente.dataset.cliente = id
-    idclienteFacCambio.dataset.cliente = id
-    idclienteFacCambio.value = name
+    // idclienteFacCambio.dataset.cliente = id
+    // idclienteFacCambio.value = name
 
     $("#SearchClientModal").modal('toggle')
 
@@ -1322,10 +1377,88 @@ $('#bodyContent').on("blur", "#precioEnvio", function (e) {
     getSubTotalAndTotal()
 })
 
+$('#bodyContent').on("click", "#resetSaldostatus", function (e) {
+    let inputSearchFacSaldo = document.getElementById('inputSearchFacSaldo')
+    inputSearchFacSaldo.value = ''
+    getSubTotalAndTotal()
+    localStorage.removeItem('saldo')
+    $(".hiddenSaldosInput").css({
+        display: 'none'
+    })
+})
 
 function clearBodySearchClient() {
     $('#contentSearchClient').html('')
     $('#paginationModalCliente').html('')
+}
+$('#bodyContent').on("keypress", "#inputSearchFacSaldo", function (e) {
+    if (e.key == "Enter") {
+        let regex = '^[+]?([0-9]+(?:[0-9]*)?|[0-9]+)$'
+        let fac = this.value
+        let resultRegex = fac.match(regex)
+        if (resultRegex) {
+            saldoDevoluciones(this.value);
+        } else {
+            localStorage.setItem('saldo', 'false')
+            $(".hiddenSaldosInput").css({
+                display: 'none'
+            })
+            getSubTotalAndTotal()
+            Swal.fire({
+                position: 'top',
+                title: `Formato de factura incorrecto`,
+                text: `Por favor ingresa un formato numérico`,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        }
+    }
+
+})
+//saldo
+function saldoDevoluciones(fac) {
+    let formData = new FormData()
+    formData.append("fac", fac)
+    fetch("/facturacion/consultar/saldo", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.json())
+        .then(resp => {
+            console.table(resp)
+
+            if (resp.error == "00000") {
+                // loadPage(null, "/facturacion/cajas")
+                if (!resp.data) {
+                    $(".hiddenSaldosInput").css({
+                        display: 'none'
+                    })
+                    localStorage.setItem('saldo', 'false')
+                    getSubTotalAndTotal()
+                    Swal.fire({
+                        position: 'top',
+                        title: `Sin saldo`,
+                        text: `No se encuentra saldo pendiente relacionado a la factura #${fac}`,
+                        confirmButtonText: 'OK'
+                    })
+                } else {
+                    $(".hiddenSaldosInput").css({
+                        display: 'block'
+                    })
+                    let inputFacSaldoNow = document.getElementById('inputFacSaldoNow')
+                    let inputFacNewSaldoNow = document.getElementById('inputFacNewSaldoNow')
+                    inputFacSaldoNow.value = resp.data.Saldo
+                    inputFacNewSaldoNow.value = parseFloat(resp.data.Saldo)
+                    localStorage.setItem('saldo', resp.data.Saldo)
+                    getSubTotalAndTotal()
+                    Swal.fire({
+                        position: 'top',
+                        title: `Saldo ₡${resp.data.Saldo}`,
+                        text: `Fecha maxima para usar: ${resp.data.fechaMaxReclamo}`,
+                        confirmButtonText: 'OK'
+                    })
+                }
+            }
+        })
 }
 
 function SearchProductModalFact(toSearch, page) {

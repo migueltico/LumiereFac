@@ -5,6 +5,7 @@ namespace models;
 use config\helper as h;
 use config\conexion;
 use DateTime;
+use models\adminModel as admin;
 
 class facturacionModel
 {
@@ -21,17 +22,32 @@ class facturacionModel
         $conse = $con->SQR_ONEROW("SELECT * FROM consecutivos WHERE idconsecutivos = 1");
         $consecutivo = ((int) $conse['data']['fac']) + 1;
         $data[':consecutivo'] = $consecutivo;
+        $newSaldo = $data[':new_saldo'];
+        $hasSaldo = $data[':hasSaldo'];
+        $saldo_ref = $data[':saldo_ref']; //no borrar
+        $saldo = $data[':saldo']; //no borrar
+        $idusuario = $data[':idusuario']; //no borrar
+        unset($data[':new_saldo']);
+        unset($data[':hasSaldo']);
         $data[':formatDate'] = date("Y-m-d");
         $headerSql = "
         INSERT INTO facturas 
         (consecutivo,idcaja,idusuario,idcliente,impuesto,descuento,total,tipo,efectivo,tarjeta,transferencia,banco_transferencia,
-        referencia_transferencia,monto_transferencia,numero_tarjeta,monto_tarjeta,monto_efectivo,monto_envio,estado,comentario,multipago_String,multipago,multipago_total,formatDate) 
+        referencia_transferencia,monto_transferencia,numero_tarjeta,monto_tarjeta,monto_efectivo,monto_envio,estado,comentario,multipago_String,multipago,multipago_total,formatDate, saldo, saldo_ref) 
         VALUE (:consecutivo, :idcaja, :idusuario, :idcliente, :impuesto, :descuento, :total, :tipo, :efectivo, :tarjeta, :transferencia, :banco_transferencia, :referencia_transferencia, :monto_transferencia, :numero_tarjeta, 
-        :monto_tarjeta, :monto_efectivo, :monto_envio, :estado, :comentario, :multipago_string, :multipago, :multipago_total, :formatDate);";
+        :monto_tarjeta, :monto_efectivo, :monto_envio, :estado, :comentario, :multipago_string, :multipago, :multipago_total, :formatDate, :saldo, :saldo_ref);";
         $result = $con->SQ($headerSql, $data);
 
         $insert = $con->SQ("UPDATE consecutivos SET fac = :consecutivo", array(':consecutivo' => (int) $consecutivo));
         if ($result['error'] == '00000') {
+            if ($hasSaldo) {
+                $con1 = new conexion();
+                $sqlTransaccion = "INSERT INTO transacciones_saldos (fac, ref, saldoUsado, saldoPendiente, idusuario) VALUE ($consecutivo, $saldo_ref, $saldo, $newSaldo, $idusuario) ";
+                $transaccion = $con1->SQNDNR($sqlTransaccion);
+                if ($transaccion['error'] == '00000') {
+                    $newDetalles = $con->SQNDNR("UPDATE devoluciones SET  Saldo = $newSaldo WHERE fac =$saldo_ref");
+                }
+            }
             $con2 = new conexion();
             //$result2 = $con2->SQR_ONEROW('SELECT * FROM consecutivos WHERE idconsecutivos = 1');
             $itemsSql = [];
@@ -185,12 +201,16 @@ class facturacionModel
         $total = (float) $data['total'];
         $con = new conexion();
         $ok = true;
+        $saveLogs = [];
         //verificamos si existe una devolucion ligada a la factura
         $result = $con->SQR_ONEROW("SELECT * FROM devoluciones WHERE fac = $fac");
         //validamos si encontro algun registro relacionado
         if ($result['rows'] == 0) {
             //Insertamos la devolucion nueva
             $newDevolucion = $con->SQNDNR("INSERT INTO devoluciones (fac, fechaMaxReclamo, idUsuario, total, Saldo) VALUE ($fac, '$fechaMax', $iduser, $total, $total)");
+            if ($newDevolucion['error'] == '00000') {
+                $saveLogs['newDevolucion'] = admin::saveLog("Insertar", "Facturacion", "se genera una devolucion a la factura #$fac", json_encode($data), $_SESSION['id']);
+            }
             //verificamos que no haya errores
             if ($newDevolucion['error'] == '00000' && $newDevolucion['estado'] == true) {
                 //obtener el IdDevolucion para asignar al detalle de productos
@@ -212,6 +232,9 @@ class facturacionModel
                         $updateProduct = $con->SQNDNR($sql);
                         if ($updateProduct['error'] != '00000') {
                             $ok = false;
+                        }
+                        if ($updateProduct['error'] == '00000') {
+                            $saveLogs['updateProduct'] = admin::saveLog("Actualizar", "Facturacion", "Actualizacion de stock por devolucion ID: $idproducto  cantidad: $cant", json_encode(array("idDevolucion" => $idDevolucion, "idproducto" => $idproducto, "cantidad" => $cant, "total" => $total)), $_SESSION['id']);
                         }
                     }
                 }
@@ -248,7 +271,13 @@ class facturacionModel
                 $newDetalles = $con->SQNDNR("UPDATE devoluciones SET total =$newTotal, Saldo = $newSaldo WHERE fac =$fac");
             }
         }
-        return array("estado" => $ok);
+        return array("estado" => $ok, "saveLogData" => $saveLogs);
+    }
+    public static function saldoDevoluciones($fac)
+    {
+        $con = new conexion();
+        $data = $con->SQR_ONEROW("SELECT * FROM  devoluciones WHERE fac = $fac");
+        return $data;
     }
     public static function setFirstAbonoRecibo()
     {

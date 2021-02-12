@@ -61,7 +61,7 @@ class facturacionController extends view
     {
         $icon = help::icon();
         $fac = fac::getPendingFac();
-        $data["facturas"] = $fac['data'];  
+        $data["facturas"] = $fac['data'];
         $data["icons"] =  $icon['icons'];
         echo view::renderElement('facturacion/facturas_pendientes', $data);
     }
@@ -84,6 +84,13 @@ class facturacionController extends view
     {
         $data = json_decode(file_get_contents("php://input"), true);
         $result = fac::setDevolucion($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+    public function saldoDevoluciones()
+    {
+        $fac = (int) $_POST['fac'];
+        $result = fac::saldoDevoluciones($fac);
         header('Content-Type: application/json');
         echo json_encode($result);
     }
@@ -195,6 +202,10 @@ class facturacionController extends view
             $data[':tipo'] = (int) $datos['tipoVenta'];
             $data[':estado'] = (int) $datos['estado'];
             $data[':comentario'] = 'Sin comentarios';
+            $data[':saldo'] = $datos['hasSaldo'] == true ? (float) $datos['saldo'] : '';
+            $data[':saldo_ref'] = $datos['hasSaldo'] == true ? (float) $datos['saldo_ref'] : '';
+            $data[':new_saldo'] = $datos['hasSaldo'] == true ? (float) $datos['new_saldo'] : '';
+            $data[':hasSaldo'] = $datos['hasSaldo'];
             $data[':idcaja'] = $_SESSION['idcaja'];
 
             //verificamos si la factura lleva un pago

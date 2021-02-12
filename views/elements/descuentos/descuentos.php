@@ -31,7 +31,7 @@
                             <td scope="row" style="text-align: left;"><?= $desc["descripcion"] ?></td>
                             <td scope="row" style="text-align: center;"><?= $desc["descuento"] ?></td>
                             <td scope="row" data-value="<?= $desc["showFac"] ?>" data-toggle="tooltip" data-placement="top" title="">
-                                <div class="<?= $estado[$desc["showFac"]] ?>"></div>
+                                <div class="<?= $estado[$desc["showFac"] == null ? 0 : $desc["showFac"]] ?>"></div>
                             </td>
                             <td scope="row" data-value="<?= $desc["activo"] ?>" data-toggle="tooltip" data-placement="top" title="">
                                 <div class="<?= $estado[$desc["activo"]] ?>"></div>

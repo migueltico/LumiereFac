@@ -10,6 +10,7 @@
 <script src="/public/assets/js/usuarios.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/admin.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/facturacion.js?v=<?= rand(1, 1000) ?>"></script>
+<script src="/public/assets/js/reportes.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/inventario.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/roles.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/dashboard.js?v=<?= rand(1, 1000) ?>"></script>

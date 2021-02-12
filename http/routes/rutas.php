@@ -88,6 +88,7 @@ route::group('facturacion', function () {
     route::post('/reportes', 'facturacionController@facturacion');
     route::post('/consultar/factura', 'facturacionController@consultarFactura');
     route::post('/agregar/devolucion', 'facturacionController@devolucion');
+    route::post('/consultar/saldo', 'facturacionController@saldoDevoluciones');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
@@ -119,6 +120,8 @@ route::group('roles', function () {
 route::group('reportes', function () {
     route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo', ['loginMiddleware@auth']);
     route::post('/etiquetas', 'reportesController@etiquetasTallaEstiloPost');
+    route::post('/rxfacDia', 'reportesController@rxfacDia');
+    route::get('/rxfacDiaPDF', 'reportesController@rxfacDiaPDF');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

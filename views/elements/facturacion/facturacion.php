@@ -68,14 +68,31 @@
                                 <input type="text" class="form-control text-right" id="precioEnvio" value="0.00">
                             </div>
                         </div>
-                        <div id="groupCambiosBtn" class="form-group p-2 pr-4 pt-3 mr-3 mt-3"  style="display: none;">
+                        <div id="groupCambiosBtn" class="form-group p-2 pr-4 pt-3 mr-3 mt-3" style="display: none;">
                             <div class="input-group mb-3">
 
                                 <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="btn btn-outline-secondary" id="btnCambios_fac" type="button" class="input-group-text">Buscar Factura</span>
+                                    <div class="input-group-prepend mr-2">
+                                        <span class="btn btn-info" id="btnCambios_fac" type="button" class="input-group-text" data-toggle="tooltip" data-placement="top" title="Busqueda de factura y aplicacion de devoluciones">Devoluciones</span>
                                     </div>
-                                    <input type="text" class="form-control  p-3" placeholder="# factura para cambio o devolucion" disabled>
+                                    <input id="inputSearchFacSaldo" type="text" class="form-control  p-3" placeholder="# factura para cambio o devolucion" data-toggle="tooltip" data-placement="top" title="presione ENTER para consultar la factura con saldo">
+                                    <button id="resetSaldostatus" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cancelar uso de saldo"><?= $icons['xcircle'] ?></button>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3 hiddenSaldosInput" style="display: none;">
+                                <div class="input-group mb-3 col-6">
+                                    <div class="input-group-prepend mr-2">
+                                        <span class="btn"> <strong>Saldo Actual:</strong> </span>
+                                    </div>
+                                    <input id="inputFacSaldoNow" style="width:50px !important;" type="text" class="form-control  p-3" placeholder="0.00" data-toggle="tooltip" data-placement="top" title="Saldo" disabled>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3 hiddenSaldosInput" style="display: none;">
+                                <div class="input-group mb-3 col-6">
+                                    <div class="input-group-prepend mr-2">
+                                        <span class="btn"> <strong>Nuevo Saldo:</strong> </span>
+                                    </div>
+                                    <input id="inputFacNewSaldoNow" style="width:50px !important;" type="text" class="form-control  p-3" placeholder="0.00" data-toggle="tooltip" data-placement="top" title="Nuevo Saldo" disabled>
                                 </div>
                             </div>
                         </div>

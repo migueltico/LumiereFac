@@ -99,6 +99,7 @@
         <div class="col-9 text-right" style="font-size: 1.1rem;">TOTAL A PAGAR: </div>
         <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $total ?> </div>
         <div class="col-12 text-right" style="font-size: 1.1rem;">-----------------------------------------</div>
+        <?php $saldo = (float) $saldo ?>
         <!-- "0" = no pago | "1" Si pago -->
         <?php if ($hasPay == 1) : ?>
             <?php if ($tipoVenta == 1) : ?>
@@ -114,6 +115,10 @@
                         <?php endif; ?>
                     <?php endif; ?>
                 <?php endforeach; ?>
+                <?php if ($hasSaldo) : ?>
+                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;">SALDO:</p>
+                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',')  ?></p>
+                <?php endif; ?>
             <?php elseif ($tipoVenta == 2) : ?>
                 <?php foreach ($methodPay as $method) : ?>
                     <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
@@ -127,10 +132,26 @@
                         <?php endif; ?>
                     <?php endif; ?>
                 <?php endforeach; ?>
+                <?php if ($hasSaldo) : ?>
+                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;">SALDO:</p>
+                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',')  ?></p>
+                <?php endif; ?>
+            <?php endif; ?>
+            <?php if ($hasSaldo) : ?>
+                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Saldo pendiente: <?= number_format($new_saldo, 2, '.', ',')  ?> **</p>
+                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Factura Ref:<?= $saldo_ref ?> **</p>
             <?php endif; ?>
         <?php else : ?>
             <?php if ($hasPay == 0 && $tipoVenta == 2) : ?>
+                <?php if ($hasSaldo) : ?>
+                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;">SALDO:</p>
+                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',')  ?></p>
+                <?php endif; ?>
                 <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Cancelacion Contra Entrega**</p>
+                <?php if ($hasSaldo) : ?>
+                    <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Saldo pendiente: <?= number_format($new_saldo, 2, '.', ',')  ?> **</p>
+                    <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Factura Ref:<?= $saldo_ref ?> **</p>
+                <?php endif; ?>
             <?php elseif ($tipoVenta == 3) : ?>
                 <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Apartado**</p>
             <?php endif; ?>
