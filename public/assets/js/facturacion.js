@@ -704,6 +704,11 @@ function PagoMultipleFac(pago, abono) {
             }
         }
     }
+    if (localStorage.saldo !== undefined && localStorage.saldo !== false && localStorage.saldo !== 'false') {
+        let newAmount = document.getElementById("amountModalTitle")
+        parseInt(newAmount.innerText.replace(",", ""))
+        amounts = newAmount
+    }
     if (parseFloat(finalAmount) == parseFloat(amounts.replace(',', "")) && pago == 1) {
         return {
             state: true,
