@@ -111,7 +111,11 @@ class facturacionModel
             unset($data[':estado']);
             unset($data[':comentario']);
             unset($data[':idcaja']);
-            unset($data[':monto_envio']);
+            unset($data[':monto_envio']);            
+            unset($data[':saldo_ref']);            
+            unset($data[':new_saldo']);
+            unset($data[':hasSaldo']);
+            unset($data[':saldo']);
             $data[':idusuario'] = $_SESSION['id'];
         }
         $data[':idcaja'] = $_SESSION['idcaja'];
