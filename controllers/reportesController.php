@@ -20,8 +20,6 @@ class reportesController extends view
     $dateInit = $_POST['dateInit'];
     $dateEnd = $_POST['dateEnd'];
     $datos = reports::rxfacDia($dateInit, $dateEnd);
-    print_r($datos);
-    die();
     $data["rowsDiarios"] = $datos['data'];
     echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDia', $data);
   }

@@ -21,15 +21,18 @@
         <input type="password" name="pass" placeholder="Contraseña" value="">
         <select id="selected" name="db" id="">
           <option value="0">Seleccione una Sucursal</option>
-          <?php
-          foreach ($GLOBALS['DB_NAME'] as $key => $db) : ?>
-            <option value="<?= $key ?>"><?= $key ?></option>
-          <?php endforeach; ?>
+
+          <?php if ($_SERVER['SERVER_NAME'] == "soporte-lumiere.com") : ?>
+            <option value="testdb">TestDB</option>
+          <?php else : ?>
+            <?php foreach ($GLOBALS['DB_NAME'] as $key => $db) : ?>
+              <option value="<?= $key ?>"><?= $key ?></option>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </select>
         <button type="submit" id="login-button">Iniciar Sesion</button>
       </form>
     </div>
-
     <ul class="bg-bubbles">
       <li></li>
       <li></li>
