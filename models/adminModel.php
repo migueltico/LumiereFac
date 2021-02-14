@@ -158,6 +158,6 @@ class adminModel
             ':datos' => $datos,
             ':idusuario' => $idusuario
         );
-        return $con->SQ('CALL sp_saveLog(:accion,:modulo,:detalle,:datos,:idusuario)', $datos);
+        return $con->SQ('INSERT INTO log (accion, modulo, detalle, datos, idusuario) VALUES	(:accion,:modulo,:detalle,:datos,:idusuario)', $datos);
     }
 }

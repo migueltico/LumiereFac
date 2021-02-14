@@ -2,8 +2,12 @@
     table tbody tr {
         border-bottom: 1px solid black;
     }
+    tr:nth-child(3n) {
+        background-color: #f5f5f5!important;
+        color: black;
+    }
 </style>
-<h1 style="text-align: center;">Reporte de ventas Diario</h1>
+<h1 style="text-align: center;">Reporte de Ventas Diario</h1>
 <div class="table-responsive">
     <table width="100%" cellpadding="2px" cellspacing="2px">
         <thead style="border: 1px solid black;">
@@ -46,7 +50,7 @@
             <?php endforeach; ?>
         </tbody>
         <tfoot style="border: 1px solid black;">
-            <tr class="TrRow btn-success">
+            <tr class="TrRow btn-success" style="background:#ccc">
                 <td scope="row" style="text-align: left;font-weight:600">Totales</td>
                 <td scope="row" style="text-align: center;font-weight:600"><?= number_format($cant, 0, ".", ",") ?></td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_efectivo, 2, ".", ",") ?></td>

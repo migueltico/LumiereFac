@@ -8,7 +8,7 @@ use config\config;
 class conexion
 {
 
-	private $con;
+	public $con;
 	private $statement;
 	public function __construct()
 	{
@@ -153,6 +153,32 @@ class conexion
 			return $return;
 		} catch (\PDOException $e) {
 
+			$this->disconnect();
+			return $e;
+		}
+	}
+		/**
+	 * SIMPLE QUERY, Si RETORNA DATOS,NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
+	 *
+	 * @param [type] $sql
+	 * @return void
+	 */
+	public function SQNDMULTISQL($sql)
+	{
+		try {
+			
+			$this->statement = $this->con->prepare($sql);
+			$this->statement->execute();
+			if (!$this->statement) {
+				$estado = array('estado' => false, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+				$return = $estado;
+				return $estado;
+			}
+			$row = $this->statement->fetchAll(PDO::FETCH_ASSOC);
+			$cuenta = $this->statement->rowCount();
+			//return $row ;
+			return array("rows" => $cuenta, "data" => $row, "SQL" => $this->statement, 'estado' => false, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+		} catch (\PDOException $e) {
 			$this->disconnect();
 			return $e;
 		}

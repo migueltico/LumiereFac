@@ -31,15 +31,18 @@ class reportesController extends view
     $data["rowsDiarios"] = $datos['data'];
     ob_start();
     echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaPDF', $data);
-    $dompdf = new Dompdf();
+    $options = new Options();
+    $options->set('defaultFont', 'Times New Roman');
+    $dompdf = new Dompdf($options);
     $dompdf->loadHtml(ob_get_clean());
     // (Optional) Setup the paper size and orientation
+
     $dompdf->render();
     $pdf = $dompdf->output();
     $filename = "Reporte Total Facturas diarias";
     file_put_contents($filename, $pdf);
     // Output the generated PDF to Browser
-    $dompdf->stream($filename,['Attachment' => 0]);
+    $dompdf->stream($filename, ['Attachment' => 0]);
   }
   public function ReportesFacturacion()
   {
