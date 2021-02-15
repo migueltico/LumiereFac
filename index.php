@@ -4,6 +4,7 @@
 // server should keep session data for AT LEAST 1 hour
 ini_set('session.gc_maxlifetime', 72000);
 set_time_limit(1300);
+ini_set('memory_limit', '3072M');
 if ($_SERVER['SERVER_NAME'] == "soporte-lumiere.com") {
     set_include_path('/var/www/soporte');
 } else {
