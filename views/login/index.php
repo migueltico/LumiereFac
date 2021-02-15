@@ -23,7 +23,8 @@
           <option value="0">Seleccione una Sucursal</option>
 
           <?php if ($_SERVER['SERVER_NAME'] == "soporte-lumiere.com") : ?>
-            <option value="TestDB">TestDB</option>
+            <option value="TestDB" selected>TestDB</option>
+            <option value="Alajuela">Alajuela</option>
           <?php else : ?>
             <?php foreach ($GLOBALS['DB_NAME'] as $key => $db) : ?>
               <option value="<?= $key ?>"><?= $key ?></option>
