@@ -15,6 +15,10 @@
     th {
         font-size: 1rem;
     }
+
+    table {
+        border-collapse: collapse;
+    }
 </style>
 <table class="table sort" id="sortable" style="width: 100%;margin-top:2rem">
     <thead style="border: 1px solid black;">
@@ -38,7 +42,7 @@
         $total_tarjeta = 0;
         $total_transferencia = 0;
         $total_diario = 0;
-        $total_diarioRow = 0;
+
         $total = 0;
         $firtCount = false;
         ?>
@@ -47,17 +51,27 @@
 
 
 
-            <tr class="TrRow" style="background:#ccc !important">
-                <td scope="row" style="text-align: left;">#CAJA: <?= $rows['rows'][0]["caja"] ?></td>
-                <td colspan="3" scope="row" style="text-align: left;">FECHA: <?= $rows['rows'][0]['fecha'] ?></td>
+            <tr class="TrRow" style="background:#bbb !important;border-top:2px solid black">
+                <td scope="row" style="text-align: left;font-weight:600">#CAJA: <?= $rows['rows'][0]["caja"] ?></td>
+                <td colspan="3" scope="row" style="text-align: left;font-weight:600">FECHA: <?= $rows['rows'][0]['fecha'] ?></td>
                 <td colspan="1" scope="row" style="text-align: left;"></td>
                 <td colspan="3" scope="row" style="text-align: left;"></td>
             </tr>
+            <?php
+            $total_diarioRow = 0;
+            $total_efectivoRow = 0;
+            $total_tarjetaRow = 0;
+            $total_transferenciaRow = 0;
+            ?>
             <?php foreach ($rows['rows'] as $rows) : ?>
                 <?php
                 $total_efectivo += $rows["efectivo"];
                 $total_tarjeta += $rows["tarjeta"];
                 $total_transferencia += $rows["transferencia"];
+                $total_diario += $rows["total"];
+                $total_efectivoRow += $rows["efectivo"];
+                $total_tarjetaRow += $rows["tarjeta"];
+                $total_transferenciaRow += $rows["transferencia"];
                 $total_diario += $rows["total"];
                 $total =  ($rows["total"]);
                 $total_diarioRow += $total;
@@ -92,8 +106,13 @@
 
                 </tr>
             <?php endforeach; ?>
-
-
+            <tr class="TrRow" style="background:#ddd !important">
+                <td colspan="4" scope="row" style="text-align: left;font-weight:600">TOTALES</td>
+                <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_efectivoRow, 2, ".", ",") ?> </td>
+                <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_tarjetaRow, 2, ".", ",") ?> </td>
+                <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_transferenciaRow, 2, ".", ",") ?> </td>
+                <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_diarioRow, 2, ".", ",") ?> </td>
+            </tr>
         <?php endforeach; ?>
     </tbody>
     <tfoot style="border: 1px solid black;">
