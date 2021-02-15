@@ -68,7 +68,6 @@
                 $total_efectivo += $rows["efectivo"];
                 $total_tarjeta += $rows["tarjeta"];
                 $total_transferencia += $rows["transferencia"];
-                $total_diario += $rows["total"];
                 $total_efectivoRow += $rows["efectivo"];
                 $total_tarjetaRow += $rows["tarjeta"];
                 $total_transferenciaRow += $rows["transferencia"];
