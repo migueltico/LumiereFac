@@ -20,6 +20,7 @@
         border-collapse: collapse;
     }
 </style>
+<h1 class="text-center">Reporte de Facturas Diarias Detalle</h1>
 <table class="table sort" id="sortable" style="width: 100%;margin-top:2rem">
     <thead style="border: 1px solid black;">
 
