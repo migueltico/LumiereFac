@@ -58,7 +58,7 @@
                             $total_efectivo += $rows["efectivo"];
                             $total_tarjeta += $rows["tarjeta"];
                             $total_transferencia += $rows["transferencia"];
-                            $total =  ($rows["efectivo"] + $rows["tarjeta"] + $rows["transferencia"]);
+                            $total =  ($rows["total"]);
                             $total_diario += $total;
                             $tipoPago = '';
                             $tipoPago .= $rows["t_efectivo"] == '1' ? "Efectivo " : '';
