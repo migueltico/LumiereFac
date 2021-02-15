@@ -14,7 +14,8 @@ class conexion
 	{
 		try {
 			//$pdo = new PDO("mysql:host=". HOST . ";dbname=". DB . ";",USER,PASS);
-			$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . $GLOBALS["DB_NAME"][$_SESSION['db']] . ";", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"], array(PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+			$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . $GLOBALS["DB_NAME"][$_SESSION['db']] . ";", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
+			 array(PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>true));
 		} catch (\PDOException $e) {
 			echo 'Error al conectarse con la base de datos: ' . $e->getMessage();
 			exit;
@@ -201,6 +202,7 @@ class conexion
 			}
 			$row = $this->statement->fetchAll(PDO::FETCH_ASSOC);
 			$cuenta = $this->statement->rowCount();
+			$this->statement->closeCursor();
 			//return $row ;
 			return array("rows" => $cuenta, "data" => $row, "SQL" => $this->statement, 'estado' => false, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
 		} catch (\PDOException $e) {
@@ -229,6 +231,7 @@ class conexion
 			//return $row ;
 			$estado = array("rows" => $cuenta, "data" => $row, "SQL" => $this->statement, 'estado' => true, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
 			// $this->disconnect();
+			$this->statement->closeCursor();
 			return $estado;
 		} catch (\PDOException $e) {
 			$this->disconnect();

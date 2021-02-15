@@ -23,6 +23,81 @@ class reportesController extends view
     $data["rowsDiarios"] = $datos['data'];
     echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDia', $data);
   }
+  public function rxfacDiaDetalle()
+  {
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
+    $datos = reports::rxfacDiaDetalle($dateInit, $dateEnd);
+    $data["rowsDetalles"] = $datos['data'];
+    $fechasArray = [];
+    $rowPerDate = [];
+    foreach ($data["rowsDetalles"] as $row) {
+
+      array_push($fechasArray, $row["fecha"]);
+    }
+    $fechasArray = array_unique($fechasArray);
+    asort($fechasArray);
+    foreach ($fechasArray as $key => $fecha) {
+      foreach ($data["rowsDetalles"] as $row) {
+        if ($row["fecha"] == $fecha) {
+          if (isset($rowPerDate[$fecha])) {
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          } else {
+            $rowPerDate[$fecha]['rows'] = [];
+            $rowPerDate[$fecha]['fecha'] = $fecha;
+            $rowPerDate[$fecha]['caja'] = $row['caja'];
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          }
+        }
+      }
+    }
+    $data['data'] = $rowPerDate;
+    echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetalle', $data);
+  }
+  public function rxfacDiaDetallePDF()
+  {
+    $dateInit = $_GET['dateInit'];
+    $dateEnd = $_GET['dateEnd'];
+    $datos = reports::rxfacDiaDetalle($dateInit, $dateEnd);
+    $data["rowsDetalles"] = $datos['data'];
+    $fechasArray = [];
+    $rowPerDate = [];
+    foreach ($data["rowsDetalles"] as $row) {
+
+      array_push($fechasArray, $row["fecha"]);
+    }
+    $fechasArray = array_unique($fechasArray);
+    asort($fechasArray);
+    foreach ($fechasArray as $key => $fecha) {
+      foreach ($data["rowsDetalles"] as $row) {
+        if ($row["fecha"] == $fecha) {
+          if (isset($rowPerDate[$fecha])) {
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          } else {
+            $rowPerDate[$fecha]['rows'] = [];
+            $rowPerDate[$fecha]['fecha'] = $fecha;
+            $rowPerDate[$fecha]['caja'] = $row['caja'];
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          }
+        }
+      }
+    }
+    $data['data'] = $rowPerDate;
+    ob_start();
+    echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetallePDF', $data);
+    $options = new Options();
+    $options->set('defaultFont', 'Times New Roman');
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml(ob_get_clean());
+    // (Optional) Setup the paper size and orientation
+
+    $dompdf->render();
+    $pdf = $dompdf->output();
+    $filename = "Reporte Total Facturas diarias";
+    file_put_contents($filename, $pdf);
+    // Output the generated PDF to Browser
+    $dompdf->stream($filename, ['Attachment' => 0]);
+  }
   public function rxfacDiaPDF()
   {
     $dateInit = $_GET['dateInit'];

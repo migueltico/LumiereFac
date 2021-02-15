@@ -17,14 +17,32 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
             }
             urlReporte = urlRxfacDia[type]
             break;
+        case 'rxfacDiaDetalle':
+            let urlRxfacDiaDetalle = {
+                html: "/reportes/rxfacDiaDetalle",
+                pdf: `/reportes/rxfacDiaDetallePDF?dateInit=${dateInit}&dateEnd=${dateEnd}`
+            }
+            urlReporte = urlRxfacDiaDetalle[type]
+            break;
 
         default:
+            Swal.fire({
+                position: 'top',
+                title: 'Debes seleccionar un tipo de reporte antes de generar los datos',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 4500,
+                timerProgressBar: true
+            })
+            return
             break;
     }
-    
+
     switch (type) {
         case 'html':
             let formData = new FormData()
+            let loadTable = document.getElementById("loadTable")
+            loadTable.innerHTML ='<div class = "loading"><img src ="/public/assets/img/loading.gif" ></div>'
             formData.append('dateInit', dateInit)
             formData.append('dateEnd', dateEnd)
 
@@ -33,7 +51,7 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
                     body: formData
                 }).then(resp => resp.text())
                 .then(resp => {
-                    let loadTable = document.getElementById("loadTable")
+                    
                     if (type == 'html') {
 
                         loadTable.innerHTML = resp

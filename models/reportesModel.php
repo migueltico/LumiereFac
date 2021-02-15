@@ -21,4 +21,16 @@ class reportesModel
         $return = $con->SPCALL("CALL sp_reporteDiario('$init', '$end')");
         return $return;
     }
+    /**
+     * Reporte totales factura por dia
+     */
+    public static function rxfacDiaDetalle($init, $end)
+    {
+        $con = new conexion();
+        $con2 = new conexion();
+        $return1 = $con->SQND("CALL sp_reporteDiarioDetallado('$init', '$end')");
+        // $con->disconnect();
+        // $return2 = $con2->SQND("CALL sp_reporteDiario('$init', '$end')");
+        return $return1;
+    }
 }
