@@ -24,15 +24,15 @@
     <thead style="border: 1px solid black;">
 
         <tr>
-            <th data-type="1" data-inner="0" scope="col" style="text-align: center;">#Doc.</th>
-            <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Fecha.</th>
-            <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Doc.</th>
-            <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Tipo Trans.</th>
-            <!-- <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Tipo Pago <span style="font-size:0.6rem"> (1=Efectivo, 2= Tarjeta, 3= Transferencia)</span></th> -->
-            <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Efectivo</th>
-            <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Tarjetas</th>
-            <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Transf.</th>
-            <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total</th>
+            <th data-type="1" data-inner="0" scope="col" style="text-align: left;">#Doc.</th>
+            <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Fecha.</th>
+            <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Doc.</th>
+            <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Tipo Trans.</th>
+            <!-- <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Tipo Pago <span style="font-size:0.6rem"> (1=Efectivo, 2= Tarjeta, 3= Transferencia)</span></th> -->
+            <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Efectivo</th>
+            <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Tarjetas</th>
+            <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Transf.</th>
+            <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Total</th>
         </tr>
     </thead>
 
@@ -52,10 +52,10 @@
 
 
             <tr class="TrRow" style="background:#bbb !important;border-top:2px solid black">
-                <td scope="row" style="text-align: left;font-weight:600">#CAJA: <?= $rows['rows'][0]["caja"] ?></td>
-                <td colspan="3" scope="row" style="text-align: left;font-weight:600">FECHA: <?= $rows['rows'][0]['fecha'] ?></td>
+                <td scope="row" style="text-align: left;font-weight:600">#Caja: <?= $rows['rows'][0]["caja"] ?></td>
                 <td colspan="1" scope="row" style="text-align: left;"></td>
                 <td colspan="3" scope="row" style="text-align: left;"></td>
+                <td colspan="3" scope="row" style="text-align: left;font-weight:600">Fecha: <?= $rows['rows'][0]['fecha'] ?></td>
             </tr>
             <?php
             $total_diarioRow = 0;
@@ -95,7 +95,7 @@
 
                     <td scope="row" style="text-align: left;"><?= $rows["docNum"] ?></td>
                     <td scope="row" style="text-align: left;"><?= $rows["fecha"] ?></td>
-                    <td scope="row" style="text-align: center;text-transform: lowercase;"><?= $rows["doc"] ?></td>
+                    <td scope="row" style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
                     <td scope="row" style="text-align: left;"><?= $rows["tipoDoc"] ?></td>
                     <!-- <td scope="row" style="text-align: center;"><?php //$tipoPago == "" ? "Sin abono" : $tipoPago 
                                                                         ?></td> -->
@@ -107,7 +107,7 @@
                 </tr>
             <?php endforeach; ?>
             <tr class="TrRow" style="background:#ddd !important">
-                <td colspan="4" scope="row" style="text-align: left;font-weight:600">TOTALES</td>
+                <td colspan="4" scope="row" style="text-align: left;font-weight:600">Totales</td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_efectivoRow, 2, ".", ",") ?> </td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_tarjetaRow, 2, ".", ",") ?> </td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_transferenciaRow, 2, ".", ",") ?> </td>
@@ -116,8 +116,8 @@
         <?php endforeach; ?>
     </tbody>
     <tfoot style="border: 1px solid black;">
-        <tr class="TrRow btn-success" style="background:#ccc">
-            <td scope="row" style="text-align: left;font-weight:600">Totales</td>
+        <tr class="TrRow btn-success" style="background:#aaa">
+            <td scope="row" style="text-align: left;font-weight:600">Gran Total</td>
             <td scope="row" style="text-align: left;font-weight:600"></td>
             <td scope="row" style="text-align: left;font-weight:600"></td>
             <td scope="row" style="text-align: left;font-weight:600"></td>
