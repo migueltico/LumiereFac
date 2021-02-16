@@ -1,16 +1,8 @@
-<style>
-    table tbody tr {
-        border-bottom: 1px solid black;
-    }
-    tr:nth-child(3n) {
-        background-color: #f5f5f5!important;
-        color: black;
-    }
-</style>
-<h1 style="text-align: center;">Reporte de Ventas Diario</h1>
-<div class="table-responsive">
+<div class="hoja">
+
+    <h1 style="text-align: center;">Reporte de Ventas Diario</h1>
     <table width="100%" cellpadding="2px" cellspacing="2px">
-        <thead style="border: 1px solid black;">
+        <thead style="border: 2px solid black;">
             <tr>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Fecha</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Cantidad</th>
@@ -21,7 +13,7 @@
             </tr>
         </thead>
 
-        
+
         <tbody data-sorts="DESC">
             <?php
             $cant = 0;
@@ -38,7 +30,7 @@
                 $total_transferencia += $rows["total_transferencia"];
                 $total_diario += $rows["total_diario"];
                 ?>
-                <tr class="TrRow" style="border-bottom: 1px dashed black;">
+                <tr class="">
                     <td scope="row" style="text-align: left;"><?= $rows["fecha"] ?></td>
                     <td scope="row" style="text-align: center;"><?= $rows["cantidad"] ?></td>
                     <td scope="row" style="text-align: left;"><?= number_format($rows["total_efectivo"], 2, ".", ",") ?></td>
@@ -48,9 +40,7 @@
 
                 </tr>
             <?php endforeach; ?>
-        </tbody>
-        <tfoot style="border: 1px solid black;">
-            <tr class="TrRow btn-success" style="background:#ccc">
+            <tr class=" btn-success" style="background:#aaa !important;font-size:1.2rem">
                 <td scope="row" style="text-align: left;font-weight:600">Totales</td>
                 <td scope="row" style="text-align: center;font-weight:600"><?= number_format($cant, 0, ".", ",") ?></td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_efectivo, 2, ".", ",") ?></td>
@@ -58,6 +48,51 @@
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_transferencia, 2, ".", ",") ?></td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_diario, 2, ".", ",") ?></td>
             </tr>
-        </tfoot>
+        </tbody>
     </table>
 </div>
+
+<style>
+    h1 {
+        width: 1100px;
+        background: #fff;
+        padding: 15px 10px;
+
+    }
+
+    thead tr th {
+        padding: 5px 2px;
+        font-size: 1.2rem;
+    }
+
+    tr {
+        background: #fff;
+        color: black;
+        border: none;
+    }
+
+    tr:nth-child(3n) {
+        background-color: #f5f5f5 !important;
+        color: black;
+    }
+
+    td {
+        padding: 4px 2px;
+        border: none;
+    }
+
+
+
+    table {
+        padding: 15px 10px;
+        border-collapse: collapse;
+        width: 1100px;
+        /* background: #fff !important; */
+    }
+
+    .hoja {
+        background-color: white;
+        width: 1100px;
+        min-height: 1589px;
+    }
+</style>

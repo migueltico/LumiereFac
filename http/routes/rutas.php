@@ -122,8 +122,8 @@ route::group('reportes', function () {
     route::post('/etiquetas', 'reportesController@etiquetasTallaEstiloPost');
     route::post('/rxfacDia', 'reportesController@rxfacDia');
     route::post('/rxfacDiaDetalle', 'reportesController@rxfacDiaDetalle');
-    route::get('/rxfacDiaPDF', 'reportesController@rxfacDiaPDF');
-    route::get('/rxfacDiaDetallePDF', 'reportesController@rxfacDiaDetallePDF');
+    route::post('/rxfacDiaPDF', 'reportesController@rxfacDiaPDF');
+    route::post('/rxfacDiaDetallePDF', 'reportesController@rxfacDiaDetallePDF');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

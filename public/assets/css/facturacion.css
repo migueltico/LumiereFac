@@ -137,16 +137,17 @@
 }
 
 .codeToAddInputSearchCard:hover {
-    box-sizing: border-box!important;
+    box-sizing: border-box !important;
     box-shadow: 0 0px 0px 4px var(--primaryColor);
     cursor: pointer;
 }
+
 .codeToAddInputSearchClientCard {
     box-sizing: border-box !important;
 }
 
 .codeToAddInputSearchClientCard:hover {
-    box-sizing: border-box!important;
+    box-sizing: border-box !important;
     box-shadow: 0 0px 0px 4px var(--primaryColor);
     cursor: pointer;
 }
@@ -188,7 +189,6 @@
         left: 0;
         width: 302px !important;
         max-width: 302px !important;
-        background-color: white;
     }
 }
 
@@ -220,6 +220,7 @@
 .cardHeaderSwitch {
     cursor: pointer;
 }
+
 .cardHeaderAbono h5 {
     margin-top: 2px;
     padding: 10px;
@@ -245,6 +246,7 @@
 .selectedMethodPay+div>input {
     background-color: #eee;
 }
+
 .selectedMethodPayAbono {
     background-color: var(--primaryColor);
     color: white;
@@ -257,6 +259,7 @@
 .selectedMethodPayAbono+div>input {
     background-color: #eee;
 }
-#abonoSaldoData{
+
+#abonoSaldoData {
     font-size: 1.4rem;
 }

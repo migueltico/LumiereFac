@@ -37,21 +37,20 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
             return
             break;
     }
-
+    let formData = new FormData()
+    let loadTable = document.getElementById("loadTable")
+    formData.append('dateInit', dateInit)
+    formData.append('dateEnd', dateEnd)
     switch (type) {
         case 'html':
-            let formData = new FormData()
-            let loadTable = document.getElementById("loadTable")
-            loadTable.innerHTML ='<div class = "loading"><img src ="/public/assets/img/loading.gif" ></div>'
-            formData.append('dateInit', dateInit)
-            formData.append('dateEnd', dateEnd)
+            loadTable.innerHTML = '<div class = "loading"><img src ="/public/assets/img/loading.gif" ></div>'
 
             fetch(urlReporte, {
                     method: "POST",
                     body: formData
                 }).then(resp => resp.text())
                 .then(resp => {
-                    
+
                     if (type == 'html') {
 
                         loadTable.innerHTML = resp
@@ -60,8 +59,23 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
                 })
             break;
         case 'pdf':
+            fetch(urlReporte, {
+                    method: "POST",
+                    body: formData
+                }).then(resp => resp.text())
+                .then(resp => {
 
-            window.open(urlReporte)
+                    if (type == 'pdf') {
+
+                        let h = resp;
+                        let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
+                        window.print();
+                        d.remove();
+                    }
+
+                })
+
+            // window.open(urlReporte)
             break;
 
         default:
