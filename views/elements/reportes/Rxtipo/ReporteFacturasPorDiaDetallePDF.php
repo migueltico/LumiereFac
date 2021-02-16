@@ -2,7 +2,7 @@
 
     <h1 class="text-center">Reporte de Facturas Diarias - Detalle</h1>
     <table class="">
-        <thead style="border: 2px solid black;">
+        <thead style="border: 2px black;border-style: double;">
 
             <tr>
                 <th style="text-align: left;">#Doc.</th>

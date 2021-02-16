@@ -2,7 +2,7 @@
 
     <h1 style="text-align: center;">Reporte de Ventas Diario</h1>
     <table width="100%" cellpadding="2px" cellspacing="2px">
-        <thead style="border: 2px solid black;">
+    <thead style="border: 2px black;border-style: double;">
             <tr>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Fecha</th>
                 <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Cantidad</th>
