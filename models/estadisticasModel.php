@@ -19,7 +19,7 @@ class estadisticasModel
         WHERE f.formatDate > NOW() - INTERVAL 1 MONTH	
         GROUP BY p.idproducto
         ORDER BY cantidad_total DESC 
-        LIMIT 5";
+        LIMIT 6";
         return $con->SQND("$sql");
     }
     /**

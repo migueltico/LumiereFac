@@ -16,11 +16,14 @@ $(document).ready(function () {
                     label: '',
                     data: [...data.cantidad],
                     backgroundColor: [
-                        `rgb(235, 52, 103,0.8)`,
-                        `rgb(52, 160, 237,0.8)`,
-                        `rgb(52, 237, 172,0.8)`,
-                        `rgb(255, 218, 33,0.8)`,
-                        `rgb(196, 69, 255,0.8)`,
+                        `rgb(235, 52, 103,1)`,
+                        `rgb(52, 160, 237,1)`,
+                        `rgb(52, 237, 172,1)`,
+                        `rgb(255, 218, 33,1)`,
+                        `rgb(196, 69, 255,1)`,//5
+                        `rgb(255, 69, 218,1)`,
+                        `rgb(196, 110, 255,1)`,
+                        `rgb(58, 80, 230,1)`,
                     ]
                 }]
             },
@@ -34,7 +37,7 @@ $(document).ready(function () {
                 },
                 title: {
                     display: true,
-                    text: 'Producto con mayor ventas en los ultimos 30 dias',
+                    text: '6 Productos con mayor ventas en los ultimos 30 dias corridos',
                     fontSize: 18
                 },
                 animation: {

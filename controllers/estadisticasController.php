@@ -23,7 +23,7 @@ class estadisticasController extends view
         $columnsName=[];
         $Cantidad=[];
         foreach ($rows as $key => $value) {
-            array_push($columnsName,strtoupper($value['descripcion']));
+            array_push($columnsName,strtoupper($value['descripcion']." - COD:".$value['codigo']));
             array_push($Cantidad,$value['cantidad_Total']);
         }
         $json['columns'] =$columnsName;
