@@ -22,6 +22,12 @@ class estadisticasModel
         LIMIT 6";
         return $con->SQND("$sql");
     }
+    public static function getLastWeekSales()
+    {
+        $con = new conexion();
+        $sql="SELECT COUNT(idfactura) AS cantidad, DAYOFWEEK(f.formatDate) -1 AS dia, f.formatDate AS fecha FROM facturas AS f WHERE f.formatDate BETWEEN  date_sub(NOW(),INTERVAL 1 WEEK) and NOW() GROUP BY f.formatDate";
+        return $con->SQND("$sql");
+    }
     /**
      * Reporte totales factura por dia
      */

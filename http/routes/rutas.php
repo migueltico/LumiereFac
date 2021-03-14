@@ -131,6 +131,7 @@ route::group('reportes', function () {
 //+++++++++++ ESTADISTICAS +++++++++++//
 route::group('estadisticas', function () {
     route::post('/getMoreSalesPerMonth', 'estadisticasController@getMoreSalesPerMonth');
+    route::post('/getLastWeekSales', 'estadisticasController@getLastWeekSales');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

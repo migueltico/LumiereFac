@@ -31,4 +31,19 @@ class estadisticasController extends view
         header('Content-Type: application/json');
         echo json_encode($json);
     }
+    public function getLastWeekSales()
+    {
+        $result = estadisticas::getLastWeekSales();
+        $dias =["Lunes","Martes","Miercoles","Jueves","Viernes","Sabado","Domingo"];
+        $rows = $result['data'];
+        $columnsName=[];
+        $Cantidad=[];
+        foreach ($rows as $key => $value) {
+            array_push($Cantidad,$value['cantidad']);
+        }
+        $json['columns'] =$dias;
+        $json['cantidad'] =$Cantidad;
+        header('Content-Type: application/json');
+        echo json_encode($json);
+    }
 }
