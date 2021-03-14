@@ -1,7 +1,9 @@
 $('#bodyContent').on('change', "#reportTypeSelect", function (e) {
-    let show = document.getElementById(this.value)
-    $('.optionselectReports').hide()
-    show.style.display = "block"
+    //let show = document.getElementById(this.value)
+   // $('.optionselectReports').hide()
+   // show.style.display = "block"
+   let loadTable = document.getElementById("loadTable")
+   loadTable.innerHTML = ""
 })
 $('#bodyContent').on('click', ".generarReportesFac", function (e) {
     let type = e.target.dataset.type
@@ -10,19 +12,33 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
     let dateInit = document.getElementById('dateInit').value
     let dateEnd = document.getElementById('dateEnd').value
     switch (reportTypeSelect) {
+        case 'rxCajas':
+            let urlRxCajas = {
+                html: "/reportes/rxCajas",
+                pdf: `/reportes/rxfacDiaPDF`
+            }
+            urlRxCajas = urlRxfacDia[type]
+            break;
         case 'rxfacDia':
             let urlRxfacDia = {
                 html: "/reportes/rxfacDia",
-                pdf: `/reportes/rxfacDiaPDF?dateInit=${dateInit}&dateEnd=${dateEnd}`
+                pdf: `/reportes/rxfacDiaPDF`
             }
             urlReporte = urlRxfacDia[type]
             break;
         case 'rxfacDiaDetalle':
             let urlRxfacDiaDetalle = {
                 html: "/reportes/rxfacDiaDetalle",
-                pdf: `/reportes/rxfacDiaDetallePDF?dateInit=${dateInit}&dateEnd=${dateEnd}`
+                pdf: `/reportes/rxfacDiaDetallePDF`
             }
             urlReporte = urlRxfacDiaDetalle[type]
+            break;
+        case 'rxVentasCliente':
+            let rxFacturasXCliente = {
+                html: "/reportes/rxFacturasXCliente",
+                pdf: `/reportes/rxFacturasXClientePDF`
+            }
+            urlReporte = rxFacturasXCliente[type]
             break;
 
         default:

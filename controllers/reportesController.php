@@ -15,7 +15,13 @@ use models\reportesModel as reports;
 class reportesController extends view
 
 {
-  public function rxfacDia()
+  public function index()
+  {
+      $icon = help::icon();
+      $data["icons"] =  $icon['icons'];
+      echo view::renderElement('facturacion/facturacionReportes', $data);
+  }
+  public function rxCajas()
   {
     $dateInit = $_POST['dateInit'];
     $dateEnd = $_POST['dateEnd'];
@@ -23,7 +29,50 @@ class reportesController extends view
     $data["rowsDiarios"] = $datos['data'];
     echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDia', $data);
   }
+  public function rxfacDia()
+  {
+    $icon = help::icon();
+    $data["icons"] =  $icon['icons'];
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
+    $datos = reports::rxfacDia($dateInit, $dateEnd);
+    $data["rowsDiarios"] = $datos['data'];
+    echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDia/ReporteFacturasPorDia', $data);
+  }
   public function rxfacDiaDetalle()
+  {
+    $icon = help::icon();
+    $data["icons"] =  $icon['icons'];
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
+    $datos = reports::rxfacDiaDetalle($dateInit, $dateEnd);
+    $data["rowsDetalles"] = $datos['data'];
+    $fechasArray = [];
+    $rowPerDate = [];
+    foreach ($data["rowsDetalles"] as $row) {
+
+      array_push($fechasArray, $row["fecha"]);
+    }
+    $fechasArray = array_unique($fechasArray);
+    asort($fechasArray);
+    foreach ($fechasArray as $key => $fecha) {
+      foreach ($data["rowsDetalles"] as $row) {
+        if ($row["fecha"] == $fecha) {
+          if (isset($rowPerDate[$fecha])) {
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          } else {
+            $rowPerDate[$fecha]['rows'] = [];
+            $rowPerDate[$fecha]['fecha'] = $fecha;
+            $rowPerDate[$fecha]['caja'] = $row['caja'];
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          }
+        }
+      }
+    }
+    $data['data'] = $rowPerDate;
+    echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetalle/ReporteFacturasPorDiaDetalle', $data);
+  }
+  public function rxfacDiaDetallePDF()
   {
     $dateInit = $_POST['dateInit'];
     $dateEnd = $_POST['dateEnd'];
@@ -52,47 +101,39 @@ class reportesController extends view
       }
     }
     $data['data'] = $rowPerDate;
-    echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetalle', $data);
-  }
-  public function rxfacDiaDetallePDF()
-  {
-    $dateInit = $_GET['dateInit'];
-    $dateEnd = $_GET['dateEnd'];
-    $datos = reports::rxfacDiaDetalle($dateInit, $dateEnd);
-    $data["rowsDetalles"] = $datos['data'];
-    $fechasArray = [];
-    $rowPerDate = [];
-    foreach ($data["rowsDetalles"] as $row) {
-
-      array_push($fechasArray, $row["fecha"]);
-    }
-    $fechasArray = array_unique($fechasArray);
-    asort($fechasArray);
-    foreach ($fechasArray as $key => $fecha) {
-      foreach ($data["rowsDetalles"] as $row) {
-        if ($row["fecha"] == $fecha) {
-          if (isset($rowPerDate[$fecha])) {
-            array_push($rowPerDate[$fecha]['rows'], $row);
-          } else {
-            $rowPerDate[$fecha]['rows'] = [];
-            $rowPerDate[$fecha]['fecha'] = $fecha;
-            $rowPerDate[$fecha]['caja'] = $row['caja'];
-            array_push($rowPerDate[$fecha]['rows'], $row);
-          }
-        }
-      }
-    }
-    $data['data'] = $rowPerDate;
-    return view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetallePDF', $data);
+    return view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetalle/ReporteFacturasPorDiaDetallePDF', $data);
   }
   public function rxfacDiaPDF()
   {
-    $dateInit = $_GET['dateInit'];
-    $dateEnd = $_GET['dateEnd'];
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
     $datos = reports::rxfacDia($dateInit, $dateEnd);
     $data["rowsDiarios"] = $datos['data'];
-    return view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaPDF', $data);
+    return view::renderElement('reportes/Rxtipo/ReporteFacturasPorDia/ReporteFacturasPorDiaPDF', $data);
   }
+  public function rxFacturasXCliente()
+  {
+    $icon = help::icon();
+    $data["icons"] =  $icon['icons'];
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
+    $datos = reports::rxFacturasXCliente($dateInit, $dateEnd);
+    $data["ventasRows"] = $datos['data'];
+    return view::renderElement('reportes/Rxtipo/RxFacturasXCliente/rxFacturasXCliente', $data);
+  }
+  public function rxFacturasXClientePDF()
+  {
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
+    $datos = reports::rxFacturasXCliente($dateInit, $dateEnd);
+    $data["ventasRows"] = $datos['data'];
+    return view::renderElement('reportes/Rxtipo/RxFacturasXCliente/rxFacturasXClientePDF', $data);
+  }
+
+
+
+
+
   public function ReportesFacturacion()
   {
     $reporte = $_POST['tipoReporte'];
@@ -119,6 +160,10 @@ class reportesController extends view
         return false;
     }
   }
+
+  //
+  //**************ETIQUETAS********************** */
+  //
   public function Rxtipo()
   {
     $data = json_decode(file_get_contents("php://input"), true);
@@ -148,6 +193,6 @@ class reportesController extends view
     $data = json_decode(file_get_contents("php://input"), true);
     $datos['items'] = $data;
     //print_r($data);
-    echo view::renderElement('reportes/etiquetasTallaEstilo', $datos);
+    echo view::renderElement('reportes/Etiquetas/etiquetasTallaEstilo', $datos);
   }
 }

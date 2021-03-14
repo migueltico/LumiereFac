@@ -9,8 +9,9 @@
                     </div>
                     <select class="custom-select" id="reportTypeSelect">
                         <option value="0" selected disabled>Seleccione un reporte</option>
-                        <option value="rxfacDia">1-Reporte por Facturas Diarias</option>
-                        <option value="rxfacDiaDetalle">2-Reporte por Facturas Diarias Detallada</option>
+                        <option value="rxfacDia">1-Reporte de Facturas Diarias</option>
+                        <option value="rxfacDiaDetalle">2-Reporte de Facturas Diarias Detallada</option>
+                        <option value="rxVentasCliente">3-Reporte de Facturas por Cliente</option>
                         <!-- <option value="2">2-Reporte de Facturas Diario</option> -->
                         <!-- <option value="3">3-Reporte de Facturas con envios pendientes</option> -->
                         <!-- <option value="4">4-Reporte de Apartados completados</option> -->

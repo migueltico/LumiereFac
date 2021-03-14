@@ -27,10 +27,24 @@ class reportesModel
     public static function rxfacDiaDetalle($init, $end)
     {
         $con = new conexion();
-        $con2 = new conexion();
         $return1 = $con->SQND("CALL sp_reporteDiarioDetallado('$init', '$end')");
-        // $con->disconnect();
-        // $return2 = $con2->SQND("CALL sp_reporteDiario('$init', '$end')");
         return $return1;
+    }
+    /**
+     * Reporte ventas por cliente
+     */
+    public static function rxFacturasXCliente($init, $end)
+    {
+        $con = new conexion();
+        $idgenerico = $con->SQR_ONEROW("SELECT idclienteGenerico FROM generalinfo WHERE idgeneral = 1");
+        $id = $idgenerico['data']['idclienteGenerico'];
+        $Sql= "SELECT f.formatDate as fecha, f.consecutivo as factura, c.nombre, c.telefono, f.total
+                FROM `facturas` AS f 
+                INNER JOIN cliente AS c 
+                ON c.idcliente = f.idcliente 
+                WHERE (f.formatDate 
+                BETWEEN '$init' AND '$end') AND (f.idcliente <> $id)";
+        $return = $con->SQND($Sql);
+        return $return;
     }
 }

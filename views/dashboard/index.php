@@ -2,7 +2,6 @@
 <section class="main">
 	<?php include_once (self::block('topbar')) ?>
 	<section class="bodyContent">
-		
     </section>
 </section>
 

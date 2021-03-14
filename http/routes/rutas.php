@@ -13,7 +13,7 @@ route::post('/validateauth*', 'loginController@validar');
 route::get('/logout', 'loginController@logout');
 route::get('/funcion/:char/:format/:valor', 'facturacionController@test');
 //+++++++++++ DASHBOARD +++++++++++//
-route::get('/dashboard', 'dashboardController@index', ['loginMiddleware@auth']);
+route::get('/dashboard/', 'dashboardController@index', ['loginMiddleware@auth']);
 route::post('/dashboard/general', 'dashboardController@general', ['loginMiddleware@auth']);
 //+++++++++++ SUCURSAL +++++++++++//
 route::post('/sucursal', 'sucursalController@index', ['loginMiddleware@auth']);
@@ -85,7 +85,6 @@ route::group('facturacion', function () {
     route::post('/apartados/setAbono', 'facturacionController@setAbono');
     route::post('/historial/diario', 'facturacionController@historialDiario', ['loginMiddleware@auth']);
     route::post('/historial/apartados', 'facturacionController@apartadosSinCancelar', ['loginMiddleware@auth']);
-    route::post('/reportes', 'facturacionController@facturacion');
     route::post('/consultar/factura', 'facturacionController@consultarFactura');
     route::post('/agregar/devolucion', 'facturacionController@devolucion');
     route::post('/consultar/saldo', 'facturacionController@saldoDevoluciones');
@@ -118,12 +117,20 @@ route::group('roles', function () {
 });
 //+++++++++++ REPORTES +++++++++++//
 route::group('reportes', function () {
+    route::post('/', 'reportesController@index');
     route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo', ['loginMiddleware@auth']);
     route::post('/etiquetas', 'reportesController@etiquetasTallaEstiloPost');
     route::post('/rxfacDia', 'reportesController@rxfacDia');
+    route::post('/rxCajas', 'reportesController@rxCajas');
     route::post('/rxfacDiaDetalle', 'reportesController@rxfacDiaDetalle');
     route::post('/rxfacDiaPDF', 'reportesController@rxfacDiaPDF');
     route::post('/rxfacDiaDetallePDF', 'reportesController@rxfacDiaDetallePDF');
+    route::post('/rxFacturasXCliente', 'reportesController@rxFacturasXCliente');
+    route::post('/rxFacturasXClientePDF', 'reportesController@rxFacturasXClientePDF');
+});
+//+++++++++++ ESTADISTICAS +++++++++++//
+route::group('estadisticas', function () {
+    route::post('/getMoreSalesPerMonth', 'estadisticasController@getMoreSalesPerMonth');
 });
 //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
 route::post('/upload/files', 'uploadsController@uploads');

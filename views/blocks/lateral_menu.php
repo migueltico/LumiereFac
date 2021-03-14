@@ -20,8 +20,7 @@
         <li>
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['dashboard'] ?></span><span>Dashboard</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
-                <li data-functionName="startChars" data-linkto="/dashboard/general" class="dataLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>
-                <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>General2</span><span></span></li>
+                <li data-functionName="0" data-linkto="/dashboard" class="redirectLink"><span class="spanStyleMenu"></span><span>General</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Productos</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Vendedores</span><span></span></li>
                 <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Mensuales</span><span></span></li>
@@ -52,7 +51,7 @@
                 <li data-functionName="0" data-linkto="/facturacion/pendientes" class="dataLink"><span class="spanStyleMenu"></span><span>Facturas Pendientes</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion/historial/diario" class="dataLink"><span class="spanStyleMenu"></span><span>Historial Diario</span><span></span></li>
                 <li data-functionName="0" data-linkto="/facturacion/historial/apartados" class="dataLink"><span class="spanStyleMenu"></span><span>Apartados</span><span></span></li>
-                <li data-functionName="0" data-linkto="/facturacion/reportes" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
+                <li data-functionName="0" data-linkto="/reportes" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
             </ul>
         </li>
         <li>

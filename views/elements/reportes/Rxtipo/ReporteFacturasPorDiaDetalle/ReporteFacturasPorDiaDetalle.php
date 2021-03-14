@@ -20,14 +20,14 @@
 <div class="table-responsive">
 
 
-    <table class="table sort" id="sortable" style="width: 100%;margin-top:2rem">
+    <table class="table" id="sortable" style="width: 100%;margin-top:2rem">
         <thead>
 
             <tr>
-                <th data-type="1" data-inner="0" scope="col" style="text-align: left;">#Doc.</th>
-                <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Fecha.</th>
-                <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Doc.</th>
-                <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Tipo Trans.</th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: left;">#Doc.</th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Fecha.</th>
+                <th data-type="0" data-inner="1" scope="col" style="text-align: left;">Doc.</th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Tipo Trans.</th>
                 <!-- <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Tipo Pago <span style="font-size:0.6rem"> (1=Efectivo, 2= Tarjeta, 3= Transferencia)</span></th> -->
                 <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Efectivo</th>
                 <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Tarjetas</th>
@@ -93,12 +93,10 @@
 
                     <tr class="TrRow">
 
-                        <td scope="row" style="text-align: left;"><?= $rows["docNum"] ?></td>
-                        <td scope="row" style="text-align: left;"><?= $rows["fecha"] ?></td>
-                        <td scope="row" style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
-                        <td scope="row" style="text-align: left;"><?= $rows["tipoDoc"] ?></td>
-                        <!-- <td scope="row" style="text-align: center;"><?php //$tipoPago == "" ? "Sin abono" : $tipoPago 
-                                                                            ?></td> -->
+                        <td scope="row" data-value="<?= $rows["docNum"] ?>"  style="text-align: left;"><?= $rows["docNum"] ?></td>
+                        <td scope="row" data-value="<?= $rows["fecha"] ?>"  style="text-align: left;"><?= $rows["fecha"] ?></td>
+                        <td scope="row" data-value="<?= $rows["doc"] ?>"  style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
+                        <td scope="row" data-value="<?= $rows["tipoDoc"]  ?>"  style="text-align: left;"><?= $rows["tipoDoc"] ?></td>
                         <td scope="row" data-value="<?= $rows["efectivo"] ?>" style="text-align: left;"><?= number_format($rows["efectivo"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;"><?= number_format($rows["tarjeta"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $rows["transferencia"] ?>" style="text-align: left;"><?= number_format($rows["transferencia"], 2, ".", ",") ?></td>

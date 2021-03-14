@@ -89,7 +89,7 @@ class view
             }
         }
         if (!empty($parameters['post'])) {
-            echo 'Si tiene datos el POST';
+            // echo 'Si tiene datos el POST';
             foreach ($post as $property => $value) {
                 $$property = $value;
             }

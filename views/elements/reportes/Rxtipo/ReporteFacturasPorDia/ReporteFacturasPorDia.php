@@ -3,12 +3,12 @@
         <thead>
 
             <tr>
-                <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Fecha</th>
-                <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Cantidad</th>
-                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Efectivo</th>
-                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Tarjetas</th>
-                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Transferencias</th>
-                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Diario</th>
+                <th data-type="0" data-inner="0" scope="col" style="text-align: center;">Fecha<span class="icon_table"><?=$icons['updown']  ?></th>
+                <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Cantidad<span class="icon_table"><?=$icons['updown']  ?></th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Efectivo<span class="icon_table"><?=$icons['updown']  ?></th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Tarjetas<span class="icon_table"><?=$icons['updown']  ?></th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Transferencias<span class="icon_table"><?=$icons['updown']  ?></th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Total Diario<span class="icon_table"><?=$icons['updown']  ?></th>
             </tr>
         </thead>
 

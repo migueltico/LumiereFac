@@ -383,10 +383,5 @@ class facturacionController extends view
         $NewData['cards'] = $cards;
         echo view::renderElement('facturas/reciboSinproducto', $NewData);
     }
-    public function facturacion()
-    {
-        $icon = help::icon();
-        $data["icons"] =  $icon['icons'];
-        echo view::renderElement('facturacion/facturacionReportes', $data);
-    }
+
 }

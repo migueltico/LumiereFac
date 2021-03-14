@@ -34,3 +34,15 @@
     max-width: 150px !important;
     width: 140px !important;
 }
+.icon_table svg{
+    color: #ccc;
+    margin-left: 5px;
+    height: 14px;
+}
+.icon_table svg:hover{
+    color: rgb(128, 128, 128);
+    margin-left: 5px;
+    height: 14px;
+    border-bottom: 1px solid rgb(128, 128, 128);
+    cursor: pointer;
+}

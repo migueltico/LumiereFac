@@ -25,8 +25,13 @@ $("#main_menu li.uniq_menu").click(function (e) {
 $("li.dataLink").click((e) => {
     loadPage(e, null)
 })
+$("li.redirectLink").click((e) => {
+    window.location.replace(e.target.dataset.linkto);
+})
 $("#btn_menu_toggle").click((e) => {
     $(".lateral").toggle(100)
+    let bodyMain = document.getElementById('bodyMain')
+    bodyMain.style.width ='100%'
     console.log('click');
 })
 
@@ -98,5 +103,5 @@ function loadPage2(e) {
         });
 }
 $(document).ready(function () {
-    loadPage2()
+    //loadPage2()
 })
