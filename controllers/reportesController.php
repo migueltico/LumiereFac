@@ -169,7 +169,7 @@ class reportesController extends view
     $data = json_decode(file_get_contents("php://input"), true);
     $datos['items'] = $data;
     //print_r($data);
-    echo view::renderElement('reportes/etiquetasTallaEstilo', $datos);
+    echo view::renderElement('reportes/Etiquetas/etiquetasTallaEstilo', $datos);
   }
   public function etiquetasTallaEstilo()
   {
@@ -177,7 +177,7 @@ class reportesController extends view
     $data = json_decode(file_get_contents("php://input"), true);
     $datos['items'] = $data;
     //print_r($data);
-    echo view::renderElement('reportes/etiquetasTallaEstilo', $datos);
+    echo view::renderElement('reportes/Etiquetas/etiquetasTallaEstilo', $datos);
     $dompdf = new Dompdf();
     $dompdf->loadHtml(ob_get_clean());
     // (Optional) Setup the paper size and orientation
