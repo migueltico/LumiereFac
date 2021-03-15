@@ -24,8 +24,13 @@ class estadisticasModel
     }
     public static function getLastWeekSales()
     {
+        $firstday = date('Y-m-d', strtotime("this week")); 
+        $lastday = date('Y-m-d', strtotime("this week + 6 days")); 
         $con = new conexion();
-        $sql="SELECT COUNT(idfactura) AS cantidad, DAYOFWEEK(f.formatDate) -1 AS dia, f.formatDate AS fecha FROM facturas AS f WHERE f.formatDate BETWEEN  date_sub(NOW(),INTERVAL 1 WEEK) and NOW() GROUP BY f.formatDate";
+        $sql="SELECT COUNT(idfactura) AS cantidad, DAYOFWEEK(f.formatDate) -1 AS dia, f.formatDate AS fecha FROM facturas AS f 
+        WHERE f.formatDate 
+        BETWEEN  '$firstday' AND '$lastday' 
+        GROUP BY f.formatDate";
         return $con->SQND("$sql");
     }
     /**
