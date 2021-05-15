@@ -61,14 +61,15 @@ class facturacionModel
                     ":precio" => (float) str_replace(",", "", $item['precio']),
                     ":descuento" => (int) (rtrim($item['descuento'], "%")),
                     ":iva" => (int) $item['iva'],
-                    ":total" => (float) str_replace(",", "", $item['total_iva'])
+                    ":total" => (float) str_replace(",", "", $item['total_iva']),
+                    ":fecha"=> date("Y-m-d")
                 ));
             }
             $isOk = true;
             foreach ($itemsSql as $detail) {
                 $insert = $con->SQ(
-                    "INSERT INTO detalle_factura (idfactura, idproducto, cantidad, precio, descuento, iva, total)
-                    VALUE (:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total)",
+                    "INSERT INTO detalle_factura (idfactura, idproducto, cantidad, precio, descuento, iva, total, fecha)
+                    VALUE (:idfactura, :idproducto, :cantidad, :precio, :descuento, :iva, :total, :fecha)",
                     $detail
                 );
                 $codigo = $detail[':idproducto'];
