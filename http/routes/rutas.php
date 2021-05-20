@@ -7,7 +7,7 @@ use config\route;
 //------------- +++ RUTAS GET +++ -----------------//
 
 //+++++++++++ LOGIN +++++++++++//
-route::get('/', 'loginController@index', ['loginMiddleware@auth']);
+route::get('/', 'loginController@index');
 route::post('/validateauth', 'loginController@validar');
 route::post('/validateauth*', 'loginController@validar');
 route::get('/logout', 'loginController@logout');
@@ -49,8 +49,8 @@ route::group('admin', function () {
 });
 //+++++++++++ INVENTARIO +++++++++++//
 route::group('inventario', function () {
-    route::post('/listarproductos', 'inventarioController@index', ['loginMiddleware@auth']);
-    route::post('/addproduct', 'inventarioController@addproduct', ['loginMiddleware@auth']);
+    route::post('/listarproductos', 'inventarioController@index');
+    route::post('/addproduct', 'inventarioController@addproduct');
     route::post('/updateProduct', 'inventarioController@updateProduct');
     route::post('/getProductById', 'inventarioController@getProductById');
     route::post('/refresh/producttable', 'inventarioController@producttable');
@@ -58,13 +58,14 @@ route::group('inventario', function () {
     route::post('/generar/codigobarras', 'inventarioController@generarCodigo');
     route::post('/search', 'inventarioController@searchProduct');
     route::post('/search/stock', 'inventarioController@searchProductstock');
-    route::post('/addstock', 'inventarioController@addstock', ['loginMiddleware@auth']);
+    route::post('/addstock', 'inventarioController@addstock');
     route::post('/refreshProductstock', 'inventarioController@refreshProductstock');
     route::post('/saveProductPrice', 'inventarioController@saveProductPrice');
     route::post('/updateStock', 'inventarioController@updateStock');
     route::post('/updateMinStock', 'inventarioController@updateMinStock');
     route::post('/calcular/sugerido', 'inventarioController@calcular_sugerido');
-    route::post('/impresion/etiquetas', 'inventarioController@indexEtiquetas', ['loginMiddleware@auth']);
+    route::post('/impresion/etiquetas', 'inventarioController@indexEtiquetas');
+    route::post('/update/product/estado', 'inventarioController@disableProduct');
 });
 //+++++++++++ FACTURACION +++++++++++//
 route::group('facturacion', function () {
@@ -72,10 +73,10 @@ route::group('facturacion', function () {
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
-    route::post('/pendientes', 'facturacionController@pendientes', ['loginMiddleware@auth']);
+    route::post('/pendientes', 'facturacionController@pendientes');
     route::post('/pendientes/productos', 'facturacionController@pendientesProductos');
     route::post('/pendientes/changeStateFac', 'facturacionController@changeStateFac');
-    route::post('/cajas', 'facturacionController@cajas', ['loginMiddleware@auth']);
+    route::post('/cajas', 'facturacionController@cajas');
     route::post('/cajas/abrirCaja', 'facturacionController@abrirCaja');
     route::post('/cajas/abrirCajaEstado', 'facturacionController@abrirCajaEstado');
     route::post('/cajas/obtenerEstadoCajaEstado', 'facturacionController@obtenerEstadoCajaEstado');
@@ -83,15 +84,15 @@ route::group('facturacion', function () {
     route::post('/apartados/getApartadosHasClient', 'facturacionController@getApartadosHasClient');
     route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
     route::post('/apartados/setAbono', 'facturacionController@setAbono');
-    route::post('/historial/diario', 'facturacionController@historialDiario', ['loginMiddleware@auth']);
-    route::post('/historial/apartados', 'facturacionController@apartadosSinCancelar', ['loginMiddleware@auth']);
+    route::post('/historial/diario', 'facturacionController@historialDiario');
+    route::post('/historial/apartados', 'facturacionController@apartadosSinCancelar');
     route::post('/consultar/factura', 'facturacionController@consultarFactura');
     route::post('/agregar/devolucion', 'facturacionController@devolucion');
     route::post('/consultar/saldo', 'facturacionController@saldoDevoluciones');
 });
 //+++++++++++ CLIENTES +++++++++++//
 route::group('clientes', function () {
-    route::post('/lista', 'clientesController@index', ['loginMiddleware@auth']);
+    route::post('/lista', 'clientesController@index');
     route::post('/addcliente', 'clientesController@addNewClient');
     route::post('/getClienteById', 'clientesController@getClienteById');
     route::post('/updateClienteById', 'clientesController@updateClienteById');
@@ -100,7 +101,7 @@ route::group('clientes', function () {
 });
 //+++++++++++ USUARIOS +++++++++++//
 route::group('usuarios', function () {
-    route::post('/', 'usuariosController@index', ['loginMiddleware@auth']);
+    route::post('/', 'usuariosController@index');
     route::post('/setUser', 'usuariosController@setUser');
 });
 //+++++++++++ SERVER +++++++++++//
@@ -109,7 +110,7 @@ route::post('/setPassword', 'usuariosController@setNewPassword');
 route::post('/verIdentificador', 'usuariosController@verIdentificador');
 //+++++++++++ ROLES +++++++++++//
 route::group('roles', function () {
-    route::post('/', 'rolesController@index', ['loginMiddleware@auth']);
+    route::post('/', 'rolesController@index');
     route::post('/getRoles', 'rolesController@getRoles');
     route::post('/newRol', 'rolesController@newRol');
     route::post('/saveRoles', 'rolesController@saveRoles');
@@ -118,7 +119,7 @@ route::group('roles', function () {
 //+++++++++++ REPORTES +++++++++++//
 route::group('reportes', function () {
     route::post('/', 'reportesController@index');
-    route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo', ['loginMiddleware@auth']);
+    route::get('/etiquetas', 'reportesController@etiquetasTallaEstilo');
     route::post('/etiquetas', 'reportesController@etiquetasTallaEstiloPost');
     route::post('/rxfacDia', 'reportesController@rxfacDia');
     route::post('/rxCajas', 'reportesController@rxCajas');

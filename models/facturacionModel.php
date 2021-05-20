@@ -302,7 +302,7 @@ class facturacionModel
     {
         $con = new conexion();
         $iduser = $_SESSION['id'];
-        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE  idusuario = $iduser ORDER BY consecutivo DESC");
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE  idusuario = $iduser ORDER BY consecutivo DESC LIMIT 100");
         $data = array();
         if ($header['rows'] > 0) {
             foreach ($header['data'] as $factura) {

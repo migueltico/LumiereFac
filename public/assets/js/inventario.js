@@ -885,6 +885,13 @@ $("#bodyContent").on("change", '.inputPrintCantJson', function (e) {
 $("#bodyContent").on("click", '#loadDataProduct', function (e) {
     getLocalStoreToPrint()
 })
+$("#bodyContent").on("click", '.disableProduct', function (e) {
+    e.preventDefault()
+    let disableProductEl = e.target
+    let id = disableProductEl.dataset.enable
+    let estado = parseInt(disableProductEl.dataset.estado)
+    disableProduct(id, estado,e)
+})
 $("#bodyContent").on("click", '#makePdfPrint', function (e) {
     // fetch("/reportes/etiquetas", {
     //         method: "GET"
@@ -932,6 +939,44 @@ function printPDF() {
             window.print();
             d.remove();
         })
+
+}
+
+function disableProduct(id, estado, e) {
+    let msg = ['inhabilitado', 'habilitado']
+    estado = estado == 0 ? 1 : 0
+    let formData = new FormData()
+    formData.append("id", id)
+    formData.append("estado", estado)
+
+    fetch("/inventario/update/product/estado", {
+            method: 'POST',
+            body: formData
+        }).then(resp => resp.json())
+        .then(resp => {
+            if (resp.error == "00000") {
+                loadTable(e, 1, "")
+                Swal.fire({
+                    position: 'top',
+                    title: `Producto ${msg[estado]} correctamente`,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                })
+            } else {
+                loadTable(e, 1, "")
+                Swal.fire({
+                    position: 'top',
+                    title: 'Error al actualizar estado',
+                    text: `No se pudo actualizar el estado del Producto`,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+
+        }).catch((err) => {
+            console.log('error en FETCH:', err);
+            loadTable(e, 1, "")
+        });
 
 }
 

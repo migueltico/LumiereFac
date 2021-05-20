@@ -280,4 +280,10 @@ class inventarioController extends view
     $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/etiquetas', $data);
   }
+  public function disableProduct()
+  {
+    $result = product::disableProduct($_POST['id'],$_POST['estado']);
+    header('Content-Type: application/json');
+    echo json_encode($result);
+  }
 }

@@ -282,4 +282,14 @@ class productModel
         $sql = "CALL sp_getFactorProduct(:id)";
         return $con->SPCALLR($sql, $datos);
     }
+    /**
+     * Obtiene el factor por ID del producti
+     *
+     * @return void
+     */
+    public static function disableProduct($id,$estado)
+    {
+        $con = new conexion();
+        return $con->SQNDNR("UPDATE producto SET estado = $estado WHERE idproducto=$id");
+    }
 }

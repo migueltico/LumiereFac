@@ -71,14 +71,14 @@ $maxpage = @$paginationInfo['paginacion']['paginas'];
           <td scope="row" style="text-align: center;margin:0 auto"><strong><?= $product["stock"] == null || '' ? 0 : $product["stock"] ?></strong></td>
           <td scope="row" style="text-align: center;"><?= $newDate ?></td>
           <td scope="row" data-value="<?= $product["estado"] ?>" data-toggle="tooltip" data-placement="top" title="">
-            <div class="<?= $estado[$product["estado"]] ?>"></div>
+            <div id="estado_<?= $product["idproducto"] ?>" class="<?= $estado[$product["estado"]] ?>"></div>
           </td>
           <td scope="row">
             <div class="btn-group Editbuttons" aria-label="Grupo edicion">
               <button type="button" class="btn btn-success EditProductBtn" data-toggle="modal" data-target="#EditProduct" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['edit'] ?></button>
               <button type="button" class="btn btn-primary pl-3 pr-3 SeeImgProduct" data-urls="<?= $product["image_url"] ?>" data-toggle="modal" data-target="#galleryShow" data-name="<?= $product["descripcion"] ?>" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['eye'] ?></button>
               <button type="button" class="btn btn-info pl-3 pr-3 printToast" data-precio="<?= $product["precio_venta"] ?>" data-name="<?= $product["descripcion"] ?>" data-talla="<?= $product["talla"] ?>" data-estilo="<?= $product["estilo"] ?>" data-idProduct='<?= $product["codigo"] ?>'><?= $icons['print'] ?></button>
-              <button type="button" class="btn btn-danger" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['trash'] ?></button>
+              <button type="button" class="btn <?=($product["estado"] == 0 ? "btn-primary":"btn-danger") ?> disableProduct" data-estado='<?= $product["estado"] ?>' data-enable='<?= $product["idproducto"] ?>'><?=($product["estado"] == 0 ? $icons['add']:$icons['remove']) ?></button>
             </div>
           </td>
         </tr>
