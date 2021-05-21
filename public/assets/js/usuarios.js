@@ -212,11 +212,10 @@ $("#bodyHtml").on("click", "#perfil_update_pass", async function (e) {
                 if (resp.error == '00000') {
                     Swal.fire({
                         position: 'top',
-                        title: 'Perfil Actualizado',
-                        text: `Para ver los cambios, actualize la pagina`,
+                        title: 'Contraseña Actualizada',
                         icon: 'success',
                         confirmButtonText: 'OK',
-                        timer: 6000,
+                        timer: 3000,
                         timerProgressBar: true
                     })
                 } else {
