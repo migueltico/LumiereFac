@@ -44,13 +44,21 @@
                                     <input type="text" name="direccion" class="form-control  p-3" id="perfil_edit_direccion">
                                 </div>
                             </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <div class="input-group input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Usuario</span>
+                                    </div>
+                                    <input type="text" name="usuario" class="form-control  p-3" id="perfil_edit_usuario" value="<?= $_SESSION["usuario"] ?>">
+                                </div>
+                            </div>
 
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                <div class="card border-danger">
+                                <div class="card border-success">
                                     <div class="card-header">
                                         Cambiar Contraseña
                                     </div>
-                                    <div class="card-body text-danger">
+                                    <div class="card-body text-success">
                                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                             <div class="input-group input-group mb-3">
                                                 <div class="input-group-prepend">
@@ -77,7 +85,7 @@
                                         </div>
                                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                                             <div class="input-group input-group mb-3">
-                                                <button type="button" id="perfil_update_pass" class="btn btn-danger">Cambiar</button>
+                                                <button type="button" id="perfil_update_pass" class="btn btn-success">Cambiar</button>
                                             </div>
                                         </div>
                                     </div>

@@ -162,15 +162,34 @@ $("#bodyHtml").on("click", "#perfil_edit_btneditperfil", function (e) {
         .then(resp => {
             //console.log(resp);
             if (resp.error == '00000') {
-                Swal.fire({
-                    position: 'top',
-                    title: 'Perfil Actualizado',
-                    text: `Para ver los cambios, actualize la pagina`,
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    timer: 6000,
-                    timerProgressBar: true
-                })
+
+                if (!resp.newuser && !resp.same) {
+                    let perfil_edit_usuario = document.getElementById("perfil_edit_usuario")
+                    perfil_edit_usuario.value = resp.olduser
+                    perfil_edit_usuario.classList.add('border', 'border-danger')
+                    Swal.fire({
+                        position: 'top',
+                        title: 'Perfil Actualizado [Error]',
+                        html: `Para ver los cambios, actualize la pagina, \n  `,
+                        icon: 'warning',
+                        footer: '<strong>[Error]</strong> No se puede actualizar el usuario, pruebe con uno diferente. Se regresara al usuario anterior',
+                        confirmButtonText: 'OK',
+                        timer: 6000,
+                        timerProgressBar: true
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'top',
+                        title: 'Perfil Actualizado',
+                        text: `Para ver los cambios, actualize la pagina`,
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        timer: 6000,
+                        timerProgressBar: true
+                    })
+                    perfil_edit_usuario.classList.remove('border', 'border-danger')
+                }
+
             } else {
                 Swal.fire({
                     position: 'top',

@@ -52,7 +52,7 @@ class usuariosModel
     public static function editUserPerfil($datos)
     {
         $con = new conexion();
-        return $con->SPCALLNR("UPDATE usuario SET  email = :email, nombre = :nombre, telefono = :telefono, direccion = :direccion WHERE idusuario = :id", $datos);
+        return $con->SPCALLNR("UPDATE usuario SET usuario = :usuario, email = :email, nombre = :nombre, telefono = :telefono, direccion = :direccion WHERE idusuario = :id", $datos);
     }
     public static function updatePass($datos)
     {
@@ -71,6 +71,11 @@ class usuariosModel
     {
         $con = new conexion();
         return $con->SQR_ONEROW("SELECT password FROM usuario WHERE idusuario=$id");
+    }
+    public static function confirmUser($user)
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW("SELECT * FROM usuario WHERE usuario='$user'");
     }
     public static function getRols()
     {

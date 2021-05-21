@@ -61,12 +61,29 @@ class usuariosController extends view
     }
     public function editUserPerfil($var)
     {
+        $user = trim($_POST['usuario']);
+        $newUser = false;
+        $same = true;
+        $olduser = $_SESSION['usuario'];
+        if ($user != $olduser) {
+            $confirmUser = users::confirmUser($user);
+            $same = false;
+            $newUser = $confirmUser['rows'] == 0 ? true : false;
+        }
         $datos[':id'] = $_POST['id'];
-        $datos[':nombre'] = $_POST['nombre'];
+        $datos[':nombre'] = trim($_POST['nombre']);
         $datos[':email'] = $_POST['correo'];
         $datos[':telefono'] = $_POST['telefono'];
         $datos[':direccion'] = $_POST['direccion'];
+        $user = $newUser ? $user : $olduser;
+        $datos[':usuario'] = $user;
         $users = users::editUserPerfil($datos);
+        if ($users["error"] == "00000" && $newUser) {
+            $_SESSION['usuario'] = trim($_POST['usuario']);
+        }
+        $users["newuser"] = $newUser ? true : false;
+        $users["olduser"] = $olduser;
+        $users["same"] =  $same;
         header('Content-Type: application/json');
         echo json_encode($users);
     }

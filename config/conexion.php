@@ -322,7 +322,7 @@ class conexion
 	 *
 	 * @param [type] $sql
 	 * @param [type] $datos
-	 * @return void
+	 * @return [type] rows
 	 */
 	public function SQR_ONEROW($sql)
 	{
