@@ -12,6 +12,7 @@ route::post('/validateauth', 'loginController@validar');
 route::post('/validateauth*', 'loginController@validar');
 route::get('/logout', 'loginController@logout');
 route::get('/funcion/:char/:format/:valor', 'facturacionController@test');
+route::post('/get/permisos', 'loginController@getPermisos');
 //+++++++++++ DASHBOARD +++++++++++//
 route::get('/dashboard/', 'dashboardController@index', ['loginMiddleware@auth']);
 route::post('/dashboard/general', 'dashboardController@general', ['loginMiddleware@auth']);

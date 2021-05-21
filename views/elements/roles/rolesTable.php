@@ -25,12 +25,25 @@
                             <label class="text-primary" for="catpre_eliminar"><input type="checkbox" class="mr-2" name="catpre_eliminar" id="catpre_eliminar">Eliminar categoria</label>
                         </div>
                     </label>
-                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Categorias de precios</strong>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Categorias y Tallas</strong>
                         <div class="card p-3 textcolorhover">
                             <label class="text-primary" for="cattalla_modulo"><input type="checkbox" class="mr-2" name="cattalla_modulo" id="cattalla_modulo">Ver modulo</label>
                             <label class="text-primary" for="cattalla_crear"><input type="checkbox" class="mr-2" name="cattalla_crear" id="cattalla_crear">Crear categoria o talla</label>
                             <label class="text-primary" for="cattalla_editar"><input type="checkbox" class="mr-2" name="cattalla_editar" id="cattalla_editar">Editar categoria o talla</label>
                             <label class="text-primary" for="cattalla_eliminar"><input type="checkbox" class="mr-2" name="cattalla_eliminar" id="cattalla_eliminar">Eliminar categoria o talla</label>
+                        </div>
+                    </label>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Descuentos</strong>
+                        <div class="card p-3 textcolorhover">
+                            <label class="text-primary" for="descuento_modulo"><input type="checkbox" class="mr-2" name="descuento_modulo" id="descuento_modulo">Ver modulo</label>
+                            <label class="text-primary" for="descuento_crear"><input type="checkbox" class="mr-2" name="descuento_crear" id="descuento_crear">Crear Descuento</label>
+                            <label class="text-primary" for="descuento_editar"><input type="checkbox" class="mr-2" name="descuento_editar" id="descuento_editar">Editar Descuento</label>
+                            <label class="text-primary" for="descuento_eliminar"><input type="checkbox" class="mr-2" name="descuento_eliminar" id="descuento_eliminar">Eliminar Descuento</label>
+                        </div>
+                    </label>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Descuentos por lote</strong>
+                        <div class="card p-3 textcolorhover">
+                            <label class="text-primary" for="descuento_lote_modulo"><input type="checkbox" class="mr-2" name="descuento_lote_modulo" id="descuento_lote_modulo">Ver modulo</label>
                         </div>
                     </label>
                 </div>
@@ -62,10 +75,20 @@
                             <label class="text-primary" for="fac_pend_cancelar"><input type="checkbox" class="mr-2" name="fac_pend_cancelar" id="fac_pend_cancelar">Cancelar factura</label>
                         </div>
                     </label>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Historial Diarios</strong>
+                        <div class="card p-3 textcolorhover">
+                            <label class="text-primary" for="historial_diario_modulo"><input type="checkbox" class="mr-2" name="historial_diario_modulo" id="historial_diario_modulo">Ver modulo</label>
+                        </div>
+                    </label>
                     <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Apartados</strong>
                         <div class="card p-3 textcolorhover">
                             <label class="text-primary" for="Apartados_modulo"><input type="checkbox" class="mr-2" name="Apartados_modulo" id="Apartados_modulo">Ver modulo</label>
                             <label class="text-primary" for="Apartados_cancelar"><input type="checkbox" class="mr-2" name="Apartados_cancelar" id="Apartados_cancelar">Abonar</label>
+                        </div>
+                    </label>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Reportes</strong>
+                        <div class="card p-3 textcolorhover">
+                            <label class="text-primary" for="reportes_modulo"><input type="checkbox" class="mr-2" name="reportes_modulo" id="reportes_modulo">Ver modulo</label>
                         </div>
                     </label>
                 </div>

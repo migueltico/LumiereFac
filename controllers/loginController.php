@@ -23,6 +23,13 @@ class loginController extends view
         session_destroy();
         help::redirect("/");
     }
+    public function getPermisos($var)
+    {
+        $permisos = user::getPermisos($_SESSION["idrol"]);
+        $permisosJson = json_decode($permisos['data']['permisos'],true);
+        header('Content-Type: application/json');
+        echo json_encode($permisosJson);
+    }
     public function validar($var)
     {
         $post =  $var['post'];
@@ -33,6 +40,9 @@ class loginController extends view
             }
             $hash = hash('sha256', $post['pass']);
             $data = user::getUser($post['usuario'], $hash);
+            
+            $permisos = user::getPermisos($data['data']["idrol"]);
+            $permisosJson = json_decode($permisos['data']['permisos'],true);
             if ($data['rows'] == 1) {
                 $info = admin::infoSucursal();
                 $info = $info['data'];
@@ -43,6 +53,7 @@ class loginController extends view
                 $_SESSION["rolname"] = $data["rolname"];
                 $_SESSION["idrol"] = $data["idrol"];
                 $_SESSION["info"] = $info;
+                $_SESSION["permisos"] = $permisosJson;
 
                 //return json_encode(array("estado" => 200, "session" => $_SESSION));
                 help::redirect("/dashboard");
