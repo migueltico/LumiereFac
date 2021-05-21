@@ -18,7 +18,9 @@
                     <?= isset($_SESSION["nombre"]) ? $_SESSION["nombre"] : 'Usuario' ?>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" id="change_user_pass" href="#" data-toggle="modal" data-target="#perfil_editPerfil" data-iduser='<?= $_SESSION["id"] ?>'>Perfil</a>
+                    <a class="dropdown-item" id="change_user_pass" href="#" data-toggle="modal" data-target="#perfil_editPerfil" data-iduser='<?= $_SESSION["id"] ?>'>Editar perfil</a>
+                    <hr>
+                    <i class="dropdown-item"'>usuario: <?= $_SESSION["usuario"] ?></i>
                 </div>
             </div>
         </div>
