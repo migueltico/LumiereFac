@@ -17,7 +17,7 @@
         e.preventDefault();
         let id = $(e.target).data('id')
         deleteSucursal(id)
-        console.log(id);
+        //console.log(id);
     })
     $('#bodyContent').on("click", "#newSucursal", function (e) {
         document.getElementById("AddSucursalForm").reset();
@@ -35,7 +35,7 @@
                 body: formData
             }).then(resp => resp.json())
             .then(resp => {
-                console.log(resp);
+                //console.log(resp);
             })
     }
 
@@ -48,7 +48,7 @@
                 body: formData
             }).then((result) => result.json())
             .then(resp => {
-                console.log(resp);
+                //console.log(resp);
                 $(`#EditSucursalModal`).modal('toggle')
                 loadTableSucursal()
             })
@@ -64,7 +64,7 @@
             }).then((result) => result.json())
             .then(resp => {
                 let data = resp.data
-                console.log(data);
+                //console.log(data);
                 $("#EditSucursalModal #sucursal").val(data.descripcion)
                 $("#EditSucursalModal #idsucursal").val(data.idsucursal)
                 $("#EditSucursalModal #ubicacion").val(data.ubicacion)
@@ -115,6 +115,6 @@
                 $(".sucursalTable").html(html)
             })
             .catch((err) => {
-                console.log('error en FETCH:', err);
+                //console.log('error en FETCH:', err);
             });
     }

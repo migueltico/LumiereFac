@@ -26,7 +26,7 @@ class loginController extends view
     public function getPermisos($var)
     {
         $permisos = user::getPermisos($_SESSION["idrol"]);
-        $permisosJson = json_decode($permisos['data']['permisos'],true);
+        $permisosJson = json_decode($permisos['data']['permisos'], true);
         header('Content-Type: application/json');
         echo json_encode($permisosJson);
     }
@@ -35,14 +35,14 @@ class loginController extends view
         $post =  $var['post'];
         if (!empty($post["db"]) && !empty($post["usuario"]) && !empty($post["pass"])) {
             $_SESSION["db"] = $post["db"];
-            if($post["db"]=='TestDB'){
-                $GLOBALS["env_test"]=true;
+            if ($post["db"] == 'TestDB') {
+                $GLOBALS["env_test"] = true;
             }
             $hash = hash('sha256', $post['pass']);
             $data = user::getUser($post['usuario'], $hash);
-            
+
             $permisos = user::getPermisos($data['data']["idrol"]);
-            $permisosJson = json_decode($permisos['data']['permisos'],true);
+            $permisosJson = json_decode($permisos['data']['permisos'], true);
             if ($data['rows'] == 1) {
                 $info = admin::infoSucursal();
                 $info = $info['data'];
@@ -66,4 +66,5 @@ class loginController extends view
             echo "ERROR LOGIN";
         }
     }
+
 }

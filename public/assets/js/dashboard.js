@@ -2,7 +2,7 @@ $(document).ready(function () {
     startChars = async function () {
         let data1 = await getMoreSalesPerMonth()
         let data2 = await getLastWeekSales()
-        console.log(data1, data2)
+        //console.log(data1, data2)
         let ctx1 = document.getElementById("getMoreSalesPerMonth").getContext("2d");
         let ctx2 = document.getElementById("getLastWeekSales").getContext("2d");
         let columnsName = []

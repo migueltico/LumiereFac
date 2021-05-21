@@ -770,9 +770,9 @@ $('#bodyContent').on("click", ".generalSearch", function (e) {
           </td>
 
 `
-	console.log(codigo, descripcion, descuento);
+	//console.log(codigo, descripcion, descuento);
 	tbody.appendChild(tr)
-	console.log(codigo);
+	//console.log(codigo);
 
 
 
@@ -798,7 +798,7 @@ function aplicarDescuento() {
 	for (let i = 0; i < childrens.length; i++) {
 		let item = childrens[i]
 		codigos += parseInt(item.id.split('_')[1]) + (i == childrens.length - 1 ? "" : ",")
-		console.log(item.id)
+		//console.log(item.id)
 	}
 	if (codigos.length == 0) {
 		Swal.fire({

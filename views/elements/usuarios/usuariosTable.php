@@ -33,7 +33,7 @@
                     <td scope="row" style="text-align: center;"><?= $user["roles"] ?></td>
                     <td scope="row">
                         <div class="btn-group Editbuttons" aria-label="Grupo edicion">
-                            <button type="button" class="btn btn-success " data-id='<?= $user["idusuario"] ?>'><?= $icons['edit'] ?></button>
+                            <button type="button" class="btn btn-success btnEditUserId" data-toggle="modal" data-target="#usuarios_editUsuario" data-id='<?= $user["idusuario"] ?>'><?= $icons['edit'] ?></button>
                             <?php if ($user["identificador"] != null) : ?>
                                 <button type="button" class="btn btn-info seeLinkBtnUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['link'] ?></button>
                             <?php endif; ?>

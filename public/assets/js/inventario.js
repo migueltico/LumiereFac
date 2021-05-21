@@ -1,7 +1,7 @@
 $('#bodyContent').on("click", "#addProduct #AddProductFormBtn", function (e) {
     e.preventDefault();
     agregarProducto(e)
-    //console.log("CLICK EN AGREGAR");
+    ////console.log("CLICK EN AGREGAR");
 })
 //GENERA CODIGO DE BARRAS
 $('#bodyContent').on("click", "#addProduct #addProduct_generarCodigo", function (e) {
@@ -32,7 +32,7 @@ $('#bodyContent').on("click", ".paginationInventario", function (e) {
     let page = this.dataset.page
     let search = document.getElementsByClassName('inputSearchPagination')[0].value
 
-    console.log(this.dataset.page)
+    //console.log(this.dataset.page)
     if (!$(this).hasClass("disabled")) {
         loadTable(e, page, search)
     }
@@ -46,7 +46,7 @@ $('#bodyContent').on("keypress", "#productSearch", function (e) {
         let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
         $(".loadTable").html('')
         $(".loadTable").append(img)
-        console.log(toSearch);
+        //console.log(toSearch);
         let formData = new FormData()
         formData.append("toSearch", toSearch)
         formData.append('estado', (estado.checked ? 0 : 1))
@@ -76,7 +76,7 @@ function paginationSearch(toSearch, page) {
         })
         .then(resp => resp.text())
         .then(resp => {
-            console.log(resp);
+            //console.log(resp);
         })
 
 
@@ -95,7 +95,7 @@ $('#bodyContent').on("keypress", "#productSearchStockInventario", function (e) {
         let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
         $(".loadTable").html('')
         $(".loadTable").append(img)
-        console.log(toSearch);
+        //console.log(toSearch);
         let formData = new FormData()
         formData.append('estado', (estado.checked ? 0 : 1))
         formData.append("toSearch", toSearch)
@@ -130,7 +130,7 @@ $('#bodyContent').on("click", ".BtnCalcularSugerido", function (e) {
                 precioVenta.value = resp.precio_sugerido.toFixed(2)
             }
             sugerido.innerText = resp.precio_sugerido.toFixed(2)
-            console.log(sugerido.innerText);
+            //console.log(sugerido.innerText);
         })
 
 })
@@ -146,7 +146,7 @@ $('#bodyContent').on("click", ".SeeImgProduct", function (e) {
     let urls = e.target.dataset.urls
     let idProduct = e.target.dataset.idproductedit
     let name = e.target.dataset.name
-    //  console.log(idProduct);
+    //  //console.log(idProduct);
     urls = urls.split(',')
     $('#galleryShow .carousel-inner').html('')
     $('#galleryShow .carousel-indicators').html('')
@@ -199,7 +199,7 @@ function refreshStock() {
             $(".loadTable").html(html)
         })
         .catch((err) => {
-            console.log('error en FETCH:', err);
+            //console.log('error en FETCH:', err);
         });
 }
 
@@ -222,7 +222,7 @@ function saveProductPrice(e) {
         })
         .then((resp) => resp.json())
         .then((resp) => {
-            console.log(resp);
+            //console.log(resp);
             if (resp.error == '00000') {
                 //refreshStock()
                 Swal.fire({
@@ -287,7 +287,7 @@ function addStock(id) {
                 timer: 2500
             })
         } else {
-            console.log(result.value);
+            //console.log(result.value);
             refreshStock()
             Swal.fire({
                 position: 'top',
@@ -319,7 +319,7 @@ function addMinStock(id) {
                     body: formData
                 })
                 .then(resp => resp.json()).then(resp => {
-                    //console.log(resp);
+                    ////console.log(resp);
                     let MinStock = document.getElementById(`MinStockInner_${id}`)
                     MinStock.innerText = (data.length == 0 ? 0 : data)
                     return resp
@@ -337,7 +337,7 @@ function addMinStock(id) {
             let Min = parseInt(MinStock.innerText)
             let StockNow = parseInt(Stock.innerText)
             if (StockNow <= Min) {
-                console.log(StockNow);
+                //console.log(StockNow);
                 Stock.classList.add("text-danger")
                 Stock.classList.remove("text-success")
             } else {
@@ -378,7 +378,7 @@ function agregarProducto(e) {
             })
             .then((resp) => resp.json())
             .then((resp) => {
-                console.log(resp);
+                //console.log(resp);
                 if (resp.error == '0') {
                     Swal.fire({
                         position: 'top',
@@ -424,7 +424,7 @@ function generarCodigo(e, modalId) {
             $(`${modalId}_txtcodigoBarra `).val(resp.codigo)
         })
         .catch((err) => {
-            console.log('error en FETCH:', err);
+            //console.log('error en FETCH:', err);
         });
 }
 
@@ -433,11 +433,11 @@ function loadTable(e, pagination, search = "") {
     let formData = new FormData()
     let url = document.getElementsByClassName('urlPagination')[0].dataset.url
     let estado = document.getElementById('checkestado')
-    console.log(url);
+    //console.log(url);
     formData.append('estado', (estado.checked ? 0 : 1))
     formData.append('pagination', pagination)
     formData.append('toSearch', search)
-    console.log("To search: " + search);
+    //console.log("To search: " + search);
     $(".loadTable").html('')
     $(".loadTable").append(img)
     fetch(url, {
@@ -449,7 +449,7 @@ function loadTable(e, pagination, search = "") {
             $(".loadTable").html(html)
         })
         .catch((err) => {
-            console.log('error en FETCH:', err);
+            //console.log('error en FETCH:', err);
         });
 }
 
@@ -606,7 +606,7 @@ function DeleteTransferItem(modalId) {
 function loadDataEditModal(e, modalId) {
     let id = $(e.target).data('idproductedit')
 
-    //console.log(e.target.dataset.idproductedit);
+    ////console.log(e.target.dataset.idproductedit);
     let formDatas = new FormData()
     let filesImageHidden = $(`${modalId}_filesImageHidden`)[0]
     formDatas.append('idproducto', id)
@@ -615,7 +615,7 @@ function loadDataEditModal(e, modalId) {
             body: formDatas
         }).then((result) => result.json())
         .then((resp) => {
-            //console.log(resp);
+            ////console.log(resp);
             if (!resp.error) {
                 let datos = resp.data[0]
                 let id = datos.idproducto
@@ -674,11 +674,11 @@ function loadDataEditModal(e, modalId) {
 
                 makeBlobFile(urls, modalId)
             } else {
-                console.log(resp);
+                //console.log(resp);
             }
         })
         .catch((err) => {
-            console.log('error en FETCH:', err);
+            //console.log('error en FETCH:', err);
         });
     //  TransferInput(modalId)
 }
@@ -691,7 +691,7 @@ function UpdateEditModal(e, modalId) {
         let urlsToDelete = localStorage.getItem('deleteUrls')
         formData.append("urlsToDelete", urlsToDelete)
         //  for (var value of formData.values()) {
-        //      console.log(value);
+        //      //console.log(value);
         //  }
 
         fetch("/inventario/updateProduct", {
@@ -720,7 +720,7 @@ function UpdateEditModal(e, modalId) {
                 let input = document.getElementById("productSearch").value
                 loadTable(e, page.dataset.page, input)
             }).catch((err) => {
-                console.log('error en FETCH:', err);
+                //console.log('error en FETCH:', err);
                 loadTable(e, 1, "")
             });
     }
@@ -741,7 +741,7 @@ const dt = new DataTransfer()
  * @param {string} modalId Main id del MODAL para no confundir con otros inputs de otros modals
  */
 function TransferInput(modalId) {
-    // console.log('TransferInput Change');
+    // //console.log('TransferInput Change');
     $(`${modalId}_imageContainer`).html('');
     let filesImages = $(`${modalId}_filesImages`)[0]
     let filesImageHidden = $(`${modalId}_filesImageHidden`)[0]
@@ -756,7 +756,7 @@ function TransferInput(modalId) {
     filesImageHidden.files = dt.files
     $(`${modalId}_filesImages`).val('')
     for (var i = 0; i < filesImageHidden.files.length; i++) {
-        // console.log(filesImageHidden.files[i]);
+        // //console.log(filesImageHidden.files[i]);
         let reader = new FileReader();
         reader.readAsDataURL(filesImageHidden.files[i]); // convert to base64 string
         let index = i
@@ -771,7 +771,7 @@ function TransferInput(modalId) {
 
     }
 
-    // console.log(filesImageHidden);
+    // //console.log(filesImageHidden);
 }
 
 function resetInputImage(e, modalId) {
@@ -852,7 +852,7 @@ $("#bodyContent").on("click", '.printToast', function (e) {
         toPrint = []
         toPrint.push(newJson)
     }
-    console.log(estilo, talla);
+    //console.log(estilo, talla);
     localStorage.setItem('toPrint', JSON.stringify(toPrint))
     Swal.fire({
         position: 'top',
@@ -875,7 +875,7 @@ $("#bodyContent").on("change", '.inputPrintCantJson', function (e) {
     let toPrint = localStorage.getItem("toPrint")
     let cant = this.value
     let index = parseInt(this.dataset.index)
-    console.log(cant);
+    //console.log(cant);
     toPrint = JSON.parse(toPrint)
     toPrint[index].cantidad = parseInt(cant)
     localStorage.setItem('toPrint', JSON.stringify(toPrint))
@@ -896,7 +896,7 @@ $("#bodyContent").on("click", '#makePdfPrint', function (e) {
     // fetch("/reportes/etiquetas", {
     //         method: "GET"
     //     }).then(resp => resp.text())
-    //     .then(resp => console.log(resp))
+    //     .then(resp => //console.log(resp))
     printPDF()
 })
 
@@ -904,7 +904,7 @@ function getLocalStoreToPrint() {
     $("#tbodyPrint").html("")
     let toPrint = localStorage.getItem("toPrint")
     toPrint = JSON.parse(toPrint)
-    console.log(toPrint);
+    //console.log(toPrint);
     if (toPrint !== null) {
         toPrint.map((item, i) => {
             let row = /*html*/ `
@@ -974,7 +974,7 @@ function disableProduct(id, estado, e) {
             }
 
         }).catch((err) => {
-            console.log('error en FETCH:', err);
+            //console.log('error en FETCH:', err);
             loadTable(e, 1, "")
         });
 
@@ -987,5 +987,5 @@ function disableProduct(id, estado, e) {
 // .then(res => res.blob())
 // .then(blob => {
 //     const file = new File([blob], 'dot.png', blob)
-//     console.log(file)
+//     //console.log(file)
 // })

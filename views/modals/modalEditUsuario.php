@@ -1,4 +1,4 @@
-<div class="modal" id="clientes_editCliente">
+<div class="modal" id="usuarios_editUsuario">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,32 +8,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="clientes_EditClienteForm" class="display_flex_row" method="post">
+                <form id="usuarios_editUsuariosForm" class="display_flex_row" method="post">
+                    <input type="hidden" name="id" id="iduser">
                     <div class="modal-body display_flex_row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <div class="col-12">
                                 <div class="input-group input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-sm">Nombre</span>
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Nombre y apellidos</span>
                                     </div>
-                                    <input type="text" id="clientes_edit_nombre" name="nombre" class="form-control  p-3">
-                                    <input type="hidden" name="idcliente" id="clientes_edit_id">
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                <div class="input-group input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-sm">Cedula</span>
-                                    </div>
-                                    <input type="text" name="cedula" class="form-control  p-3" id="clientes_edit_cedula">
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                                <div class="input-group input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroup-sizing-sm">Telefono</span>
-                                    </div>
-                                    <input type="text" name="tel" class="form-control  p-3" id="clientes_edit_telefono">
+                                    <input type="text" id="usuarios_edit_nombre" name="nombre" class="form-control  p-3">
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
@@ -41,7 +25,15 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="inputGroup-sizing-sm">Correo</span>
                                     </div>
-                                    <input type="text" name="email" class="form-control  p-3" id="clientes_edit_email">
+                                    <input type="text" name="correo" class="form-control  p-3" id="usuarios_edit_correo">
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <div class="input-group input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-sm">Telefono</span>
+                                    </div>
+                                    <input type="text" name="telefono" class="form-control  p-3" id="usuarios_edit_telefono">
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
@@ -49,10 +41,20 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="inputGroup-sizing-sm">Direccion</span>
                                     </div>
-                                    <input type="text" name="direccion" class="form-control  p-3" id="clientes_edit_direccion">
+                                    <input type="text" name="direccion" class="form-control  p-3" id="usuarios_edit_direccion">
                                 </div>
-                                <div class="input-group input-group mb-3">
-                                    <input type="text" name="direccion2" class="form-control  p-3" id="clientes_edit_direccion2" placeholder="Direccion...">
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect01">Rol</label>
+                                    </div>
+                                    <select class="custom-select" name="rol" id="usuarios_edit_rol">
+                                        <option value="0">Seleccione un Rol</option>
+                                        <?php foreach ($rols as $rol) : ?>
+                                            <option value="<?= $rol['idrol'] ?>"><?= $rol['rol'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +63,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" id="clientes_edit_btnAddCliente" class="btn btn-primary">Agregar</button>
+                <button type="button" id="usuarios_edit_btneditUsuarios" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </div>
     </div>

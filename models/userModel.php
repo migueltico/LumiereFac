@@ -32,6 +32,21 @@ class userModel
      * @param string $pass
      * @return void
      */
+    public static function getUserById($id)
+    {
+        $con = new conexion();
+        $datos = array(
+            ":id" => $id
+        );
+        return $con->SRQ('SELECT *, r.rol as rolname FROM usuario as u INNER JOIN rol as r on u.rol = r.idrol WHERE u.idusuario = :id', $datos);
+    }
+    /**
+     * Obtiene el usuario que coincida con los datos proporcionados
+     *
+     * @param string $user
+     * @param string $pass
+     * @return void
+     */
     public static function getPermisos($idRol)
     {
         $con = new conexion();

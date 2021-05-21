@@ -100,7 +100,7 @@ $("#bodyContent").on("click", "#clientes_edit_btnAddCliente", function (e) {
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
-                console.log(resp);
+                //console.log(resp);
             }
 
         })

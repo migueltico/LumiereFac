@@ -14,10 +14,10 @@ route::get('/logout', 'loginController@logout');
 route::get('/funcion/:char/:format/:valor', 'facturacionController@test');
 route::post('/get/permisos', 'loginController@getPermisos');
 //+++++++++++ DASHBOARD +++++++++++//
-route::get('/dashboard/', 'dashboardController@index', ['loginMiddleware@auth']);
-route::post('/dashboard/general', 'dashboardController@general', ['loginMiddleware@auth']);
+route::get('/dashboard/', 'dashboardController@index', ['loginMiddleware@updateSession']);
+route::post('/dashboard/general', 'dashboardController@general');
 //+++++++++++ SUCURSAL +++++++++++//
-route::post('/sucursal', 'sucursalController@index', ['loginMiddleware@auth']);
+route::post('/sucursal', 'sucursalController@index');
 route::post('/sucursal/addSucursal', 'sucursalController@addSucursal');
 route::post('/sucursal/updateSucursal', 'sucursalController@updateSucursal');
 route::post('/sucursal/getSucursalById', 'sucursalController@getSucursalById');
@@ -104,6 +104,11 @@ route::group('clientes', function () {
 route::group('usuarios', function () {
     route::post('/', 'usuariosController@index');
     route::post('/setUser', 'usuariosController@setUser');
+    route::post('/getUserById', 'usuariosController@getUserById');
+    route::post('/editUser', 'usuariosController@editUser');
+    route::post('/editUserPerfil', 'usuariosController@editUserPerfil');
+    route::post('/updatePass', 'usuariosController@updatePass');
+    route::post('/confirmPassNow', 'usuariosController@confirmPassNow');
 });
 //+++++++++++ SERVER +++++++++++//
 route::get('/getPassword/:db/:identificador', 'usuariosController@getNewPassword');

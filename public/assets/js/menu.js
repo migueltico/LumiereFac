@@ -32,7 +32,7 @@ $("#btn_menu_toggle").click((e) => {
     $(".lateral").toggle(100)
     let bodyMain = document.getElementById('bodyMain')
     bodyMain.style.width ='100%'
-    console.log('click');
+    //console.log('click');
 })
 
 $(".dataLink").click((e) => {
@@ -78,7 +78,7 @@ function loadPage(e, link) {
             // }
         })
         .catch((err) => {
-            console.log('error en FETCH:', err);
+            //console.log('error en FETCH:', err);
         });
 }
 //BORRAR ES TEMPORAL
@@ -99,7 +99,7 @@ function loadPage2(e) {
             // window['startChars']()
         })
         .catch((err) => {
-            console.log('error en FETCH:', err);
+            //console.log('error en FETCH:', err);
         });
 }
 $(document).ready(function () {

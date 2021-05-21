@@ -18,4 +18,5 @@
 
     <?php //include_once(self::block('allModals')) 
     ?>
+    <?php include_once(self::modal('modalEditPerfil')) ?>
     <?php include_once(self::block('footer')) ?>

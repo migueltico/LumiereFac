@@ -46,7 +46,7 @@ function aplicarDevolucion() {
         fechaMax: fecha_max_devolucion.dataset.fecha,
         total
     }
-    console.log(json)
+    //console.log(json)
     if (json.items.length == 0) return
     let headers = {
         "Content-Type": "application/json"
@@ -66,7 +66,7 @@ function aplicarDevolucion() {
                 timer: 3000,
                 timerProgressBar: true
             })
-            console.log(resp)
+            //console.log(resp)
         })
 
 }
@@ -350,7 +350,7 @@ function multiState(e) {
             }
         } else {
             let amounts = document.getElementById('totalFactAmount')
-            console.log(localStorage.saldo, localStorage.saldo != 'false' && localStorage.saldo != undefined)
+            //console.log(localStorage.saldo, localStorage.saldo != 'false' && localStorage.saldo != undefined)
             if (localStorage.saldo != 'false' && localStorage.saldo != undefined) {
                 $(".lbMontoToPay").val(amounts.dataset.amountsaldo)
             } else {
@@ -625,7 +625,7 @@ function getProductsRowsForFac(method, pago, typeAbono) {
         new_saldo: inputFacNewSaldoNow.trim()
 
     }
-    console.log("final Json", finalJson);
+    //console.log("final Json", finalJson);
     printFact(finalJson)
 }
 
@@ -675,7 +675,7 @@ function PagoMultipleFac(pago, abono) {
     for (let switchItem of Allswitch) {
         if (switchItem.checked) {
             let itemId = switchItem.dataset.inputval
-            console.log("CHECK", itemId);
+            //console.log("CHECK", itemId);
             result = verificaCamposPago(itemId, true)
             if (result.state) {
                 let monto = document.getElementsByClassName(`${itemId}_monto`)[0].value
@@ -687,7 +687,7 @@ function PagoMultipleFac(pago, abono) {
                 if (result.methods.hasMore) {
                     valor += result.methods.totalExtraCards
                 }
-                console.log("with Extra mount", valor);
+                //console.log("with Extra mount", valor);
                 finalAmount = parseFloat(finalAmount) + parseFloat(valor)
                 methodsArray.push(result)
             } else {
@@ -797,12 +797,12 @@ function verificaCamposPago(inputClass, multi) {
 
                     let inputRowsTarjeta = document.getElementsByClassName('inputRowsTarjeta')
                     for (tarjeta of inputRowsTarjeta) {
-                        console.log("Rows value", tarjeta.value);
+                        //console.log("Rows value", tarjeta.value);
                         let montoId = `tarjetaMonto_${tarjeta.dataset.id}`
                         let monto = document.getElementById(montoId).value
                         let withOutFormatMonto = parseFloat(monto.replace(",", "")).toFixed(2)
                         totalGroup = (totalGroup + parseFloat(withOutFormatMonto))
-                        console.log(monto);
+                        //console.log(monto);
                         let newTarjeta = {
                             tipo: "tarjeta",
                             tarjeta: tarjeta.value,
@@ -814,7 +814,7 @@ function verificaCamposPago(inputClass, multi) {
                     }
                     methods.extraCards = extras
                     methods.totalExtraCards = totalGroup
-                    console.log("Set News tarjetas", methods);
+                    //console.log("Set News tarjetas", methods);
                 }
                 if (hasMore) {
                     let btnTypeApartado = document.getElementById('btnTypeApartado');
@@ -1174,7 +1174,7 @@ function getSubTotalAndTotal() {
     }
     let numRound = roundHundred(total, 5, 5)
     let newFormat = ConvertLabelFormat(numRound)
-    console.log(newFormat)
+    //console.log(newFormat)
     $("#totalFactAmount").text(newFormat)
     $("#totalFactAmount").attr("data-amount", newFormat)
 
@@ -1182,9 +1182,9 @@ function getSubTotalAndTotal() {
         let numRoundSaldo = roundHundred(totalLessSaldo, 5, 5)
         let newFormatSaldo = ConvertLabelFormat(numRoundSaldo)
         let saldoData = localStorage.saldo
-        console.log(saldoData)
+        //console.log(saldoData)
         saldoData = saldoUsed
-        console.log(saldoData)
+        //console.log(saldoData)
         localStorage.saldo = parseFloat(saldoData).toFixed(2)
         $("#totalFactAmount").attr("data-amountsaldo", newFormatSaldo)
         $(".lbMontoToPay").val(newFormatSaldo)
@@ -1665,7 +1665,7 @@ function btnCerrarCajaEstado(id, monto) {
             body: formData
         }).then(resp => resp.json())
         .then(resp => {
-            console.log(resp);
+            //console.log(resp);
 
             if (resp.error == "00000") {
 
@@ -1710,7 +1710,7 @@ $('#bodyContent').on("blur", ".caja_blur", function (e) {
     total.innerHTML = suma.toFixed(2)
     diferencia.innerHTML = (suma - totalsystem).toFixed(2)
     inputDiff.value = (suma - totalsystem).toFixed(2)
-    console.log(total);
+    //console.log(total);
 
 })
 $('#bodyContent').on("blur", ".abonoMontosModal", function (e) {
@@ -1849,7 +1849,7 @@ $('#bodyContent').on("click", "#BtncancelPendingFac", function (e) {
             body: formData
         }).then(resp => resp.text())
         .then(resp => {
-            console.log(resp);
+            //console.log(resp);
             let productos = resp
             let wrapper = document.getElementById('productosPendientesRows')
             wrapper.innerHTML = productos
@@ -1870,7 +1870,7 @@ function setAbono() {
     let inputRowsTarjeta = document.getElementsByClassName('inputRowsTarjeta2')
     let stringCards = ''
     for (tarjeta of inputRowsTarjeta) {
-        console.log("Rows value", tarjeta.value);
+        //console.log("Rows value", tarjeta.value);
         let montoId = `tarjetaMonto_${tarjeta.dataset.id}`
         let monto = document.getElementById(montoId).value
         let withOutFormatMonto = parseFloat(monto.replace(",", "")).toFixed(2)
@@ -1941,7 +1941,7 @@ function cerrarCajaFinal(id) {
             body: formData
         }).then(resp => resp.json())
         .then(resp => {
-            console.log(resp);
+            //console.log(resp);
             if (resp.error == "00000") {
                 $("#cajas_cerrarCaja").modal('toggle')
                 loadPage(null, '/facturacion/cajas')
@@ -1963,7 +1963,7 @@ function cerrarCajaFinal(id) {
                     timer: 2500,
                     timerProgressBar: true
                 })
-                console.log(resp);
+                //console.log(resp);
             }
 
         }).catch(error => {
@@ -1986,7 +1986,7 @@ $('#bodyContent').on("click", ".btnDeleteRowTarjeta2", function (e) {
     row.remove()
 })
 $('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
-    console.log('CLICK');
+    //console.log('CLICK');
     let allMonto = document.getElementsByClassName('tarjertaInputs_monto2')[0]
     let d = new Date();
     let n = d.getSeconds();
@@ -2061,5 +2061,5 @@ $('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
 
 $('#bodyContent').on("change", "#reportTypeSelect", function (e) {
     let reportTypeSelect = document.getElementById('reportTypeSelect')
-    console.log(reportTypeSelect.selectedOptions[0].value);
+    //console.log(reportTypeSelect.selectedOptions[0].value);
 })

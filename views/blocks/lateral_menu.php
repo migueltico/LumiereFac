@@ -1,4 +1,4 @@
-<div class="menuContainer">
+<div class="menuContainer" id="menuContainerId">
     <?php if (isset($_SESSION["db"])) :   ?>
         <?php if ($_SESSION["db"] == 'TestDB') :   ?>
             <div style="font-weight:bold;width: 100%;padding-top:10px;padding-bottom:10px;background:yellow;color:black;text-align:center;">
@@ -13,7 +13,14 @@
     <div>
         <div class="perfil mt-3 mb-1">
             <img src="public/assets/img/perfil_no_found.jpg" alt="Perfil">
-            <p class="mt-1"><?= isset($_SESSION["nombre"]) ? $_SESSION["nombre"] : 'Usuario' ?></p>
+            <div class="dropdown">
+                <button style="color:white" class="btn dropdown-toggle mt-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= isset($_SESSION["nombre"]) ? $_SESSION["nombre"] : 'Usuario' ?>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" id="change_user_pass" href="#" data-toggle="modal" data-target="#perfil_editPerfil" data-iduser='<?= $_SESSION["id"] ?>'>Perfil</a>
+                </div>
+            </div>
         </div>
     </div>
     <ul class="main_menu" id="main_menu">

@@ -1,4 +1,4 @@
-<div class="modal" id="usuarios_addCliente">
+<div class="modal" id="usuarios_addUsuario">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

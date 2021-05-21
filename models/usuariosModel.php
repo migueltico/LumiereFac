@@ -44,6 +44,34 @@ class usuariosModel
         $con = new conexion();
         return $con->SPCALLNR("CALL sp_insertUser(:usuario,:email,:nombre,:telefono,:direccion,:estado,:rol,:identificador)", $datos);
     }
+    public static function editUser($datos)
+    {
+        $con = new conexion();
+        return $con->SPCALLNR("UPDATE usuario SET  email = :email, nombre = :nombre, telefono = :telefono, direccion = :direccion, rol = :rol WHERE idusuario = :id", $datos);
+    }
+    public static function editUserPerfil($datos)
+    {
+        $con = new conexion();
+        return $con->SPCALLNR("UPDATE usuario SET  email = :email, nombre = :nombre, telefono = :telefono, direccion = :direccion WHERE idusuario = :id", $datos);
+    }
+    public static function updatePass($datos)
+    {
+        $con = new conexion();
+        return $con->SPCALLNR("UPDATE usuario SET password = :newpassword WHERE idusuario = :id", $datos);
+    }
+    /**
+     * obtener usuario por ID
+     */
+    public static function getUserById($id)
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW("SELECT * FROM usuario WHERE idusuario=$id");
+    }
+    public static function confirmPassNow($id)
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW("SELECT password FROM usuario WHERE idusuario=$id");
+    }
     public static function getRols()
     {
         $con = new conexion();

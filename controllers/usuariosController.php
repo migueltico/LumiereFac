@@ -47,6 +47,57 @@ class usuariosController extends view
         header('Content-Type: application/json');
         echo json_encode($users);
     }
+    public function editUser($var)
+    {
+        $datos[':id'] = $_POST['id'];
+        $datos[':nombre'] = $_POST['nombre'];
+        $datos[':email'] = $_POST['correo'];
+        $datos[':telefono'] = $_POST['telefono'];
+        $datos[':direccion'] = $_POST['direccion'];
+        $datos[':rol'] = (isset($_POST['rol']) ? $_POST['rol'] : 0);
+        $users = users::editUser($datos);
+        header('Content-Type: application/json');
+        echo json_encode($users);
+    }
+    public function editUserPerfil($var)
+    {
+        $datos[':id'] = $_POST['id'];
+        $datos[':nombre'] = $_POST['nombre'];
+        $datos[':email'] = $_POST['correo'];
+        $datos[':telefono'] = $_POST['telefono'];
+        $datos[':direccion'] = $_POST['direccion'];
+        $users = users::editUserPerfil($datos);
+        header('Content-Type: application/json');
+        echo json_encode($users);
+    }
+    public function updatePass($var)
+    {
+        $hash = hash('sha256', trim($_POST['newpass']));
+        $datos[':id'] = $_POST['id'];
+        $datos[':newpassword'] = $hash;
+        $users = users::updatePass($datos);
+        header('Content-Type: application/json');
+        echo json_encode($users);
+    }
+    public function confirmPassNow($var)
+    {
+        $hash = hash('sha256', trim($_POST['passnow']));
+        $id = $_POST['id'];
+        $users = users::confirmPassNow($id);
+        $pass = $users['data']['password'];
+        $users['data']['ok'] = $pass == $hash ? true : false;
+        unset($users['data']['password']);
+        header('Content-Type: application/json');
+        echo json_encode($users);
+    }
+    public function getUserById($var)
+    {
+        $id = $_POST['id'];
+        $users = users::getUserById($id);
+        unset($users['data']['password']);
+        header('Content-Type: application/json');
+        echo json_encode($users);
+    }
     public function getNewPassword($var)
     {
         $icon = help::icon();
