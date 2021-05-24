@@ -25,17 +25,17 @@ route::post('/sucursal/refresh/sucursaltable', 'sucursalController@sucursaltable
 route::post('/sucursal/deleteSucursal', 'sucursalController@deleteSucursal');
 //+++++++++++ ADMIN +++++++++++//
 route::group('admin', function () {
-    route::post('/gastos', 'adminController@indexGastos', ['loginMiddleware@auth']);
+    route::post('/gastos', 'adminController@indexGastos');
     route::post('/gastos/saveGastos', 'adminController@saveGastos');
-    route::post('/general', 'adminController@general', ['loginMiddleware@auth']);
+    route::post('/general', 'adminController@general');
 
-    route::post('/general/SaveGeneralInfo', 'adminController@SaveGeneralInfo', ['loginMiddleware@auth']);
+    route::post('/general/SaveGeneralInfo', 'adminController@SaveGeneralInfo');
 
-    route::post('/categoriaprecios', 'adminController@indexCategoriaPrecios', ['loginMiddleware@auth']);
-    route::post('/categoriastallas', 'adminController@indexCategoriasTallas', ['loginMiddleware@auth']);
+    route::post('/categoriaprecios', 'adminController@indexCategoriaPrecios');
+    route::post('/categoriastallas', 'adminController@indexCategoriasTallas');
     route::post('/categoriastallas/AddCategoria', 'adminController@AddCategoria');
     route::post('/categoriastallas/AddTalla', 'adminController@AddTalla');
-    route::post('/descuentos', 'adminController@descuentos', ['loginMiddleware@auth']);
+    route::post('/descuentos', 'adminController@descuentos');
     route::post('/descuentos/lote', 'adminController@descuentosPorLote');
     route::post('/descuentos/addnewDescuento', 'adminController@addnewDescuento');
     route::post('/descuentos/EditarDescuento', 'adminController@EditarDescuento');
@@ -70,7 +70,7 @@ route::group('inventario', function () {
 });
 //+++++++++++ FACTURACION +++++++++++//
 route::group('facturacion', function () {
-    route::post('/facturar', 'facturacionController@index', ['loginMiddleware@auth', 'cajasMiddleware@cajaAsignada']);
+    route::post('/facturar', 'facturacionController@index', ['cajasMiddleware@cajaAsignada']);
     route::post('/search/product', 'facturacionController@searchProduct');
     route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
     route::post('/facturaVenta', 'facturacionController@getFact');
