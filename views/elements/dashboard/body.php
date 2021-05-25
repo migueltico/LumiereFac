@@ -10,10 +10,5 @@
                 <canvas id="getLastWeekSales" style="display: block; width:100%; height: 500px;"></canvas>
             </div>
         </div>
-        <?php  
-            print_r(session_id());
-            echo "<br>";
-            print_r(ini_get("session.gc_maxlifetime") /60 /60);
-        ?>
     </div>
 </div>

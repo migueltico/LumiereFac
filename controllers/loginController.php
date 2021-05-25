@@ -21,6 +21,7 @@ class loginController extends view
     public function logout($var)
     {
         session_destroy();
+        setcookie("lsd_r", "", time()-10);
         help::redirect("/");
     }
     public function getPermisos($var)
