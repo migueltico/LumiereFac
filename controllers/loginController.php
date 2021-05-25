@@ -21,7 +21,7 @@ class loginController extends view
     public function logout($var)
     {
         session_destroy();
-        setcookie("lsd_r", "", time()-10);
+        setcookie("lsd_r", "", time() - 10);
         help::redirect("/");
     }
     public function getPermisos($var)
@@ -34,38 +34,48 @@ class loginController extends view
     public function validar($var)
     {
         $post =  $var['post'];
-        if (!empty($post["db"]) && !empty($post["usuario"]) && !empty($post["pass"])) {
-            $_SESSION["db"] = $post["db"];
-            if ($post["db"] == 'TestDB') {
-                $GLOBALS["env_test"] = true;
-            }
-            $hash = hash('sha256', $post['pass']);
-            $data = user::getUser($post['usuario'], $hash);
+        try {
+            //code...
 
-            $permisos = user::getPermisos($data['data']["idrol"]);
-            $permisosJson = json_decode($permisos['data']['permisos'], true);
-            if ($data['rows'] == 1) {
-                $info = admin::infoSucursal();
-                $info = $info['data'];
-                $data = $data['data'];
-                $_SESSION["id"] = $data["idusuario"];
-                $_SESSION["usuario"] = $data["usuario"];
-                $_SESSION["nombre"] = $data["nombre"];
-                $_SESSION["rolname"] = $data["rolname"];
-                $_SESSION["idrol"] = $data["idrol"];
-                $_SESSION["info"] = $info;
-                $_SESSION["permisos"] = $permisosJson;
-                $data = $data["idusuario"] . ";" . $data["usuario"] . ";" . $data["nombre"] . ";" . $data["idrol"] . ";". $post["db"];
-                setcookie("lsd_r", $data, strtotime('+1 days'));
-                //return json_encode(array("estado" => 200, "session" => $_SESSION));
-                help::redirect("/dashboard");
+            if (!empty($post["db"]) && !empty($post["usuario"]) && !empty($post["pass"])) {
+                $_SESSION["db"] = $post["db"];
+                if ($post["db"] == 'TestDB') {
+                    $GLOBALS["env_test"] = true;
+                }
+                $hash = hash('sha256', $post['pass']);
+                $data = user::getUser($post['usuario'], $hash);
+                $estado = false;
+                if ($data['rows'] == 1) {
+                    $estado = $data['data']['estado'] == 1 ? true : false;
+                }
+                if ($data['rows'] == 1 && $estado) {
+                    $permisos = user::getPermisos($data['data']["idrol"]);
+                    $permisosJson = json_decode($permisos['data']['permisos'], true);
+                    $info = admin::infoSucursal();
+                    $info = $info['data'];
+                    $data = $data['data'];
+                    $_SESSION["id"] = $data["idusuario"];
+                    $_SESSION["usuario"] = $data["usuario"];
+                    $_SESSION["nombre"] = $data["nombre"];
+                    $_SESSION["rolname"] = $data["rolname"];
+                    $_SESSION["idrol"] = $data["idrol"];
+                    $_SESSION["info"] = $info;
+                    $_SESSION["permisos"] = $permisosJson;
+                    $data = $data["idusuario"] . ";" . $data["usuario"] . ";" . $data["nombre"] . ";" . $data["idrol"] . ";" . $post["db"];
+                    setcookie("lsd_r", $data, strtotime('+1 days'));
+                    //return json_encode(array("estado" => 200, "session" => $_SESSION));
+                    //help::redirect("/dashboard");
+                    echo json_encode(array("estado" => true, "msg" => "Login Exitoso"));
+                } else {
+
+                    echo json_encode(array("estado" => false, "error" => "Usuario o contraseña no coinciden"));
+                    //help::redirect("/");
+                }
             } else {
-
-                //return json_encode(array("estado" => 400, "error" =>"No coincide con ningun usuario"));
-                help::redirect("/");
+                echo json_encode(array("estado" => false, "error" => "Campos incompletos"));
             }
-        } else {
-            echo "ERROR LOGIN";
+        } catch (\Throwable $th) {
+            echo json_encode(array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado"));
         }
     }
 }

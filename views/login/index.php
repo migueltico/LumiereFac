@@ -16,7 +16,7 @@
       <?php
       //use const config\DB_NAME;
       ?>
-      <form class="form" action="/validateauth" method="POST">
+      <form class="form" id="formLogin">
         <input type="text" name="usuario" placeholder="Usuario" value="">
         <input type="password" name="pass" placeholder="Contraseña" value="">
         <select id="selected" name="db" id="">
@@ -33,6 +33,9 @@
         </select>
         <button type="submit" id="login-button">Iniciar Sesion</button>
       </form>
+      <div id="msg" style="display: none;">
+        <h2 id="msgText" class="error"></h2>
+      </div>
     </div>
     <ul class="bg-bubbles">
       <li></li>
@@ -47,13 +50,68 @@
       <li></li>
     </ul>
   </div>
-  <!--     <section>
-		<div class="loginContainer">
-			<input type="text" name="user" id="user">
-			<input type="password" name="pwd" id="pwd">
-		</div>
-    </section> -->
+  <script>
+    let btnSubmit = document.getElementById('login-button')
+    btnSubmit.addEventListener('click', function(event) {
+      event.preventDefault()
+      login()
+    });
+    async function login(e) {
+      let msgDiv = document.getElementById('msg')
+      let msgText = document.getElementById('msgText')
+      msgText.classList.remove('error')
+      let formData = new FormData(document.getElementById('formLogin'))
+      let validarData = await fetch('/validateauth', {
+        method: 'post',
+        body: formData
+      })
+      let data = await validarData.json();
+      if (!data.estado) {
+
+        msgDiv.style.display = "block";
+        msgText.textContent = data.error
+        msgText.classList.add('error')
+      } else {
+        msgDiv.style.display = "block";
+        msgText.textContent = data.msg
+        setTimeout(() => {
+          window.location = "/dashboard"
+        }, 1000);
+
+      }
+    }
+  </script>
   <Style>
+    .error {
+      transform-origin: 50% 100%;
+      animation: error 0.7s ease-out;
+    }
+
+    @keyframes error {
+
+      0%,
+      50%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      25% {
+        transform: rotate(-3deg);
+      }
+
+      50% {
+        transform: rotate(3deg);
+      }
+
+      75% {
+        transform: rotate(-3deg);
+      }
+
+      100% {
+        transform: rotate(3deg);
+      }
+    }
+
     @font-face {
       font-family: 'Source Sans Pro';
       font-style: normal;
@@ -362,7 +420,6 @@
         transform: translateY(-700px) rotate(600deg);
       }
     }
-
   </Style>
 </body>
 
