@@ -890,7 +890,7 @@ $("#bodyContent").on("click", '.disableProduct', function (e) {
     let disableProductEl = e.target
     let id = disableProductEl.dataset.enable
     let estado = parseInt(disableProductEl.dataset.estado)
-    disableProduct(id, estado,e)
+    disableProduct(id, estado, e)
 })
 $("#bodyContent").on("click", '#makePdfPrint', function (e) {
     // fetch("/reportes/etiquetas", {

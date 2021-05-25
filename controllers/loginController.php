@@ -54,7 +54,8 @@ class loginController extends view
                 $_SESSION["idrol"] = $data["idrol"];
                 $_SESSION["info"] = $info;
                 $_SESSION["permisos"] = $permisosJson;
-
+                $data = $data["idusuario"] . ";" . $data["usuario"] . ";" . $data["nombre"] . ";" . $data["idrol"] . ";". $post["db"];
+                setcookie("lsd_r", $data, strtotime('+1 days'));
                 //return json_encode(array("estado" => 200, "session" => $_SESSION));
                 help::redirect("/dashboard");
             } else {
@@ -66,5 +67,4 @@ class loginController extends view
             echo "ERROR LOGIN";
         }
     }
-
 }
