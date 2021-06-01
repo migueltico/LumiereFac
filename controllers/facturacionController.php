@@ -27,7 +27,7 @@ class facturacionController extends view
         $cliente = cliente::getClienteById(array(":id" => $info['idclienteGenerico']));
         $descuentos = admin::descuentosOnlyFac();
         $data[":id"] = $_SESSION['id'];
-        $data[":fecha"] = date('Y-m-d');;
+        $data[":fecha"] = date('Y-m-d');
         $cajas = fac::cajaAsignada($data);
         if ($cajas['rows'] > 0) {
             $_SESSION['hasCaja'] = true;
@@ -39,8 +39,9 @@ class facturacionController extends view
             $data["cajas"] =  $cajas['data'];
             echo view::renderElement('facturacion/facturacion', $data);
         }else{
-  
+            $cajas['params'] =["ID_SESSION"=>$_SESSION['id'],"FECHA"=>date('Y-m-d')];
             $msg['msg'] ="No se encontro una caja habilitada para este usuario";
+            $msg['data'] =$cajas;
             echo view::renderElement('errors/sincaja', $msg);
         }
   

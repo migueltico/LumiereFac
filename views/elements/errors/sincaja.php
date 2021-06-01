@@ -8,6 +8,10 @@
                         <p class="lead"><?= $msg ?></p>
                         <p>Solicite a su encargado que le genere una caja para iniciar a facturar.</p>
                         <button class="btn btn-primary" onclick="loadPage(null,'/facturacion/cajas')">Ir a Cajas</button>
+                        <pre>
+                            <?php  var_dump($data) ?>
+                            <?php // var_dump($_SESSION) ?>
+                        </pre>
                     </div>
                 </div>
             </div>
