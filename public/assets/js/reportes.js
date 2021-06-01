@@ -126,7 +126,7 @@ function addComponent(idSelect) {
             <div class="col-12">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="inputGroupSelect01">Reportes</label>
+                        <label class="input-group-text" for="inputGroupSelect01">Metodo</label>
                     </div>
                     <select class="custom-select" id="selectMetodPagoReport">
                         <option value="1" selected disabled>Efectivo</option>
