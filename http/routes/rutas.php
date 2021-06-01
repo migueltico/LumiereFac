@@ -3,7 +3,6 @@
 namespace http\routes;
 
 use config\route;
-use controllers\loginController;
 
 //------------- +++ RUTAS GET +++ -----------------//
 route::middleware(['loginMiddleware@updateSession'], function () {
@@ -131,8 +130,10 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/rxfacDia', 'reportesController@rxfacDia');
         route::post('/rxCajas', 'reportesController@rxCajas');
         route::post('/rxfacDiaDetalle', 'reportesController@rxfacDiaDetalle');
+        route::post('/rxfacDiaDetalleMetodoPago', 'reportesController@rxfacDiaDetalleMetodoPago');
         route::post('/rxfacDiaPDF', 'reportesController@rxfacDiaPDF');
         route::post('/rxfacDiaDetallePDF', 'reportesController@rxfacDiaDetallePDF');
+        route::post('/rxfacDiaDetalleMetodoPagoPDF', 'reportesController@rxfacDiaDetalleMetodoPagoPDF');
         route::post('/rxFacturasXCliente', 'reportesController@rxFacturasXCliente');
         route::post('/rxFacturasXClientePDF', 'reportesController@rxFacturasXClientePDF');
     });

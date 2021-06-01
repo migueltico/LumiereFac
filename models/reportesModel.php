@@ -22,12 +22,21 @@ class reportesModel
         return $return;
     }
     /**
-     * Reporte totales factura por dia
+     * Reporte totales factura por dia detalle
      */
     public static function rxfacDiaDetalle($init, $end)
     {
         $con = new conexion();
         $return1 = $con->SQND("CALL sp_reporteDiarioDetallado('$init', '$end')");
+        return $return1;
+    }
+    /**
+     * Reporte totales factura por dia detalle por metodo pago
+     */
+    public static function rxfacDiaDetalleMetodoPago($init, $end, $metodo)
+    {
+        $con = new conexion();
+        $return1 = $con->SQND("CALL sp_reporteFacturaDetallada_por_metodo_pago('$init', '$end',$metodo)");
         return $return1;
     }
     /**

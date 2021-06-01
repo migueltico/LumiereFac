@@ -72,6 +72,40 @@ class reportesController extends view
     $data['data'] = $rowPerDate;
     echo view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetalle/ReporteFacturasPorDiaDetalle', $data);
   }
+  public function rxfacDiaDetalleMetodoPago()
+  {
+    $icon = help::icon();
+    $data["icons"] =  $icon['icons'];
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
+    $metodo = $_POST['metodo'];
+    $datos = reports::rxfacDiaDetalleMetodoPago($dateInit, $dateEnd, $metodo);
+    $data["rowsDetalles"] = $datos['data'];
+    $fechasArray = [];
+    $rowPerDate = [];
+    foreach ($data["rowsDetalles"] as $row) {
+
+      array_push($fechasArray, $row["fecha"]);
+    }
+    $fechasArray = array_unique($fechasArray);
+    asort($fechasArray);
+    foreach ($fechasArray as $key => $fecha) {
+      foreach ($data["rowsDetalles"] as $row) {
+        if ($row["fecha"] == $fecha) {
+          if (isset($rowPerDate[$fecha])) {
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          } else {
+            $rowPerDate[$fecha]['rows'] = [];
+            $rowPerDate[$fecha]['fecha'] = $fecha;
+            $rowPerDate[$fecha]['caja'] = $row['caja'];
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          }
+        }
+      }
+    }
+    $data['data'] = $rowPerDate;
+    echo view::renderElement('reportes/Rxtipo/ReporteFacturasDetalladasPorMetodoPago/ReporteFacturasDetalladasPorMetodoPago', $data);
+  }
   public function rxfacDiaDetallePDF()
   {
     $dateInit = $_POST['dateInit'];
@@ -102,6 +136,38 @@ class reportesController extends view
     }
     $data['data'] = $rowPerDate;
     return view::renderElement('reportes/Rxtipo/ReporteFacturasPorDiaDetalle/ReporteFacturasPorDiaDetallePDF', $data);
+  }
+  public function rxfacDiaDetalleMetodoPagoPDF()
+  {
+    $dateInit = $_POST['dateInit'];
+    $dateEnd = $_POST['dateEnd'];
+    $metodo = $_POST['metodo'];
+    $datos = reports::rxfacDiaDetalleMetodoPago($dateInit, $dateEnd,$metodo);
+    $data["rowsDetalles"] = $datos['data'];
+    $fechasArray = [];
+    $rowPerDate = [];
+    foreach ($data["rowsDetalles"] as $row) {
+
+      array_push($fechasArray, $row["fecha"]);
+    }
+    $fechasArray = array_unique($fechasArray);
+    asort($fechasArray);
+    foreach ($fechasArray as $key => $fecha) {
+      foreach ($data["rowsDetalles"] as $row) {
+        if ($row["fecha"] == $fecha) {
+          if (isset($rowPerDate[$fecha])) {
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          } else {
+            $rowPerDate[$fecha]['rows'] = [];
+            $rowPerDate[$fecha]['fecha'] = $fecha;
+            $rowPerDate[$fecha]['caja'] = $row['caja'];
+            array_push($rowPerDate[$fecha]['rows'], $row);
+          }
+        }
+      }
+    }
+    $data['data'] = $rowPerDate;
+    return view::renderElement('reportes/Rxtipo/ReporteFacturasDetalladasPorMetodoPago/ReporteFacturasDetalladasPorMetodoPagoPDF', $data);
   }
   public function rxfacDiaPDF()
   {

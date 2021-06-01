@@ -11,7 +11,8 @@
                         <option value="0" selected disabled>Seleccione un reporte</option>
                         <option value="rxfacDia">1-Reporte de Facturas Diarias</option>
                         <option value="rxfacDiaDetalle">2-Reporte de Facturas Diarias Detallada</option>
-                        <option value="rxVentasCliente">3-Reporte de Facturas por Cliente</option>
+                        <option value="rxfacDiaDetalleMetodoPago">3-Reporte de Facturas Diarias Detallada por Metodo de pago</option>
+                        <option value="rxVentasCliente">4-Reporte de Facturas por Cliente</option>
                         <!-- <option value="2">2-Reporte de Facturas Diario</option> -->
                         <!-- <option value="3">3-Reporte de Facturas con envios pendientes</option> -->
                         <!-- <option value="4">4-Reporte de Apartados completados</option> -->
@@ -19,16 +20,10 @@
                 </div>
             </div>
         </div>
-        <div class="row optionselectReports col mb-2" id="rxfacDia" style="display: none;">
-            <h3>Reporte por Facturas Diarias</h3>
-        </div>
-        <div class="row optionselectReports col mb-2" id="rxfacDiaDetalle" style="display: none;">
-            <h3>Reporte por Facturas Diarias Detallada</h3>
-        </div>
         <hr>
         <div class="row mt-3">
             <div class="row col">
-                <div class="col-lg-4 col-md-6 col-sm-12 mb-1">
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-1">
                     <div class="input-group flex-nowrap">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="addon-wrapping">Fecha Inicio</span>
@@ -36,13 +31,16 @@
                         <input id="dateInit" type="date" class="form-control" value="<?= date('Y-m-d'); ?>">
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 mb-1">
+                <div class="col-lg-3 col-md-6 col-sm-12 mb-1">
                     <div class="input-group flex-nowrap">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="addon-wrapping">Fecha Final</span>
                         </div>
                         <input id="dateEnd" type="date" class="form-control" value="<?= date('Y-m-d'); ?>">
                     </div>
+                </div>
+                <div id="addnewcomponent" class="col-lg-2 col-md-6 col-sm-12 mb-1" style="display: none;">
+                    
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-12 mb-1">
                     <button data-type="html" class="btn btn-primary generarReportesFac">Generar</button>
