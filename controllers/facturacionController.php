@@ -32,13 +32,18 @@ class facturacionController extends view
         if ($cajas['rows'] > 0) {
             $_SESSION['hasCaja'] = true;
             $_SESSION['idcaja'] = $cajas['data']['idcaja'];
+            $icon = help::icon();
+            $data["icons"] =  $icon['icons'];
+            $data["cliente"] =  $cliente['data'];
+            $data["descuentos"] =  $descuentos['data'];
+            $data["cajas"] =  $cajas['data'];
+            echo view::renderElement('facturacion/facturacion', $data);
+        }else{
+  
+            $msg['msg'] ="No se encontro una caja habilitada para este usuario";
+            echo view::renderElement('error/sincaja', $msg);
         }
-        $icon = help::icon();
-        $data["icons"] =  $icon['icons'];
-        $data["cliente"] =  $cliente['data'];
-        $data["descuentos"] =  $descuentos['data'];
-        $data["cajas"] =  $cajas['data'];
-        echo view::renderElement('facturacion/facturacion', $data);
+  
     }
     public function cajas()
     {
