@@ -70,7 +70,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
     });
     //+++++++++++ FACTURACION +++++++++++//
     route::group('facturacion', function () {
-        route::post('/facturar', 'facturacionController@index', ['cajasMiddleware@cajaAsignada']);
+        route::post('/facturar', 'facturacionController@index');
         route::post('/search/product', 'facturacionController@searchProduct');
         route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
         route::post('/facturaVenta', 'facturacionController@getFact');
