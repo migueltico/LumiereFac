@@ -41,7 +41,7 @@ class facturacionController extends view
         }else{
   
             $msg['msg'] ="No se encontro una caja habilitada para este usuario";
-            echo view::renderElement('error/sincaja', $msg);
+            echo view::renderElement('errors/sincaja', $msg);
         }
   
     }
