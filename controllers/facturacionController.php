@@ -26,10 +26,18 @@ class facturacionController extends view
         $info = $info['data'];
         $cliente = cliente::getClienteById(array(":id" => $info['idclienteGenerico']));
         $descuentos = admin::descuentosOnlyFac();
+        $data[":id"] = $_SESSION['id'];
+        $data[":fecha"] = date('Y-m-d');;
+        $cajas = fac::cajaAsignada($data);
+        if ($cajas['rows'] > 0) {
+            $_SESSION['hasCaja'] = true;
+            $_SESSION['idcaja'] = $cajas['data']['idcaja'];
+        }
         $icon = help::icon();
         $data["icons"] =  $icon['icons'];
         $data["cliente"] =  $cliente['data'];
         $data["descuentos"] =  $descuentos['data'];
+        $data["cajas"] =  $cajas['data'];
         echo view::renderElement('facturacion/facturacion', $data);
     }
     public function cajas()
