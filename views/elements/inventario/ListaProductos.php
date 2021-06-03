@@ -10,7 +10,6 @@
       Buscar Inactivos
     </label>
     <input class="form-check-input ml-3" type="checkbox" id="checkestado" value="">
-<?php print_r($_SESSION['permisos'])  ?>
     <div class="row">
       <div class="input-group mb-3 col-lg-6 col-md-8 col-sm-12 mt-3">
         <input type="text" autocomplete="off" class="form-control inputSearchPagination" id="productSearch" placeholder="Buscar Producto">
