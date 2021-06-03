@@ -1,8 +1,6 @@
 <?php
 
 namespace middleware;
-
-use config\helper as h;
 use models\facturacionModel as fac;
 
 class cajasMiddleware
@@ -16,11 +14,12 @@ class cajasMiddleware
             $_SESSION['hasCaja'] = true;
             $_SESSION['idcaja'] = $result['data']['idcaja'];
             return ["return" => true];
-        } else {
-            $_SESSION['hasCaja'] = false;
-            $_SESSION['idcaja'] = '';
-            return ["return" => false,"send_json_error"=>true, "send_msg" =>false,"data"=>array("msg"=>"Necesitas tener una caja habilitada"),"url"=>"sincaja"];
         }
+        // else {
+        //     $_SESSION['hasCaja'] = false;
+        //     $_SESSION['idcaja'] = '';
+        //     return ["return" => false,"send_json_error"=>true, "send_msg" =>false,"data"=>array("msg"=>"Necesitas tener una caja habilitada"),"url"=>"sincaja"];
+        // }
 
 
 

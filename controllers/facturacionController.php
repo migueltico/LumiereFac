@@ -26,11 +26,25 @@ class facturacionController extends view
         $info = $info['data'];
         $cliente = cliente::getClienteById(array(":id" => $info['idclienteGenerico']));
         $descuentos = admin::descuentosOnlyFac();
-        $icon = help::icon();
-        $data["icons"] =  $icon['icons'];
-        $data["cliente"] =  $cliente['data'];
-        $data["descuentos"] =  $descuentos['data'];
-        echo view::renderElement('facturacion/facturacion', $data);
+        $data[":id"] = $_SESSION['id'];
+        $data[":fecha"] = date('Y-m-d');
+        $cajas = fac::cajaAsignada($data);
+        if ($cajas['rows'] > 0) {
+            $_SESSION['hasCaja'] = true;
+            $_SESSION['idcaja'] = $cajas['data']['idcaja'];
+            $icon = help::icon();
+            $data["icons"] =  $icon['icons'];
+            $data["cliente"] =  $cliente['data'];
+            $data["descuentos"] =  $descuentos['data'];
+            $data["cajas"] =  $cajas['data'];
+            echo view::renderElement('facturacion/facturacion', $data);
+        }else{
+            $cajas['params'] =["ID_SESSION"=>$_SESSION['id'],"FECHA"=>date('Y-m-d')];
+            $msg['msg'] ="No se encontro una caja habilitada para este usuario";
+            $msg['data'] =$cajas;
+            echo view::renderElement('errors/sincaja', $msg);
+        }
+  
     }
     public function cajas()
     {
