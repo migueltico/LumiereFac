@@ -197,7 +197,6 @@ class conexion
 			$this->statement->execute();
 			if (!$this->statement) {
 				$estado = array('estado' => false, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
-				$return = $estado;
 				return $estado;
 			}
 			$row = $this->statement->fetchAll(PDO::FETCH_ASSOC);

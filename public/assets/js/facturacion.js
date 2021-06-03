@@ -1672,6 +1672,8 @@ function btnCerrarCajaEstado(id, monto) {
                 let data = resp.data
                 let btncerrarCajaFinal = document.getElementById('btncerrarCajaFinal')
                 let total = resp.tarjeta + resp.efectivo + resp.transferencia + parseFloat(monto)
+                let caja_total_facturado = document.getElementById("caja_total_facturado")
+                caja_total_facturado.value =  resp.tarjeta + resp.efectivo + resp.transferencia
                 let montos = `
                 <div class="alert alert-primary d-flex justify-content-between" role="alert">
                 <span>Caja Base:</span> <span>${monto}</span>

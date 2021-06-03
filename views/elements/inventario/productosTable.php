@@ -78,7 +78,9 @@ $maxpage = @$paginationInfo['paginacion']['paginas'];
               <button type="button" class="btn btn-success EditProductBtn" data-toggle="modal" data-target="#EditProduct" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['edit'] ?></button>
               <button type="button" class="btn btn-primary pl-3 pr-3 SeeImgProduct" data-urls="<?= $product["image_url"] ?>" data-toggle="modal" data-target="#galleryShow" data-name="<?= $product["descripcion"] ?>" data-idProductEdit='<?= $product["idproducto"] ?>'><?= $icons['eye'] ?></button>
               <button type="button" class="btn btn-info pl-3 pr-3 printToast" data-precio="<?= $product["precio_venta"] ?>" data-name="<?= $product["descripcion"] ?>" data-talla="<?= $product["talla"] ?>" data-estilo="<?= $product["estilo"] ?>" data-idProduct='<?= $product["codigo"] ?>'><?= $icons['print'] ?></button>
+              <?php if (array_key_exists("inv_eliminar", $_SESSION['permisos'])) :  ?> 
               <button type="button" class="btn <?=($product["estado"] == 0 ? "btn-primary":"btn-danger") ?> disableProduct" data-estado='<?= $product["estado"] ?>' data-enable='<?= $product["idproducto"] ?>'><?=($product["estado"] == 0 ? $icons['add']:$icons['remove']) ?></button>
+              <?php endif;  ?>
             </div>
           </td>
         </tr>

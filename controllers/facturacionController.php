@@ -37,9 +37,11 @@ class facturacionController extends view
         $icon = help::icon();
         $users = user::getUsers();
         $result = fac::getCajas();
+        $cajasLastMonth = fac::getLastMonthCajas();
         $data["users"] = $users['data'];
         $data["icons"] =  $icon['icons'];
         $data["cajas"] =  $result['data'];
+        $data["cajaslast"] =  $cajasLastMonth['data'];
         echo view::renderElement('cajas/cajas', $data);
     }
     public function historialDiario()
@@ -87,7 +89,6 @@ class facturacionController extends view
         $result = fac::setDevolucion($data);
         header('Content-Type: application/json');
         echo json_encode($result);
-        
     }
     public function saldoDevoluciones()
     {
@@ -95,7 +96,6 @@ class facturacionController extends view
         $result = fac::saldoDevoluciones($fac);
         header('Content-Type: application/json');
         echo json_encode($result);
-
     }
     public function abrirCaja()
     {
@@ -127,6 +127,26 @@ class facturacionController extends view
         header('Content-Type: application/json');
         echo json_encode($result);
     }
+    public function updateTotalFacturadoCajas()
+    {
+        $cajasIdArray = fac::getCajasIDUpdate();
+        $cajasId = $cajasIdArray['data'];
+        //$cajasId = ['idcaja' => 136];
+        $totalCaja = '';
+        $result = '';
+        $errores = array();
+        foreach ($cajasIdArray['data'] as  $id) {
+            $data[':idcaja'] =  $id['idcaja'];
+            $json = fac::obtenerEstadoCajaEstadoPagos($data);
+            $totalCaja = $json['total_general'];
+            $result = fac::updateCajasTotal($id['idcaja'], $totalCaja);
+            if ($result['error'] != '00000') {
+                array_push($errores, $result);
+            }
+        }
+        header('Content-Type: application/json');
+        echo json_encode($errores);
+    }
     public function cerrarcajafinal()
     {
         $data[':efectivo'] = (float) $_POST['efectivo'];
@@ -134,6 +154,7 @@ class facturacionController extends view
         $data[':transferencia'] = (float) $_POST['transferencia'];
         $data[':diferencia'] = (float) $_POST['diferencia'];
         $data[':comentario'] = $_POST['comentario'];
+        $data[':total_facturado'] = $_POST['total_facturado'];
         $data[':id'] = (int)  $_POST['id'];
         $result = fac::cerrarCajafinal($data);
         header('Content-Type: application/json');
@@ -383,5 +404,4 @@ class facturacionController extends view
         $NewData['cards'] = $cards;
         echo view::renderElement('facturas/reciboSinproducto', $NewData);
     }
-
 }

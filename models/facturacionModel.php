@@ -420,6 +420,7 @@ class facturacionModel
         $totales['efectivo'] = $totalEfectivo;
         $totales['tarjeta'] = $totalTarjeta;
         $totales['transferencia'] = $totalTransferencia;
+        $totales['total_general'] = (float)($totalEfectivo + $totalTarjeta + $totalTransferencia);
         return $totales;
     }
     public static function getCajas()
@@ -433,10 +434,31 @@ class facturacionModel
         ON u2.idusuario = c.idvendedor WHERE NOT c.estado =3");
         return $data;
     }
+    public static function getCajasIDUpdate()
+    {
+        $con = new conexion();
+        $data = $con->SQND("SELECT c.idcaja FROM cajas c");
+        return $data;
+    }
+    public static function updateCajasTotal($id, $total)
+    {
+        $con = new conexion();
+        $data = $con->SQNDNR("UPDATE cajas SET total_facturado = $total WHERE idcaja = $id");
+        return $data;
+    }
+    public static function getLastMonthCajas()
+    {
+        $con = new conexion();
+        $data = $con->SQND("SELECT c.idcaja, u.nombre, c.caja_base, c.efectivo, c.tarjetas, c.transferencias, c.total_facturado, c.diferencia,c.comentario, c.fecha_init FROM cajas c
+        INNER JOIN usuario u 
+        ON c.idusuario_openbox = u.idusuario 
+        WHERE c.fecha_init > NOW() - INTERVAL 1 MONTH AND c.estado = 3 ORDER BY c.idcaja DESC");
+        return $data;
+    }
     public static function cerrarCajafinal($datos)
     {
         $con = new conexion();
-        $data = $con->SQ("UPDATE cajas SET efectivo=:efectivo, tarjetas=:tarjeta, transferencias=:transferencia, diferencia =:diferencia, comentario =:comentario, estado =3 WHERE idcaja=:id ", $datos);
+        $data = $con->SQ("UPDATE cajas SET total_facturado = :total_facturado, efectivo=:efectivo, tarjetas=:tarjeta, transferencias=:transferencia, diferencia =:diferencia, comentario =:comentario, estado =3 WHERE idcaja=:id ", $datos);
         return $data;
     }
     public static function cajaAsignada($datos)

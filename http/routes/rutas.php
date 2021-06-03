@@ -7,6 +7,7 @@ use config\route;
 //------------- +++ RUTAS GET +++ -----------------//
 route::middleware(['loginMiddleware@updateSession'], function () {
     route::get('/', 'loginController@index',['loginMiddleware@auth']);
+    route::get('/updateTotalFacturadoCajas', 'facturacionController@updateTotalFacturadoCajas');
     //+++++++++++ LOGIN +++++++++++//
     route::post('/validateauth', 'loginController@validar');
     route::post('/validateauth*', 'loginController@validar');

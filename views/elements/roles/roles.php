@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-lg-10 col-md-8 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="card mb-2">
             <div class="card-header">
                 <h4>Permisos de Rol</h4>

@@ -14,6 +14,12 @@
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button" id="id_caja_fac"># caja</button>
+                            </div>
+                            <input type="text" id="id_caja_fac_input" disabled class="form-control text-right" data-vendedor="<?= $_SESSION['idcaja'] ?>" value="<?= $_SESSION['idcaja'] ?>">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
                                 <button class="btn btn-outline-primary" data-toggle="modal" data-target="#SearchClientModal" type="button" id="fac_cliente">Cliente</button>
                             </div>
                             <input type="text" disabled id="fac_cliente_input" class="form-control text-right" data-idGenerico="<?= $cliente['idcliente'] ?>" data-cliente="<?= $cliente['idcliente'] ?>" placeholder="Cliente" value="<?= $cliente['nombre'] ?>">

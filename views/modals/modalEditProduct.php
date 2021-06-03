@@ -147,7 +147,9 @@
       </form>
       <div class="modal-footer">
         <button type="button" class="closeBtn btn btn-secondary edit" data-dismiss="modal">Cerrar</button>
+        <?php if (array_key_exists("inv_editar", $_SESSION['permisos'])) :  ?>
         <button id="EditProductFormBtn" type="submit" class="btn btn-primary edit">Guardar Cambios</button>
+        <?php endif;  ?>
       </div>
     </div>
   </div>

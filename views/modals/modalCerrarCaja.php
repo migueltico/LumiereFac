@@ -33,6 +33,7 @@
                                 <input type="text" name="transferencia" class="form-control caja_blur" id="caja_transferencia" placeholder="Monto" value="0.00">
                             </div>
                             <div class=" alert alert-info d-flex justify-content-between" role="alert">
+                                <input type="hidden" name="total_facturado" id="caja_total_facturado" value="0.00">
                                 <span><strong>Total:</strong></span><span><strong id="caja_total">0.00</strong></span>
                             </div>
                             <div class=" alert alert-warning d-flex justify-content-between" role="alert" style="font-size: 1.3rem;">
