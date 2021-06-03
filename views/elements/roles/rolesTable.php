@@ -36,14 +36,14 @@
                     <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Descuentos</strong>
                         <div class="card p-3 textcolorhover">
                             <label class="text-success" for="descuento_modulo"><input type="checkbox" class="mr-2" name="descuento_modulo" id="descuento_modulo">Ver modulo</label>
-                            <label class="text-primary" for="descuento_crear"><input type="checkbox" class="mr-2" name="descuento_crear" id="descuento_crear">Crear Descuento</label>
-                            <label class="text-primary" for="descuento_editar"><input type="checkbox" class="mr-2" name="descuento_editar" id="descuento_editar">Editar Descuento</label>
-                            <label class="text-primary" for="descuento_eliminar"><input type="checkbox" class="mr-2" name="descuento_eliminar" id="descuento_eliminar">Desactivar Descuento</label>
+                            <label class="text-success" for="descuento_crear"><input type="checkbox" class="mr-2" name="descuento_crear" id="descuento_crear">Crear Descuento</label>
+                            <label class="text-success" for="descuento_editar"><input type="checkbox" class="mr-2" name="descuento_editar" id="descuento_editar">Editar Descuento</label>
+                            <label class="text-success" for="descuento_eliminar"><input type="checkbox" class="mr-2" name="descuento_eliminar" id="descuento_eliminar">Desactivar Descuento</label>
                         </div>
                     </label>
                     <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Descuentos por lote</strong>
                         <div class="card p-3 textcolorhover">
-                            <label class="text-primary" for="descuento_lote_modulo"><input type="checkbox" class="mr-2" name="descuento_lote_modulo" id="descuento_lote_modulo">Ver modulo</label>
+                            <label class="text-success" for="descuento_lote_modulo"><input type="checkbox" class="mr-2" name="descuento_lote_modulo" id="descuento_lote_modulo">Ver modulo</label>
                         </div>
                     </label>
                 </div>
@@ -58,7 +58,7 @@
                         <div class="card p-3 textcolorhover">
                             <label class="text-success" for="fac_modulo"><input type="checkbox" class="mr-2" name="fac_modulo" id="fac_modulo">Ver modulo</label>
                             <label class="text-primary" for="fac_cliente"><input type="checkbox" class="mr-2" name="fac_cliente" id="fac_cliente">Crear Cliente</label>
-                            <label class="text-primary" for="fac_descuento"><input type="checkbox" class="mr-2" name="fac_descuento" id="fac_descuento">Descuento</label>
+                            <label class="text-success" for="fac_descuento"><input type="checkbox" class="mr-2" name="fac_descuento" id="fac_descuento">Descuento</label>
                         </div>
                     </label>
                     <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Cajas</strong>
@@ -148,8 +148,9 @@
                     <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Lista de Usuarios</strong>
                         <div class="card p-3 textcolorhover">
                             <label class="text-success" for="usuarios_modulo"><input type="checkbox" class="mr-2" name="usuarios_modulo" id="usuarios_modulo">Ver modulo</label>
-                            <label class="text-primary" for="usuarios_crear"><input type="checkbox" class="mr-2" name="usuarios_crear" id="usuarios_crear">Crear usuario</label>
-                            <label class="text-primary" for="usuarios_editar"><input type="checkbox" class="mr-2" name="usuarios_editar" id="usuarios_editar">Editar usuario</label>
+                            <label class="text-success" for="usuarios_crear"><input type="checkbox" class="mr-2" name="usuarios_crear" id="usuarios_crear">Crear usuario</label>
+                            <label class="text-success" for="usuarios_editar"><input type="checkbox" class="mr-2" name="usuarios_editar" id="usuarios_editar">Editar usuario</label>
+                            <label class="text-success" for="usuarios_editar_rol"><input type="checkbox" class="mr-2" name="usuarios_editar_rol" id="usuarios_editar_rol">Editar Rol de usuario</label>
                             <label class="text-primary" for="usuarios_eliminar"><input type="checkbox" class="mr-2" name="usuarios_eliminar" id="usuarios_eliminar">Desactivar usuario</label>
                         </div>
                     </label>

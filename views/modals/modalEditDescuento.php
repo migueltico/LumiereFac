@@ -37,7 +37,8 @@
                             <label class="custom-control-label" for="descuentos_Edit_show">Mostrar en Facturacion</label>
                         </div>
                     </div>
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                   
+                    <div <?=($hasPermissionDelete  ? 'data-semamo="QUE PEDO"' : "style='display:none'") ?> class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" name="activo" id="descuentos_Edit_activo">
                             <label class="custom-control-label" for="descuentos_Edit_activo">Activo</label>
@@ -47,7 +48,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" id="btnEditarDescuento" class="btn btn-primary">Guardar</button>
+                <?php if ($hasPermissionEdit) :  ?>
+                    <button type="button" id="btnEditarDescuento" class="btn btn-primary">Guardar</button>
+                <?php endif;   ?>
             </div>
         </div>
     </div>

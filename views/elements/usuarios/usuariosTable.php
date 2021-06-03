@@ -33,7 +33,9 @@
                     <td scope="row" style="text-align: center;"><?= $user["roles"] ?></td>
                     <td scope="row">
                         <div class="btn-group Editbuttons" aria-label="Grupo edicion">
-                            <button type="button" class="btn btn-success btnEditUserId" data-toggle="modal" data-target="#usuarios_editUsuario" data-id='<?= $user["idusuario"] ?>'><?= $icons['edit'] ?></button>
+                            <?php if (array_key_exists("usuarios_editar", $_SESSION['permisos'])) :  ?>
+                                <button type="button" class="btn btn-success btnEditUserId" data-toggle="modal" data-target="#usuarios_editUsuario" data-id='<?= $user["idusuario"] ?>'><?= $icons['edit'] ?></button>
+                            <?php endif; ?>
                             <?php if ($user["identificador"] != null) : ?>
                                 <button type="button" class="btn btn-info seeLinkBtnUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['link'] ?></button>
                             <?php endif; ?>

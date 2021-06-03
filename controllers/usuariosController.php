@@ -49,12 +49,25 @@ class usuariosController extends view
     }
     public function editUser($var)
     {
+        $hasPermission = array_key_exists("usuarios_editar_rol", $_SESSION['permisos']);
         $datos[':id'] = $_POST['id'];
         $datos[':nombre'] = $_POST['nombre'];
         $datos[':email'] = $_POST['correo'];
         $datos[':telefono'] = $_POST['telefono'];
         $datos[':direccion'] = $_POST['direccion'];
-        $datos[':rol'] = (isset($_POST['rol']) ? $_POST['rol'] : 0);
+        $refreshusers = '';
+        if (!isset($_POST['rol'])) {
+
+            $refreshusers = users::getUserById($_POST['id']);
+            $refreshusers = $refreshusers['data']['rol'];
+            $datos[':rol'] = $refreshusers;
+        } elseif (!$hasPermission) {
+            $refreshusers = users::getUserById($_POST['id']);
+            $refreshusers = $refreshusers['data']['rol'];
+            $datos[':rol'] = $refreshusers;
+        } else {
+            $datos[':rol'] = $_POST['rol'];
+        }
         $users = users::editUser($datos);
         header('Content-Type: application/json');
         echo json_encode($users);

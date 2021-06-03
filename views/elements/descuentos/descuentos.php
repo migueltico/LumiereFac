@@ -1,8 +1,14 @@
 <div class="card mb-5 shadow">
     <div class="card-header">
         <h4>Descuentos</h4>
-
-        <a href="#" class="btn btn-primary btn-sm" id="newDescuento" data-toggle="tooltip" data-placement="bottom" title="Agregar Nuevo descuento"><?= $icons['plus-circle'] ?>Nuevo</a>
+        <?php
+        $hasPermissionCreate = array_key_exists("descuento_crear", $_SESSION['permisos']);
+        $hasPermissionEdit = array_key_exists("descuento_editar", $_SESSION['permisos']);
+        $hasPermissionDelete = array_key_exists("descuento_eliminar", $_SESSION['permisos']);
+        ?>
+        <?php if ($hasPermissionCreate) :  ?>
+            <a href="#" class="btn btn-primary btn-sm" id="newDescuento" data-toggle="tooltip" data-placement="bottom" title="Agregar Nuevo descuento"><?= $icons['plus-circle'] ?>Nuevo</a>
+        <?php endif; ?>
         <a href="#" id="refrescarDescuentos" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="Refrescar descuentos">Refrescar</a>
 
     </div>
@@ -38,7 +44,7 @@
                             </td>
                             <td scope="row">
                                 <div class="btn-group Editbuttons" aria-label="Grupo edicion">
-                                    <button type="button" class="btn btn-success EditDescuentoBtn" data-show="<?= $desc["showFac"] ?>" data-id='<?= $desc["iddescuento"] ?>' data-activo="<?= $desc["activo"] ?>" data-descripcion="<?= $desc["descripcion"] ?>" data-descuento="<?= $desc["descuento"] ?>"><?= $icons['edit'] ?></button>
+                                    <button <?= $hasPermissionEdit ? '' : "style='display:none'"  ?> type="button" class="btn btn-success EditDescuentoBtn" data-show="<?= $desc["showFac"] ?>" data-id='<?= $desc["iddescuento"] ?>' data-activo="<?= $desc["activo"] ?>" data-descripcion="<?= $desc["descripcion"] ?>" data-descuento="<?= $desc["descuento"] ?>"><?= $icons['edit'] ?></button>
                                     <button type="button" class="btn btn-danger" data-id='<?= $desc["iddescuento"] ?>'><?= $icons['trash'] ?></button>
                                 </div>
                             </td>

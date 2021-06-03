@@ -50,10 +50,20 @@
                                         <label class="input-group-text" for="inputGroupSelect01">Rol</label>
                                     </div>
                                     <select class="custom-select" name="rol" id="usuarios_edit_rol">
-                                        <option value="0">Seleccione un Rol</option>
+                                        <?php $hasPermission = array_key_exists("usuarios_editar_rol", $_SESSION['permisos']); ?>
+                                        <?php if ($hasPermission) :  ?>
+                                            <option value="0">Seleccione un Rol</option>
+                                        <?php endif; ?>
                                         <?php foreach ($rols as $rol) : ?>
-                                            <option value="<?= $rol['idrol'] ?>"><?= $rol['rol'] ?></option>
+                                            <?php if ($hasPermission) :  ?>
+                                                <option value="<?= $rol['idrol'] ?>"><?= $rol['rol'] ?></option>
+                                            <?php else : ?>
+                                                <option value="0">Sin permisos para modificar el Rol</option>
+                                                <?php break;  ?>
+                                            <?php endif; ?>
                                         <?php endforeach; ?>
+
+
                                     </select>
                                 </div>
                             </div>

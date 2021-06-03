@@ -31,15 +31,17 @@
                             <input type="text" disabled id="datePickerInput" class="form-control text-right" data-cliente="1" value="<?= date('d-m-Y'); ?>">
                         </div>
 
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3" <?= array_key_exists("fac_descuento", $_SESSION['permisos']) ?: "style='display:none'" ?>>
                             <div class="input-group-prepend">
                                 <span class="input-group-text"> <input type="checkbox" id="canDiscountFac"></span>
                             </div>
                             <select class="custom-select" id="descuentosSelect" disabled data-toggle="tooltip" data-placement="top" title="En caso de aplicar descuento seleccione el descuento al tener todos los articulos seleccionados. (Desactive y vuelva a seleccionar para aplicar a nuevos articulos agregados)">
                                 <option selected disabled>Seleccione un descuento</option>
-                                <?php foreach ($descuentos as $descuento) :  ?>
-                                    <option value="<?= $descuento['descuento'] ?>"><?= $descuento['descripcion']  ?></option>
-                                <?php endforeach; ?>
+                                <?php if (array_key_exists("fac_descuento", $_SESSION['permisos'])) :  ?>
+                                    <?php foreach ($descuentos as $descuento) :  ?>
+                                        <option value="<?= $descuento['descuento'] ?>"><?= $descuento['descripcion']  ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </select>
                         </div>
                     </div>
@@ -82,7 +84,7 @@
                                         <span class="btn btn-info" id="btnCambios_fac" type="button" class="input-group-text" data-toggle="tooltip" data-placement="top" title="Busqueda de factura y aplicacion de devoluciones">Devoluciones</span>
                                     </div>
                                     <input id="inputSearchFacSaldo" type="text" class="form-control  p-3" placeholder="# factura para cambio o devolucion" data-toggle="tooltip" data-placement="top" title="presione ENTER para consultar la factura con saldo">
-                                    <button id="resetSaldostatus" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cancelar uso de saldo"><?=$icons['xcircle'] ?></button>
+                                    <button id="resetSaldostatus" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Cancelar uso de saldo"><?= $icons['xcircle'] ?></button>
                                 </div>
                             </div>
                             <div class="input-group mb-3 hiddenSaldosInput" style="display: none;">
