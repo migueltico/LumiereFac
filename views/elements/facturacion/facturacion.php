@@ -14,9 +14,9 @@
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" type="button" id="fac_vendedor">#Caja</button>
+                                <button class="btn btn-outline-secondary" type="button" id="id_caja_fac"># caja</button>
                             </div>
-                            <input type="text" id="InputVendedorFact" disabled class="form-control text-right" data-id-caja="<?= $_SESSION['idcaja'] ?>" value="<?= $_SESSION['idcaja'] ?>">
+                            <input type="text" id="id_caja_fac_input" disabled class="form-control text-right" data-vendedor="<?= $_SESSION['idcaja'] ?>" value="<?= $_SESSION['idcaja'] ?>">
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
