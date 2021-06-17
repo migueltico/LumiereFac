@@ -564,6 +564,7 @@ function getProductsRowsForFac(method, pago, typeAbono) {
     let ivaMonto = 0.00
     for (let row of rows) {
         let id = row.children[0].dataset.id
+        let cod = row.children[0].dataset.codigo
         let descripcion = row.children[1].textContent
         let talla = row.children[2].textContent
         let cantidad = parseInt(row.children[4].children[0].value)
@@ -575,6 +576,7 @@ function getProductsRowsForFac(method, pago, typeAbono) {
         let descuento = (row.children[7].textContent !== "N/A" ? row.children[7].textContent : 0)
         cantidadArticulos += cantidad
         let json = {
+            cod,
             id,
             descripcion,
             talla,
@@ -1087,7 +1089,7 @@ function getProductFact(e) {
                     let precios = calcTotalRowPrice(data.precio_venta, (data.descuento == null ? 0 : data.descuento), (data.activado_iva == 0 ? 0 : data.iva))
                     let row = /*html*/ `
                         <tr class="productRowFac ${data.descuento == null ? 'trNotDiscount':''}" id="itemRowProduct_${data.idproducto}">
-                            <td scope="row" data-id="${data.idproducto}" data-toggle="tooltip"data-placement="bottom" title="${data.idproducto}">${data.codigo}</td>
+                            <td scope="row" data-codigo="${data.codigo}" data-id="${data.idproducto}" data-toggle="tooltip"data-placement="bottom" title="${data.idproducto}">${data.codigo}</td>
                             <td scope="row">${data.descripcion_short} | ${data.marca}</td>
                             <td scope="row">${data.talla}</td>
                             <td scope="row">${(data.activado_iva == 0 ? 0 : data.iva)}</td>

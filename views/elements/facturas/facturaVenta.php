@@ -46,7 +46,7 @@
                 <span class="text-center"><?= $item['cantidad'] ?></span>
             </div>
             <div class="colFac col-7">
-                <span class="text-left"><?= strtoupper($desc[0]) ?></span>
+                <span class="text-left"><?= strtoupper($desc[0]) ?> (<?= strtoupper($item['talla']) ?>)</span>
             </div>
             <div class="col-2 colFac ">
                 <span><?= $item['precio'] ?></span>
@@ -54,6 +54,7 @@
             <div class="colFac col-2 text-right">
                 <span class="text-right"><?= $item['total_iva'] ?></span>
             </div>
+            <!-- NEXT ROW -->
             <div class="col-1 colFac">
             </div>
             <?php if ($item['descuento'] !== 0) : ?>
@@ -73,8 +74,13 @@
                     <span>IVA:<?= $item['iva'] ?>%</span>
                 </div>
             <?php endif; ?>
-
-
+            <div class="col-1 colFac">
+            </div>
+            <div class="col-12 colFac">
+                <div style="margin-left:8%;font-size: 13px !important; width:100%"><?= $generator->getBarcode($item['cod'], $generator::TYPE_CODE_128, 2, 14); ?></div>
+                <div style="margin-left:9%;margin-bottom:3px;font-size: 13px !important; width:100%">**<?= $item['cod'] ?>**</div>
+            </div>
+            <!-- NEXT ROW -->
         </div>
     <?php endforeach; ?>
     <div class="row col">
@@ -166,6 +172,10 @@
         <?php echo $generator->getBarcode($factura['fac'], $generator::TYPE_CODE_128, 2, 30); ?>
         <p><?= $factura['fac'] ?></p>
     </div>
+
+    <pre>
+              <?php print_r($items) ?>
+    </pre>
 </div>
 
 <!-- <pre>
