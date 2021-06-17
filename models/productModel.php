@@ -120,31 +120,37 @@ class productModel
      */
     public static function searchProduct($data, $nowPage, $estado)
     {
-        $cantToshow = 100;
-        $data = trim($data);
-        $con = new conexion();
-        $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE (p.descripcion LIKE '%$data%' OR p.marca  LIKE '%$data%' OR p.estilo LIKE '%$data%' OR p.codigo LIKE '%$data%') AND p.estado = $estado");
-        // $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.estado = 1");
-        // $totalRows = $con->SQR_ONEROW("sp_SearchProduct_Inventario('%$data%')");
-        $totalRows = $totalRows['data']['cantidad'];
-        $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
-        $init = $paginacion['InitLimit'];
-        if (strpos($data, '%') !== false) {
-            $dataArray = explode("%", $data);
-            $string = "";
-            foreach ($dataArray as $value) {
-                $string .= $value . "%";
+        try {
+            //code...
+
+            $cantToshow = 100;
+            $data = trim($data);
+            $con = new conexion();
+            $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE (p.descripcion LIKE '%$data%' OR p.marca  LIKE '%$data%' OR p.estilo LIKE '%$data%' OR p.codigo LIKE '%$data%') AND p.estado = $estado");
+            // $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.estado = 1");
+            // $totalRows = $con->SQR_ONEROW("sp_SearchProduct_Inventario('%$data%')");
+            $totalRows = $totalRows['data']['cantidad'];
+            $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
+            $init = $paginacion['InitLimit'];
+            if (strpos($data, '%') !== false) {
+                $dataArray = explode("%", $data);
+                $string = "";
+                foreach ($dataArray as $value) {
+                    $string .= $value . "%";
+                }
+                $SqlMultiParam = "CALL sp_searchCodeProductWithState('%$string',$init ,$cantToshow,$estado )";
+                $result = $con->SPCALL($SqlMultiParam);
+            } else {
+                $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
+                $result = $con->SPCALL($SqlOneParam);
             }
-            $SqlMultiParam = "CALL sp_searchCodeProductWithState('%$string',$init ,$cantToshow,$estado )";
-            $result = $con->SPCALL($SqlMultiParam);
-        } else {
-            $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
-            $result = $con->SPCALL($SqlOneParam);
-        }
-        if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
-        } else if ($result['error'] !== '00000' || $result['data'] == false) {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
+            if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
+                return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
+            } else if ($result['error'] !== '00000' || $result['data'] == false) {
+                return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
+            }
+        } catch (\Throwable $th) {
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $th, "msg" => "No se encontro el Producto disponible o no existe");
         }
         // $con = new conexion();
         // if (strpos($data, 'id-') !== false) {
@@ -235,7 +241,7 @@ class productModel
     public static function updateStock($datos)
     {
         $con = new conexion();
-        $id =(int) $datos[':id'];
+        $id = (int) $datos[':id'];
         $stock = (int)$datos[':stock'];
         $setData = ':id,:stock';
 
@@ -287,7 +293,7 @@ class productModel
      *
      * @return void
      */
-    public static function disableProduct($id,$estado)
+    public static function disableProduct($id, $estado)
     {
         $con = new conexion();
         return $con->SQNDNR("UPDATE producto SET estado = $estado WHERE idproducto=$id");
