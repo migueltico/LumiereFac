@@ -172,10 +172,6 @@
         <?php echo $generator->getBarcode($factura['fac'], $generator::TYPE_CODE_128, 2, 30); ?>
         <p><?= $factura['fac'] ?></p>
     </div>
-
-    <pre>
-              <?php print_r($items) ?>
-    </pre>
 </div>
 
 <!-- <pre>
