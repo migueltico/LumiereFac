@@ -87,6 +87,7 @@ class productModel
      */
     public static function searchCodeProductCtrlQ($data, $nowPage)
     {
+        try {
         $con = new conexion();
         $cantToshow = 50;
         $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.descripcion LIKE '%$data%' OR p.marca LIKE '%$data%' AND p.estado = 1");
@@ -112,6 +113,12 @@ class productModel
         } else if ($result['error'] !== '00000' || $result['data'] == false) {
             return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
         }
+    } catch (\Throwable $th) {
+        return array("data" =>  $result['data'],
+         "rows" => $result['rows'], "cantidad" => $totalRows,
+          "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
+           "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe");
+    }
     }
     /**
      * obtiene todos los productos segun el resultado
