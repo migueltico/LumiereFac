@@ -150,7 +150,10 @@ class productModel
                 return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
             }
         } catch (\Throwable $th) {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $th, "msg" => "No se encontro el Producto disponible o no existe");
+            return array("data" =>  $result['data'],
+             "rows" => $result['rows'], "cantidad" => $totalRows,
+              "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
+               "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe");
         }
         // $con = new conexion();
         // if (strpos($data, 'id-') !== false) {
