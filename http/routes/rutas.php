@@ -91,6 +91,8 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/consultar/factura', 'facturacionController@consultarFactura');
         route::post('/agregar/devolucion', 'facturacionController@devolucion');
         route::post('/consultar/saldo', 'facturacionController@saldoDevoluciones');
+        route::post('/getlast/prints', 'facturacionController@lastFactRePrint');
+        route::post('/reprintFact', 'facturacionController@reprintFact');
     });
     //+++++++++++ CLIENTES +++++++++++//
     route::group('clientes', function () {

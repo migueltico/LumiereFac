@@ -62,7 +62,7 @@ class facturacionModel
                     ":descuento" => (int) (rtrim($item['descuento'], "%")),
                     ":iva" => (int) $item['iva'],
                     ":total" => (float) str_replace(",", "", $item['total_iva']),
-                    ":fecha"=> date("Y-m-d")
+                    ":fecha" => date("Y-m-d")
                 ));
             }
             $isOk = true;
@@ -112,8 +112,8 @@ class facturacionModel
             unset($data[':estado']);
             unset($data[':comentario']);
             unset($data[':idcaja']);
-            unset($data[':monto_envio']);            
-            unset($data[':saldo_ref']);            
+            unset($data[':monto_envio']);
+            unset($data[':saldo_ref']);
             unset($data[':new_saldo']);
             unset($data[':hasSaldo']);
             unset($data[':saldo']);
@@ -298,11 +298,54 @@ class facturacionModel
         $data = $con->SPCALL("SELECT *,f.estado AS fac_estado FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente WHERE f.estado = 0 AND f.tipo > 1");
         return $data;
     }
+
+    public static function getFacToRePrint(int $fac):array
+    {
+        $con = new conexion();
+        $facHeader = $con->SPCALL("SELECT *, c.nombre cliente, u.nombre cajero, f.consecutivo fac,f.impuesto, f.fecha, f.descuento,  f.monto_efectivo, f.monto_tarjeta, 
+        f.monto_transferencia, f.monto_envio, f.total, f.tipo, f.multipago_string otherCards
+        FROM facturas f 
+        INNER JOIN cliente c ON c.idcliente = f.idcliente 
+        INNER JOIN usuario u ON u.idusuario = f.idusuario 
+        WHERE f.consecutivo = $fac");
+
+        $facRows = $con->SPCALL("SELECT d.idproducto id, p.codigo cod, CONCAT( p.descripcion_short , ' | ' , p.estilo) descripcion , t.talla, d.cantidad, d.iva, d.descuento, 
+                                    d.precio, ((d.precio) - (d.precio) * (d.descuento /100) ) subtotal ,d.total total_iva FROM detalle_factura d 
+                                    INNER JOIN producto p ON p.idproducto = d.idproducto 
+                                    INNER JOIN tallas t ON t.idtallas = p.idtalla 
+                                    WHERE d.idfactura =$fac");
+
+        return array("header" => $facHeader, "rows" => $facRows);
+    }
     public static function getHistorialDiario()
     {
         $con = new conexion();
         $iduser = $_SESSION['id'];
         $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE  idusuario = $iduser ORDER BY consecutivo DESC LIMIT 100");
+        $data = array();
+        if ($header['rows'] > 0) {
+            foreach ($header['data'] as $factura) {
+                $id = (int) $factura['consecutivo'];
+                $tipo = (int) $factura['tipo'];
+                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                if ($detalis['rows'] > 0) {
+                    $factura['details'] = $detalis['data'];
+                }
+                if ($tipo == 3) {
+                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat,  (SELECT SUM(r2.abono) FROM recibos AS r2 WHERE idfactura =$id ) AS fullAbono  FROM recibos r WHERE r.idfactura =$id");
+                    $factura['fullAbono'] = $recibosList['data'][0]['fullAbono'];
+                    $factura['recibos'] = $recibosList['data'];
+                }
+                array_push($data, $factura);
+            }
+        }
+        return $data;
+    }
+    public static function lastFactRePrint()
+    {
+        $con = new conexion();
+        $iduser = $_SESSION['id'];
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, fecha FROM facturas  WHERE  idusuario = $iduser AND tipo <> 3 ORDER BY consecutivo DESC LIMIT 100");
         $data = array();
         if ($header['rows'] > 0) {
             foreach ($header['data'] as $factura) {

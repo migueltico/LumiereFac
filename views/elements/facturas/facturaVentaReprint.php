@@ -1,10 +1,12 @@
 <div class="hoja">
     <?php
-    $info = $data['data'];
+    $info = $Sucursal;
     $hoy = date("Y-m-d H:i:s");
     $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
     $HasDescuento = false;
     $HasIva = false;
+    $hasPay = 1;
+    $hasSaldo = 0;
     ?>
     <div class="row col">
         <h4 class='col-12 text-center mt-2'><?= $info['nombre_local'] ?></h4>
@@ -16,7 +18,7 @@
         <p class=" col-12 text-left colFac" style="font-size: 1.1rem;">Cliente: <?= $nameCliente ?> </p>
         <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Cajero: <?= $nameVendedor ?> </p>
         <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Tipo Doc: Tiquete </p>
-        <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Fac:&nbsp; <?= $factura['fac'] ?> &nbsp;&nbsp;&nbsp;&nbsp;<?= $hoy ?></p>
+        <p class="col-12 text-left colFac" style="font-size: 1.1rem;">Fac:&nbsp; <?= $factura['fac'] ?> &nbsp;&nbsp;&nbsp;&nbsp;<?= $fecha ?> </p>
     </div>
     <br>
     <div class="row col">
@@ -49,26 +51,26 @@
                 <span class="text-left"><?= strtoupper($desc[0]) ?> (<?= strtoupper($item['talla']) ?>)</span>
             </div>
             <div class="col-2 colFac ">
-                <span><?= $item['precio'] ?></span>
+                <span><?= number_format($item['precio'], '2', '.', ',')   ?></span>
             </div>
             <div class="colFac col-2 text-right">
-                <span class="text-right"><?= $item['total_iva'] ?></span>
+                <span class="text-right"><?= number_format($item['total_iva'], '2', '.', ',')   ?></span>
             </div>
             <!-- NEXT ROW -->
             <div class="col-1 colFac">
             </div>
-            <?php if ($item['descuento'] !== 0) : ?>
+            <?php if ($item['descuento'] != 0) : ?>
                 <div class="colFac col-3">
                     <?php $HasDescuento = true; ?>
-                    <span>DESC <?= strtoupper($item['descuento']) ?></span>
+                    <span>DESC <?= strtoupper($item['descuento']) ?>%</span>
                 </div>
             <?php endif; ?>
-            <?php if ($item['descuento'] !== 0) : ?>
+            <?php if ($item['descuento'] != 0) : ?>
                 <div class="colFac col-4 text-left">
-                    <span class="text-right">SUB T. <?= $item['subtotal'] ?></span>
+                    <span class="text-right">SUB T. <?= number_format($item['subtotal'], '2', '.', ',') ?></span>
                 </div>
             <?php endif; ?>
-            <?php if ($item['iva'] !== 0) : ?>
+            <?php if ($item['iva'] != 0) : ?>
                 <?php $HasIva = true; ?>
                 <div class="col-2 colFac">
                     <span>IVA:<?= $item['iva'] ?>%</span>
@@ -90,22 +92,21 @@
     <div class="row col">
         <?php if ($HasDescuento) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">DESC: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $descuento ?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($descuento, '2', '.', ',') ?> </div>
         <?php endif;  ?>
         <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>
-        <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $subtotal_descuento ?> </div>
+        <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($subtotal_descuento, '2', '.', ',') ?> </div>
         <?php if ($HasIva) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">I.V.A: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?=number_format($iva, '2', '.', ',')  ?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $iva ?> </div>
         <?php endif;  ?>
-        <?php if ($tipoVenta == 2) : ?>
+        <?php if ($monto_envio != 0) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">ENVIO: </div>
             <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($monto_envio, 2, '.', ',') ?> </div>
         <?php endif;  ?>
         <div class="col-9 text-right" style="font-size: 1.1rem;">TOTAL A PAGAR: </div>
-        <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $total ?> </div>
+        <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($total, '2', '.', ',')  ?> </div>
         <div class="col-12 text-right" style="font-size: 1.1rem;">-----------------------------------------</div>
-        <?php $saldo = (float) $saldo ?>
         <!-- "0" = no pago | "1" Si pago -->
         <?php if ($hasPay == 1) : ?>
             <?php if ($tipoVenta == 1) : ?>
@@ -121,10 +122,6 @@
                         <?php endif; ?>
                     <?php endif; ?>
                 <?php endforeach; ?>
-                <?php if ($hasSaldo) : ?>
-                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;">SALDO:</p>
-                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',')  ?></p>
-                <?php endif; ?>
             <?php elseif ($tipoVenta == 2) : ?>
                 <?php foreach ($methodPay as $method) : ?>
                     <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= strtoupper($method['methods']['tipo']) . ($method['methods']['tipo'] == "tarjeta" ? "-" . $method['methods']['tarjeta'] : "") ?>:</p>
@@ -138,28 +135,6 @@
                         <?php endif; ?>
                     <?php endif; ?>
                 <?php endforeach; ?>
-                <?php if ($hasSaldo) : ?>
-                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;">SALDO:</p>
-                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',')  ?></p>
-                <?php endif; ?>
-            <?php endif; ?>
-            <?php if ($hasSaldo) : ?>
-                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Saldo pendiente: <?= number_format($new_saldo, 2, '.', ',')  ?> **</p>
-                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Factura Ref:<?= $saldo_ref ?> **</p>
-            <?php endif; ?>
-        <?php else : ?>
-            <?php if ($hasPay == 0 && $tipoVenta == 2) : ?>
-                <?php if ($hasSaldo) : ?>
-                    <p class="col-9 text-right" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;">SALDO:</p>
-                    <p class="col-3 text-left" style="font-size: 1.1rem; margin-top:0; margin-bottom:0;"><?= number_format($saldo, 2, '.', ',')  ?></p>
-                <?php endif; ?>
-                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Cancelacion Contra Entrega**</p>
-                <?php if ($hasSaldo) : ?>
-                    <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Saldo pendiente: <?= number_format($new_saldo, 2, '.', ',')  ?> **</p>
-                    <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Factura Ref:<?= $saldo_ref ?> **</p>
-                <?php endif; ?>
-            <?php elseif ($tipoVenta == 3) : ?>
-                <p class="col-12 text-center" style="font-size: 1.1rem; margin-top:10px; margin-bottom:10px;">**Apartado**</p>
             <?php endif; ?>
         <?php endif; ?>
     </div>
@@ -174,12 +149,7 @@
     </div>
 </div>
 
-<!-- <pre>
-    <?php
-    //$info = $_SESSION['info'][0];
-    // print_r($factura)
-    ?>
-</pre>  -->
+
 <style>
     .svg_codeFac svg {
         width: 100%;
@@ -194,5 +164,26 @@
         font-size: 12px;
         /* width: 445px; */
         font-family: ticketing_regular, cursive;
+        position: relative;
+    }
+    <?php if($cantidadArticulos > 2): ?>
+    .hoja::before {
+        bottom:20%;
+        left: 0;
+        position: absolute;
+        content: 'COPY';
+        font-size: 10rem;
+        transform: rotate(45deg);
+        color: rgba(140, 140, 140, 0.4);
+    }
+    <?php endif; ?>
+    .hoja::after {
+        top:20%;
+        left: 0;
+        position: absolute;
+        content: 'COPY';
+        font-size: 10rem;
+        transform: rotate(45deg);
+        color: rgba(140, 140, 140, 0.4);
     }
 </style>

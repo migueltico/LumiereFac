@@ -1,3 +1,20 @@
+$('document').ready(function () {
+    // let btn_reprint = document.getElementById('rePrintFactBtn')
+    // btn_reprint.addEventListener('click', () => {
+    //     
+    // })
+
+});
+$("#bodyContent").on("click", "#rePrintFactBtn", function (e) {
+    fetch("/facturacion/getlast/prints", {
+            method: "POST"
+        }).then(resp => resp.text())
+        .then(resp => {
+            let content = document.getElementById('contentSearchRePrintFac')
+            content.innerHTML = resp
+        })
+})
+
 $('#bodyContent').on("click", "#btnCambios_fac", function (e) {
     $('#rowsFactDetailsSearch').html('')
     $('#SearchFacModal').modal('toggle')
@@ -924,6 +941,30 @@ function printFact(datos) {
         })
 
 }
+function ReprintFact(fac) {
+    let formData = new FormData()
+    formData.append('fac',fac)
+    fetch("/facturacion/reprintFact", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.text())
+        .then(resp => {
+
+                //$(`#reimprimirModal`).modal('toggle')
+                let h = resp;
+                let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
+                window.print();
+                d.remove();
+          
+            //resetFactScreen()
+        })
+
+}
+$('#bodyContent').on("click", ".execute_reprint", function (e) {
+    console.log(e)
+    let fac = e.target.dataset.fac
+    ReprintFact(fac) 
+})
 $('#bodyContent').on("change", ".fact_switchBtns input[type='checkbox']", function (e) {
     let check = e.target.checked
     if (check) {
@@ -1675,7 +1716,7 @@ function btnCerrarCajaEstado(id, monto) {
                 let btncerrarCajaFinal = document.getElementById('btncerrarCajaFinal')
                 let total = resp.tarjeta + resp.efectivo + resp.transferencia + parseFloat(monto)
                 let caja_total_facturado = document.getElementById("caja_total_facturado")
-                caja_total_facturado.value =  resp.tarjeta + resp.efectivo + resp.transferencia
+                caja_total_facturado.value = resp.tarjeta + resp.efectivo + resp.transferencia
                 let montos = `
                 <div class="alert alert-primary d-flex justify-content-between" role="alert">
                 <span>Caja Base:</span> <span>${monto}</span>
@@ -1989,6 +2030,9 @@ $('#bodyContent').on("click", ".btnDeleteRowTarjeta2", function (e) {
     let row = document.getElementById(id)
     row.remove()
 })
+
+
+
 $('#bodyContent').on("click", "#addNewTarjeta2", function (e) {
     //console.log('CLICK');
     let allMonto = document.getElementsByClassName('tarjertaInputs_monto2')[0]

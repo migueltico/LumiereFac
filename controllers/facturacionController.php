@@ -49,6 +49,100 @@ class facturacionController extends view
         $data["facturas"] =  $result;
         echo view::renderElement('facturacion/historialDiario', $data);
     }
+    public function lastFactRePrint()
+    {
+        $icon = help::icon();
+        $result = fac::lastFactRePrint();
+        $data["icons"] =  $icon['icons'];
+        $data["facturas"] =  $result;
+        echo view::renderElement('facturacion/lastFactRePrint', $data);
+    }
+    public function reprintFact()
+    {
+        $fac = $_POST['fac'];
+        $result = fac::getFacToRePrint($fac);
+        $header = $result['header']['data'][0];
+        $rows = $result['rows']['data'];
+        $cantidadArticulos = 0;
+        $cantidadArticulos = 0;
+        foreach ($rows as $row) {
+            $cantidadArticulos += $row['cantidad'];
+        }
+
+        $data["items"] =  $rows;
+        $data["facturas"] =  $result;
+        $Sucursal = admin::infoSucursal()['data'];
+        $data["Sucursal"] = $Sucursal;
+        $data["nameCliente"] =  $header['cliente'];
+        $data["nameVendedor"] =  $header['cajero'];
+        $data["monto_envio"] =  $header['monto_envio'] ?? 0;
+        $data["tipoVenta"] =  $header['tipo'];
+        $data["descuento"] =  $header['descuento'];
+        $data["fecha"] =  $header['fecha'];
+        $data["subtotal_descuento"] = $header['total'] - $header['monto_envio'] - $header['impuesto'];
+        $data["iva"] =  $header['impuesto'];
+        $data["total"] =  $header['total'];
+        $otherCards = null;
+        if ($header['otherCards'] != "") {
+            $otherCards = explode(";", $header['otherCards']);
+        }
+        $methodPay = array("methodPay" => array());
+        if ($header['monto_efectivo'] != 0 && $header['monto_efectivo'] != null) {
+            $efectivo = array("methods" => array(
+                "monto" => $header['monto_efectivo'],
+                "montoWithFormat" => number_format($header['monto_efectivo'], '2', '.', ','),
+                "tipo" => 'efectivo'
+            ));
+            array_push($methodPay["methodPay"], $efectivo);
+        }
+        if ($header['monto_tarjeta'] != 0 && $header['monto_tarjeta'] != null) {
+            $efectivo = array("methods" => array(
+                "monto" => $header['monto_tarjeta'],
+                "montoWithFormat" => number_format($header['monto_tarjeta'], '2', '.', ','),
+                "tipo" => 'tarjeta',
+                "tarjeta" => $header['numero_tarjeta'],
+                "hasMore" => true,
+                'extraCards' => array()
+            ));
+            array_push($methodPay["methodPay"], $efectivo);
+        }
+        if ($otherCards !== null) {
+            foreach ($otherCards as $tarjeta) {
+                $card = explode(",", $tarjeta);
+                $monto = $card[1];
+                $idcard = $card[0];
+                $tipo = $card[2];
+                $arrayData = array(
+                    "monto" => $monto,
+                    "montoWithFormat" => number_format($monto, '2', '.', ','),
+                    "tipo" => $tipo,
+                    "tarjeta" => $idcard,
+
+                );
+                array_push($methodPay["methodPay"][1]['methods']['extraCards'], $arrayData);
+            }
+        }
+        if ($header['monto_transferencia'] != 0 && $header['monto_transferencia'] != null) {
+            $transferencia = array("methods" => array(
+                "monto" => $header['monto_transferencia'],
+                "montoWithFormat" => number_format($header['monto_transferencia'], '2', '.', ','),
+                "tipo" => 'transferencia',
+                "referencia" => $header['referencia_transferencia'],
+                "banco" => $header['banco_transferencia']
+
+            ));
+            array_push($methodPay["methodPay"], $transferencia);
+        }
+
+
+
+
+
+        $data["cantidadArticulos"] =  $cantidadArticulos;
+        $data["methodPay"] =  $methodPay["methodPay"];
+        $data["factura"] =  array("fac" => $header['fac']);
+        echo view::renderElement('facturas/facturaVentaReprint', $data);
+    }
     public function apartadosSinCancelar()
     {
         $icon = help::icon();

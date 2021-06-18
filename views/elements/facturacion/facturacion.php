@@ -58,7 +58,7 @@
                             </div>
                             <div class="custom-control custom-switch mt-2 ml-3" id="ckCambiosWrapper">
                                 <input type="checkbox" class="custom-control-input" id="ckCambios">
-                                <label class="custom-control-label" for="ckCambios">Cambio o devoluciones <button type="text" placeholder="Inhabilitado" disable></button></label>
+                                <label class="custom-control-label" for="ckCambios">Cambio o devoluciones</label>
                             </div>
                         </div>
                         <div class="input-group mb-3 mt-3" id="apartadosWrapper" style="display: none;">
@@ -124,6 +124,7 @@
 
                     <div class="input-group mb-3 col-lg-6 col-md-6 col-sm-4">
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#FacSendModal" id="PrintFactBtn">FACTURAR</button>
+                        <button type="button" class="btn btn-primary ml-5" data-toggle="modal" data-target="#reimprimirModal" id="rePrintFactBtn"><?=$icons['print'] ?> Reimprimir Fac</button>
                     </div>
                 </div>
             </div>
@@ -168,5 +169,6 @@
     <?php include_once(self::modal('modalAddCliente')) ?>
     <?php include_once(self::modal('modalFacSend')) ?>
     <?php include_once(self::modal('modalAbonarApartado')) ?>
+    <?php include_once(self::modal('modalReprintFac')) ?>
 </div>
 <div class="" id="printContainer"></div>
