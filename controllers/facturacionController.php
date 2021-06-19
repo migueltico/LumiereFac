@@ -147,6 +147,11 @@ class facturacionController extends view
     {
         $icon = help::icon();
         $fac = (int) $_POST['fac'];
+
+        if($fac=='' || $fac == null ){
+            $this->lastFactRePrint();
+            return;
+        }
         $result = fac::searchFacByNumber($fac);
         $data["icons"] =  $icon['icons'];
         $data["facturas"] =  $result;

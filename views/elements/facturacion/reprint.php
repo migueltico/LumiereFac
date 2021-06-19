@@ -9,7 +9,8 @@
                         <div class="input-group-prepend">
                             <label id="SearchReprintFac_inputBtn" class="btn btn-outline-secondary" type="button">Buscar</label>
                         </div>
-                        <input type="text" autocomplete="off" id="SearchReprintFac_input" class="form-control text-left" data-cliente="1" autofocus="on" placeholder="Buscar por # de Factura" value="">
+                        <input type="text" autocomplete="off" id="SearchReprintFac_input" class="form-control text-left" data-toggle="tooltip" data-placement="top" title="Puedes precionar 'ENTER' buscar una factura especifica (sin importar el usuario) o dejar vacio para filtrar las ultimas 100 facturas ( Usuario logueado )" 
+                         data-cliente="1" autofocus="on" placeholder="Buscar por # de Factura" value="">
                     </div>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
                         Recibos de abonos o apartados no estan disponibles para una impresion correcta
@@ -22,3 +23,4 @@
         </div>
     </div>
 </div>
+
