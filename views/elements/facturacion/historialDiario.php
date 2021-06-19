@@ -89,6 +89,7 @@
                                                     <tr>
                                                         <th data-type="1" data-inner="0" scope="col" style="text-align: left;">#Codigo</th>
                                                         <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Descripcion</th>
+                                                        <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Talla</th>
                                                         <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Marca</th>
                                                         <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Estilo</th>
                                                         <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Precio</th>
@@ -108,6 +109,7 @@
                                                         <tr class="TrRow">
                                                             <td scope="row" style="text-align: left;"><?= $detail["codigo"] ?></td>
                                                             <td scope="row" style="text-align: left;"><?= $detail["descripcion"] ?></td>
+                                                            <td scope="row" style="text-align: left;"><?= $detail["talla"] ?></td>
                                                             <td scope="row" style="text-align: left;"><?= $detail["marca"] ?></td>
                                                             <td scope="row" style="text-align: left;"><?= $detail["estilo"] ?></td>
                                                             <td scope="row" style="text-align: left;"><?= number_format($detail['precio'], 2, '.', ',') ?></td>

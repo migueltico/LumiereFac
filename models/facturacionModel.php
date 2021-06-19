@@ -327,7 +327,10 @@ class facturacionModel
             foreach ($header['data'] as $factura) {
                 $id = (int) $factura['consecutivo'];
                 $tipo = (int) $factura['tipo'];
-                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total, t.talla FROM detalle_factura d 
+                INNER JOIN producto p ON p.idproducto = d.idproducto 
+                INNER JOIN tallas t ON t.idtallas = p.idtalla 
+                WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
                 }
@@ -351,7 +354,10 @@ class facturacionModel
             foreach ($header['data'] as $factura) {
                 $id = (int) $factura['consecutivo'];
                 $tipo = (int) $factura['tipo'];
-                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total, t.talla FROM detalle_factura d 
+                INNER JOIN producto p ON p.idproducto = d.idproducto 
+                INNER JOIN tallas t ON t.idtallas = p.idtalla 
+                WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
                 }
@@ -375,7 +381,10 @@ class facturacionModel
             foreach ($header['data'] as $factura) {
                 $id = (int) $factura['consecutivo'];
                 $tipo = (int) $factura['tipo'];
-                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total, t.talla FROM detalle_factura d 
+                INNER JOIN producto p ON p.idproducto = d.idproducto 
+                INNER JOIN tallas t ON t.idtallas = p.idtalla 
+                WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
                 }
