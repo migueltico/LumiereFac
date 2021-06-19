@@ -110,7 +110,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="btn btn-success w-100 execute_reprint" data-fac="<?= $factura['consecutivo'] ?>">IMPRIMIR COPIA FAC# <?= $factura['consecutivo'] ?></div>
+                                        <div class="btn btn-success w-100 execute_reprint" data-fac="<?= $factura['consecutivo'] ?>">IMPRIMIR COPIA FAC# (<?=($factura['tipo'] == 3? 'Este tipo de factura no esta soportada para una impresion correcta': '')  ?>)<?= $factura['consecutivo'] ?></div>
                                     </div>
                                 </div>
                             </div>
