@@ -143,6 +143,15 @@ class facturacionController extends view
         $data["factura"] =  array("fac" => $header['fac']);
         echo view::renderElement('facturas/facturaVentaReprint', $data);
     }
+    public function searchFacByNumber()
+    {
+        $icon = help::icon();
+        $fac = (int) $_POST['fac'];
+        $result = fac::searchFacByNumber($fac);
+        $data["icons"] =  $icon['icons'];
+        $data["facturas"] =  $result;
+        echo view::renderElement('facturacion/lastFactRePrint', $data);
+    }
     public function apartadosSinCancelar()
     {
         $icon = help::icon();
@@ -158,6 +167,14 @@ class facturacionController extends view
         $data["facturas"] = $fac['data'];
         $data["icons"] =  $icon['icons'];
         echo view::renderElement('facturacion/facturas_pendientes', $data);
+    }
+    public function reprint()
+    {
+        $icon = help::icon();
+        $fac = fac::getPendingFac();
+        $data["facturas"] = $fac['data'];
+        $data["icons"] =  $icon['icons'];
+        echo view::renderElement('facturacion/reprint', $data);
     }
 
     public function pendientesProductos()

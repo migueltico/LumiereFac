@@ -77,6 +77,9 @@
                 <?php if (array_key_exists("Apartados_modulo", $_SESSION['permisos'])) :  ?>
                     <li data-functionName="0" data-linkto="/facturacion/historial/apartados" class="dataLink"><span class="spanStyleMenu"></span><span>Apartados</span><span></span></li>
                 <?php endif; ?>
+                <?php if (array_key_exists("reprint_modulo", $_SESSION['permisos'])) :  ?>
+                    <li data-functionName="0" data-linkto="/facturacion/reprint" class="dataLink"><span class="spanStyleMenu"></span><span>Reimpresion de facturas</span><span></span></li>
+                <?php endif; ?>
                 <?php if (array_key_exists("reportes_modulo", $_SESSION['permisos'])) :  ?>
                     <li data-functionName="0" data-linkto="/reportes" class="dataLink"><span class="spanStyleMenu"></span><span>Reportes</span><span></span></li>
                 <?php endif; ?>

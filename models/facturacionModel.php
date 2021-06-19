@@ -365,6 +365,30 @@ class facturacionModel
         }
         return $data;
     }
+    public static function searchFacByNumber($fac)
+    {
+        $con = new conexion();
+        $iduser = $_SESSION['id'];
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, fecha FROM facturas  WHERE  tipo <> 3 AND consecutivo = $fac");
+        $data = array();
+        if ($header['rows'] > 0) {
+            foreach ($header['data'] as $factura) {
+                $id = (int) $factura['consecutivo'];
+                $tipo = (int) $factura['tipo'];
+                $detalis = $con->SQND("SELECT p.codigo, d.idproducto, p.descripcion, p.marca, p.estilo, d.cantidad, d.descuento, d.iva, d.precio, d.total FROM detalle_factura d INNER JOIN producto p ON p.idproducto = d.idproducto WHERE d.idfactura =$id");
+                if ($detalis['rows'] > 0) {
+                    $factura['details'] = $detalis['data'];
+                }
+                if ($tipo == 3) {
+                    $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat,  (SELECT SUM(r2.abono) FROM recibos AS r2 WHERE idfactura =$id ) AS fullAbono  FROM recibos r WHERE r.idfactura =$id");
+                    $factura['fullAbono'] = $recibosList['data'][0]['fullAbono'];
+                    $factura['recibos'] = $recibosList['data'];
+                }
+                array_push($data, $factura);
+            }
+        }
+        return $data;
+    }
     public static function apartadosSinCancelar()
     {
         $con = new conexion();

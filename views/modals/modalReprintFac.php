@@ -8,12 +8,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- <div class="input-group mb-3">
+                <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <label id="SearchReprintFac_inputBtn" class="btn btn-outline-secondary" type="button">Buscar</label>
                     </div>
                     <input type="text" autocomplete="off" id="SearchReprintFac_input" class="form-control text-left" data-cliente="1" autofocus="on" placeholder="Buscar por # de Factura" value="">
-                </div> -->
+                </div>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     Solo mostraran facturas de venta local y envios relacionadas al usuario actual, recibos de abonos o apartados no estan disponibles
                 </div>

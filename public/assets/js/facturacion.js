@@ -941,21 +941,22 @@ function printFact(datos) {
         })
 
 }
+
 function ReprintFact(fac) {
     let formData = new FormData()
-    formData.append('fac',fac)
+    formData.append('fac', fac)
     fetch("/facturacion/reprintFact", {
             method: "POST",
             body: formData
         }).then(resp => resp.text())
         .then(resp => {
 
-                //$(`#reimprimirModal`).modal('toggle')
-                let h = resp;
-                let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
-                window.print();
-                d.remove();
-          
+            //$(`#reimprimirModal`).modal('toggle')
+            let h = resp;
+            let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
+            window.print();
+            d.remove();
+
             //resetFactScreen()
         })
 
@@ -963,7 +964,24 @@ function ReprintFact(fac) {
 $('#bodyContent').on("click", ".execute_reprint", function (e) {
     console.log(e)
     let fac = e.target.dataset.fac
-    ReprintFact(fac) 
+    ReprintFact(fac)
+})
+$('#bodyContent').on("keypress", "#SearchReprintFac_input", function (e) {
+    console.log(e)
+    
+    if (e.key == 'Enter') {
+        let formData = new FormData()
+        let value = e.target.value
+        formData.append('fac', value)
+        fetch("/facturacion/searchFacByNumber", {
+                method: "POST",
+                body: formData
+            }).then(resp => resp.text())
+            .then(resp => {
+                let content = document.getElementById('contentSearchRePrintFac')
+                content.innerHTML = resp
+            })
+    }
 })
 $('#bodyContent').on("change", ".fact_switchBtns input[type='checkbox']", function (e) {
     let check = e.target.checked

@@ -87,6 +87,11 @@
                             <label class="text-primary" for="Apartados_cancelar"><input type="checkbox" class="mr-2" name="Apartados_cancelar" id="Apartados_cancelar">Abonar</label>
                         </div>
                     </label>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Reimpresion de Facturas</strong>
+                        <div class="card p-3 textcolorhover">
+                            <label class="text-success" for="reprint_modulo"><input type="checkbox" class="mr-2" name="reprint_modulo" id="reprint_modulo">Ver modulo</label>
+                        </div>
+                    </label>
                     <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Reportes</strong>
                         <div class="card p-3 textcolorhover">
                             <label class="text-success" for="reportes_modulo"><input type="checkbox" class="mr-2" name="reportes_modulo" id="reportes_modulo">Ver modulo</label>

@@ -75,6 +75,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/search/product', 'facturacionController@searchProduct');
         route::post('/search/product/ctrlq', 'facturacionController@searchProductCtrlQ');
         route::post('/facturaVenta', 'facturacionController@getFact');
+        route::post('/reprint', 'facturacionController@reprint');
         route::post('/pendientes', 'facturacionController@pendientes');
         route::post('/pendientes/productos', 'facturacionController@pendientesProductos');
         route::post('/pendientes/changeStateFac', 'facturacionController@changeStateFac');
@@ -93,6 +94,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/consultar/saldo', 'facturacionController@saldoDevoluciones');
         route::post('/getlast/prints', 'facturacionController@lastFactRePrint');
         route::post('/reprintFact', 'facturacionController@reprintFact');
+        route::post('/searchFacByNumber', 'facturacionController@searchFacByNumber');
     });
     //+++++++++++ CLIENTES +++++++++++//
     route::group('clientes', function () {
