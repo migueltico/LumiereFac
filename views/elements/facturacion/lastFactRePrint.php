@@ -9,7 +9,7 @@
                             <div class="card  mb-2 border-bottom border-primary">
                                 <div class="card-header" id="headingOne">
                                     <h2 class="mb-0">
-                                        <button class="btn btn-default btn-block text-left d-flex justify-content-between" type="button" data-toggle="collapse" data-target="#fac<?= $factura['consecutivo'] ?>" aria-expanded="true" aria-controls="collapseOne">
+                                        <button class="btn btn-<?=($factura['tipo'] == 3? 'danger': 'default')  ?> btn-block text-left d-flex justify-content-between" type="button" data-toggle="collapse" data-target="#fac<?= $factura['consecutivo'] ?>" aria-expanded="true" aria-controls="collapseOne">
                                             <span><strong>Fac#:</strong> <?= $factura['consecutivo'] ?></span>
                                             <span><strong>Total: <?= $factura['monto_envio'] > 0 ? " - (i.e)" : "" ?>: </strong><?= number_format($factura['total'], 2, '.', ',') ?></span>
                                             <span><strong>Envio: </strong><?= number_format($factura['monto_envio'], 2, '.', ',') ?></span>
