@@ -369,7 +369,7 @@ class facturacionModel
     {
         $con = new conexion();
         $iduser = $_SESSION['id'];
-        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, fecha FROM facturas  WHERE  tipo <> 3 AND consecutivo = $fac");
+        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, fecha FROM facturas  WHERE consecutivo = $fac");
         $data = array();
         if ($header['rows'] > 0) {
             foreach ($header['data'] as $factura) {
