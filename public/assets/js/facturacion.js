@@ -7,8 +7,8 @@ $('document').ready(function () {
 });
 $("#bodyContent").on("click", "#rePrintFactBtn", function (e) {
     fetch("/facturacion/getlast/prints", {
-            method: "POST"
-        }).then(resp => resp.text())
+        method: "POST"
+    }).then(resp => resp.text())
         .then(resp => {
             let content = document.getElementById('contentSearchRePrintFac')
             content.innerHTML = resp
@@ -28,6 +28,260 @@ $('#bodyContent').on("keypress", "#SearchFac_input", function (e) {
         getFacData(this.value)
     }
 })
+$('#bodyContent').on("keypress", "#searchProductOfertaEdit", function (e) {
+    if (e.charCode == 13) {
+        if (e.target.value.length > 0) {
+            searchProductToOferta(e, 'searchProductOfertaEdit', 'ofertaRowsEditModal')
+        } else {
+            Swal.fire({
+                position: 'top',
+                title: 'Falta codigo',
+                text: 'Debes ingresar el codigo de un producto',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 2500,
+                timerProgressBar: true
+            })
+        }
+    }
+})
+$('#bodyContent').on("keypress", "#searchProductOfertaAdd", function (e) {
+    if (e.charCode == 13) {
+        if (e.target.value.length > 0) {
+            searchProductToOferta(e, 'searchProductOfertaAdd', 'ofertaRowsModal')
+        } else {
+            Swal.fire({
+                position: 'top',
+                title: 'Falta codigo',
+                text: 'Debes ingresar el codigo de un producto',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 2500,
+                timerProgressBar: true
+            })
+        }
+    }
+})
+function searchProductToOferta(e, idSearch, idTbody) {
+    let element = document.getElementById(idSearch)
+    let toSearch = document.getElementById(idSearch).value
+    element.focus();
+    element.setSelectionRange(0, toSearch.length);
+    let resultCompare = existProductRowIntable(toSearch, idTbody)
+    if (resultCompare == true) {
+        let formData = new FormData()
+        formData.append("codigo", toSearch)
+        fetch("/admin/ofertas/getproduct", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.text())
+            .then(resp => {
+                if (resp != '0' && resp != 'duplicado') {
+
+                    $(`#${idTbody}`).append(resp)
+                } else {
+                    if (resp == 'duplicado')
+                        Swal.fire({
+                            position: 'top',
+                            title: `Producto`,
+                            text: `Este producto ya se encuentra en otra oferta.`,
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            timer: 5000,
+                            timerProgressBar: true
+                        })
+                }
+            })
+
+    }
+}
+function existProductRowIntable(toSearch, idTable) {
+    let body2 = document.getElementById(idTable)
+    for (let item of body2.children) {
+        let inner = item.children[0].innerText
+        if (toSearch.trim() == inner) {
+            Swal.fire({
+                position: 'top',
+                title: 'El producto ya esta registrado',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 3500,
+                timerProgressBar: true
+            })
+            return item.children
+        }
+    }
+    return true
+}
+function getProductsRowsOnTable(idTableBody) {
+    let body2 = document.getElementById(idTableBody)
+    let ids = ''
+    for (let item of body2.children) {
+        let inner = item.children[0].innerText
+        ids += inner + ','
+    }
+    let products = ids.slice(0, -1)
+    return products
+}
+
+$('#bodyContent').on("click", ".delete_row_oferta", function (e) {
+    let id = this.dataset.id
+    let row = document.getElementById(id)
+    row.remove()
+})
+$('#bodyContent').on("click", ".delete_oferta_btn", function (e) {
+    let id = this.dataset.id
+    let row = document.getElementById('oferta_' + id)
+
+    let formData = new FormData()
+    formData.append("idOferta", id)
+    fetch("/admin/ofertas/deleteoferta", {
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
+        .then(resp => {
+            if (resp.estado && resp.error == '00000') {
+                row.remove()
+                Swal.fire({
+                    position: 'top',
+                    title: `Oferta`,
+                    text: `Oferta eliminada correctamente.`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 5000,
+                    timerProgressBar: true
+                })
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: `Oferta`,
+                    text: `Ha ocurrido un problema al tratar de eliminar esta oferta.`,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 5000,
+                    timerProgressBar: true
+                })
+            }
+        })
+})
+
+$('#bodyContent').on("click", "#btnNewoferta", function (e) {
+    document.getElementById("ofertas_AddOfertaForm").reset();
+    let bodyTable = document.getElementById('ofertaRowsModal')
+    bodyTable.innerHTML = ''
+})
+$('#bodyContent').on("click", ".edit_oferta_btn", function (e) {
+    document.getElementById("ofertas_EditOfertaForm").reset();
+    let bodyTable = document.getElementById('ofertaRowsEditModal')
+    bodyTable.innerHTML = ''
+    let idbtnEdit = document.getElementById('ofertas_add_btnEditOferta')
+    idbtnEdit.dataset.id = ''
+    let id = this.dataset.id
+    let formData = new FormData()
+    formData.append("idOferta", id)
+    fetch("/admin/ofertas/getofertasbyid", {
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
+        .then(resp => {
+            if (resp.estado && resp.error == '00000') {
+                let oferta = resp.data
+                let idbtnEdit = document.getElementById('ofertas_add_btnEditOferta')
+                let nombre = document.getElementById('ofertas_edit_nombre')
+                let cantidad = document.getElementById('ofertas_edit_cantidad')
+                let tipoOferta = document.getElementById('ofertas_edit_tipooferta')
+                let descuento = document.getElementById('ofertas_edit_descuento')
+                let unica = document.getElementById('ofertas_edit_unica')
+                let tbody = document.getElementById('ofertaRowsEditModal')
+                nombre.value = oferta.nombreOferta
+                cantidad.value = oferta.cantidad
+                tipoOferta.value = oferta.productoOrlista
+                descuento.value = oferta.descuento
+                unica.checked = oferta.unica == 0 ? false : true
+                tbody.innerHTML = resp.htmlRows
+                idbtnEdit.dataset.id = oferta.idOferta
+            }
+        })
+})
+$('#bodyContent').on("click", "#ofertas_add_btnAddOferta", function (e) {
+    let formData = new FormData(document.getElementById('ofertas_AddOfertaForm'))
+    let productos = getProductsRowsOnTable('ofertaRowsModal')
+    formData.append("productos", productos)
+    fetch("/admin/ofertas/addoferta", {
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
+        .then(resp => {
+            if (resp.error == '00000') {
+                Swal.fire({
+                    position: 'top',
+                    title: `Oferta`,
+                    text: `Oferta Agregada correctamente.`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+                $('#ofertas_addOfertas').modal('toggle')
+                loadPage(null, "/admin/ofertas")
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: `Error`,
+                    text: `${JSON.stringify(resp.errorMsg)}`,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+            }
+        })
+
+})
+$('#bodyContent').on("click", "#ofertas_add_btnEditOferta", function (e) {
+    let formData = new FormData(document.getElementById('ofertas_EditOfertaForm'))
+    let idbtnEdit = document.getElementById('ofertas_add_btnEditOferta')
+    let productos = getProductsRowsOnTable('ofertaRowsEditModal')
+    formData.append("productos", productos)
+    formData.append("idOferta", idbtnEdit.dataset.id)
+    fetch("/admin/ofertas/updateoferta", {
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
+        .then(resp => {
+            if (resp.error == '00000') {
+                let nombre = document.getElementById('ofertas_edit_nombre')
+                let tipoOferta = document.getElementById('ofertas_edit_tipooferta')
+                let descuento = document.getElementById('ofertas_edit_descuento')
+                let unica = document.getElementById('ofertas_edit_unica')
+                Swal.fire({
+                    position: 'top',
+                    title: `Oferta`,
+                    text: `Oferta actualizada correctamente.`,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+                $('#ofertas_editOfertas').modal('toggle')
+                loadPage(null, "/admin/ofertas")
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    title: `Error`,
+                    text: `${JSON.stringify(resp.errorMsg)}`,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+            }
+        })
+
+})
+
+
+
 $('#bodyContent').on("change", ".inputCantFactRow", function (e) {
     validateInputCantRow(this)
 })
@@ -69,10 +323,10 @@ function aplicarDevolucion() {
         "Content-Type": "application/json"
     }
     fetch("/facturacion/agregar/devolucion", {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(json)
-        }).then(resp => resp.json())
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(json)
+    }).then(resp => resp.json())
         .then(resp => {
             getFacData(fac)
             Swal.fire({
@@ -97,7 +351,7 @@ function validateInputCantRow(input) {
         Swal.fire({
             position: 'top',
             title: `Cantidad maxima superada`,
-            text: `La cantidad de ${input.value} Unidad${input.value>1?"es":""} supera la cantidad de ${input.max} Unidad${input.max>1?"es":""} facturada${input.max>1?"s":""} del producto.`,
+            text: `La cantidad de ${input.value} Unidad${input.value > 1 ? "es" : ""} supera la cantidad de ${input.max} Unidad${input.max > 1 ? "es" : ""} facturada${input.max > 1 ? "s" : ""} del producto.`,
             icon: 'error',
             confirmButtonText: 'OK',
             // timer: 8000,
@@ -153,9 +407,9 @@ function getFacData(fac) {
         let formData = new FormData()
         formData.append('fac', fac)
         fetch('facturacion/consultar/factura', {
-                method: 'POST',
-                body: formData
-            }).then(resp => resp.json())
+            method: 'POST',
+            body: formData
+        }).then(resp => resp.json())
             .then(resp => {
                 if (resp !== null) {
                     let idfacDevolucion = document.getElementById("idfacDevolucion")
@@ -194,8 +448,8 @@ function getFacData(fac) {
                     <td class='text-center'>${element.descuento}%</td>
                     <td class='text-center'>${element.iva}%</td>
                     <td>${element.total}</td>
-                    <td><input class="inputCantFactRow" style='text-align:center' ${element.cantidad == 0 ?'disabled': ''} type="number" min='${element.cantidad > 0 ? 1: 0}' max='${element.cantidad}' value='${element.cantidad > 0 ? 1: 0}'></td>
-                    <td class='text-center'><input class="inputSelectRowFact" type='checkbox' ${element.cantidad == 0 ?'disabled': ''} data-codigo="${element.idproducto}" data-cantidad="${element.cantidad}" data-precio="${element.precio}" data-descuento="${element.descuento}" data-iva="${element.iva}" data-total="${element.total}" ></td>
+                    <td><input class="inputCantFactRow" style='text-align:center' ${element.cantidad == 0 ? 'disabled' : ''} type="number" min='${element.cantidad > 0 ? 1 : 0}' max='${element.cantidad}' value='${element.cantidad > 0 ? 1 : 0}'></td>
+                    <td class='text-center'><input class="inputSelectRowFact" type='checkbox' ${element.cantidad == 0 ? 'disabled' : ''} data-codigo="${element.idproducto}" data-cantidad="${element.cantidad}" data-precio="${element.precio}" data-descuento="${element.descuento}" data-iva="${element.iva}" data-total="${element.total}" ></td>
                     <td><input style='text-align:center;max-width:80px' type="text" disabled value='0.00'></td>
                 </tr>
                 `
@@ -528,8 +782,10 @@ $("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
 
 function resetFactScreen() {
     localStorage.removeItem('saldo')
+    localStorage.removeItem('ofertas')
     $(`.modal-backdrop`).remove()
     loadPage(null, "facturacion/facturar")
+
 }
 $('#bodyContent').on("click", "#btnMakeFact", function (e) {
     //ANCLA
@@ -912,10 +1168,10 @@ function printFact(datos) {
     // let formData = new FormData()
     // formData.append("datos", JSON.stringify(datos))
     fetch("/facturacion/facturaVenta", {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(datos)
-        }).then(resp => resp.text())
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(datos)
+    }).then(resp => resp.text())
         .then(resp => {
 
             if (Okprint.checked) {
@@ -946,9 +1202,9 @@ function ReprintFact(fac) {
     let formData = new FormData()
     formData.append('fac', fac)
     fetch("/facturacion/reprintFact", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.text())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.text())
         .then(resp => {
 
             //$(`#reimprimirModal`).modal('toggle')
@@ -968,15 +1224,15 @@ $('#bodyContent').on("click", ".execute_reprint", function (e) {
 })
 $('#bodyContent').on("keypress", "#SearchReprintFac_input", function (e) {
     console.log(e)
-    
+
     if (e.key == 'Enter') {
         let formData = new FormData()
         let value = e.target.value
         formData.append('fac', value)
         fetch("/facturacion/searchFacByNumber", {
-                method: "POST",
-                body: formData
-            }).then(resp => resp.text())
+            method: "POST",
+            body: formData
+        }).then(resp => resp.text())
             .then(resp => {
                 let content = document.getElementById('contentSearchRePrintFac')
                 content.innerHTML = resp
@@ -1102,12 +1358,15 @@ $('#bodyContent').on("keypress", "#ScanCode", function (e) {
     }
 
 })
+function getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
 /**
  * *************************************************************************************
  * *************************************************************************************
  */
 
-function getProductFact(e) {
+async function getProductFact(e) {
     let element = document.getElementById('ScanCode')
     let toSearch = document.getElementById('ScanCode').value
     element.focus();
@@ -1117,63 +1376,145 @@ function getProductFact(e) {
         let element = document.getElementById('productSearch')
         let formData = new FormData()
         formData.append("toSearch", toSearch)
-        fetch("/facturacion/search/product", {
-                method: "POST",
-                body: formData
-            }).then(resp => resp.json())
-            .then(resp => {
-                if (resp.data !== false) {
-                    let data = resp.data
-                    if (data.stock <= 0) {
-                        if (data.stock < 0) {
-                            Swal.fire({
-                                position: 'top',
-                                title: "Producto sin stock",
-                                text: `Este producto tiene un stock negativo de ${data.stock}`,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            })
-                            return
-                        }
-                        Swal.fire({
-                            position: 'top',
-                            title: "Producto sin stock",
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        })
-                        return
-                    }
-                    let descuento = (data.descuento == null ? 'N/A' : data.descuento + '%')
-                    let des_descuento = (data.descuento_descripcion == null ? 'Sin Descuento' : data.descuento_descripcion)
-                    let precios = calcTotalRowPrice(data.precio_venta, (data.descuento == null ? 0 : data.descuento), (data.activado_iva == 0 ? 0 : data.iva))
-                    let row = /*html*/ `
-                        <tr class="productRowFac ${data.descuento == null ? 'trNotDiscount':''}" id="itemRowProduct_${data.idproducto}">
-                            <td scope="row" data-codigo="${data.codigo}" data-id="${data.idproducto}" data-toggle="tooltip"data-placement="bottom" title="${data.idproducto}">${data.codigo}</td>
-                            <td scope="row">${data.descripcion_short} | ${data.marca}</td>
-                            <td scope="row">${data.talla}</td>
-                            <td scope="row">${(data.activado_iva == 0 ? 0 : data.iva)}</td>
-                            <td scope="row"><input type="number" min="1" class="cantInputFact" id="id_${data.idproducto}" style="width: 43px !important;text-align:center" name="" id="" value="1"></td>
-                            <td scope="row">${data.stock}</td>
-                            <td scope="row" ${(data.precio_venta < 1 ?'style="color:red;"':"")}>${data.precio_venta}</td>
-                            <td scope="row" ${data.descuento == null ? 'class="tdNotDiscount"':''} data-toggle="tooltip" data-descuento="${(data.descuento == null ? 0 : data.descuento)}" data-placement="bottom" title="${des_descuento}">${descuento}</td>
-                            <td scope="row" class="productRowFac_subtotal">${precios[0]}</td>
-                            <td scope="row" class="productRowFac_total">${precios[1]}</td>
-                            <td scope="row"><button class="btn btn-danger removeItemProductBtn" data-id="${data.idproducto}">X</button></td>
-                        </tr>
-            `
-                    $('#appendItemRowProduct').append(row)
-                    getSubTotalAndTotal()
 
-                } else {
+        let data = await fetch("/facturacion/search/product", {
+            method: "POST",
+            body: formData
+        })
+        let resp = await data.json()
+        if (resp.data !== false) {
+            let data = resp.data
+            if (data.stock <= 0) {
+                if (data.stock < 0) {
                     Swal.fire({
                         position: 'top',
-                        title: resp.msg,
-                        text: resp.errorData.errorMsg[2],
+                        title: "Producto sin stock",
+                        text: `Este producto tiene un stock negativo de ${data.stock}`,
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })
+                    return
                 }
+                Swal.fire({
+                    position: 'top',
+                    title: "Producto sin stock",
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+                return
+            }
+            let oferta
+            // si oferta id exites
+            if (data.idOferta > 0) {
+                //Obtengo la info de la oferta
+                oferta = await getOferta(data.idOferta)
+
+                //verifico si existe alguna oferta registrada
+                let jsonOferta = localStorage.getItem('ofertas')
+                console.log(jsonOferta)
+                //si existe alguna oferta registrada agrego verifico si ya existe y si se puede stackear
+                if (jsonOferta) {
+                    // se parsea
+                    jsonOferta = JSON.parse(jsonOferta)
+                    console.log(jsonOferta)
+                    //valido si existe el ID de la oferta en la lista de ofertas registradas en localstorage
+                    let resutl = jsonOferta.id.some(e => e == data.idOferta)
+                    // valido si es true o false, si existe la oferta
+                    if (resutl) {
+                        //asignamos el ID de la oferta repetida para verificar los siguientes pasos
+                        let id = `oferta_${data.idOferta}`
+                        if (jsonOferta[id]['unica'] == 0) {
+                            //asigno la cantidad maxima actual a variable
+                            let aumentarMaxima = jsonOferta[id]['cantidadMaximaActual']
+
+                            //valido si la cantidad es por cada producto en la lista o solo por la oferta
+                            if (jsonOferta[id]['productoOrlista'] == 1) {
+                                //consigo la canstidad de productos
+                                let totalCodigos = jsonOferta[id]['productosID'].length
+                                //agrego a la cantidad maxima la cantidad por oferta X cantidad de productos
+                                jsonOferta[id]['cantidadMaximaActual'] = parseInt(aumentarMaxima) + (parseInt(oferta.cantidad) * totalCodigos)
+                            } else if (jsonOferta[id]['productoOrlista'] == 2) { // solo por oferta
+                                //actualizo la cantidad maxima suamandole el valor de la cantidad de oferta
+                                jsonOferta[id]['cantidadMaximaActual'] = parseInt(aumentarMaxima) + parseInt(oferta.cantidad)
+                            }
+
+
+                        }
+                        localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+                    } else {
+                        //Ya existen ofertas pero la actual hay que agregarla
+
+                        let productosCodigo = oferta.productos.split(',')
+
+                        //se agrega el ID y los nuevos datos de la oferta
+                        jsonOferta['id'] = [...jsonOferta.id, oferta.idOferta]
+                        jsonOferta[`oferta_${oferta.idOferta}`] = { ...oferta }
+                        jsonOferta[`oferta_${oferta.idOferta}`]['productosID'] = productosCodigo
+                        jsonOferta[`oferta_${oferta.idOferta}`]['cantidadUsadaActual'] = 0
+                        jsonOferta[`oferta_${oferta.idOferta}`]['cantidadMaximaActual'] = oferta.productoOrlista == 1 ? (parseInt(oferta.cantidad) * productosCodigo.length) : oferta.cantidad
+
+                        localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+                    }
+                } else {
+                    jsonOferta = {
+                        id: [oferta.idOferta],
+                    }
+                    let productosCodigo = oferta.productos.split(',')
+                    let totalCodigos = productosCodigo.length
+                    jsonOferta[`oferta_${oferta.idOferta}`] = { ...oferta }
+                    jsonOferta[`oferta_${oferta.idOferta}`]['productosID'] = productosCodigo
+                    jsonOferta[`oferta_${oferta.idOferta}`]['cantidadUsadaActual'] = 0
+                    jsonOferta[`oferta_${oferta.idOferta}`]['cantidadMaximaActual'] = oferta.productoOrlista == 1 ? (parseInt(oferta.cantidad) * totalCodigos) : oferta.cantidad
+
+                    localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+                }
+            } else {
+                oferta = false
+            }
+
+            let hasProductoOferta = verificarProductoOferta(data.codigo)
+            if (hasProductoOferta != undefined && hasProductoOferta.estado) {
+                data.descuento = parseInt(hasProductoOferta.descuento)
+                data.descuento_descripcion = 'Oferta id:' + hasProductoOferta.id
+            } else {
+                hasProductoOferta = {
+                    estado: false,
+                    descuento: null
+                }
+            }
+            let descuento = (data.descuento == null ? 'N/A' : data.descuento + '%')
+            let des_descuento = (data.descuento_descripcion == null ? 'Sin Descuento' : data.descuento_descripcion)
+            let precios = calcTotalRowPrice(data.precio_venta, (data.descuento == null ? 0 : data.descuento), (data.activado_iva == 0 ? 0 : data.iva))
+            let randnum = getRandom(10, 10000)
+
+            let row = /*html*/ `
+                        <tr class="productRowFac ${data.descuento == null ? 'trNotDiscount' : ''}" id="itemRowProduct_${data.idproducto}_${randnum}"  data-hasoferta="${(hasProductoOferta.estado ? 1 : 0)}">
+                            <td scope="row" data-oferta="${(hasProductoOferta.estado ? 1 : 0)}" data-codigo="${data.codigo}" data-id="${data.idproducto}" data-toggle="tooltip"data-placement="bottom" title="${data.idproducto}">${data.codigo}</td>
+                            <td scope="row">${(hasProductoOferta.estado ? '(- OFERTA -)' : '')} ${data.descripcion_short} | ${data.marca}</td>
+                            <td scope="row">${data.talla}</td>
+                            <td scope="row">${(data.activado_iva == 0 ? 0 : data.iva)}</td>
+                            <td scope="row" data-oferta="${oferta.idOferta}"><input type="number" min="1" ${(hasProductoOferta.estado ? 'max="1" disabled' : '')} class="cantInputFact" id="id_${data.idproducto}" style="width: 43px !important;text-align:center" name="" id="" value="1"  data-oferta="${oferta.idOferta}"></td>
+                            <td scope="row">${data.stock}</td>
+                            <td scope="row" ${(data.precio_venta < 1 ? 'style="color:red;"' : "")}>${data.precio_venta}</td>
+                            <td scope="row" ${data.descuento == null ? 'class="tdNotDiscount"' : ''} data-toggle="tooltip" data-descuento="${(data.descuento == null ? 0 : data.descuento)}" data-placement="bottom" title="${des_descuento}">${descuento}</td>
+                            <td scope="row" class="productRowFac_subtotal">${precios[0]}</td>
+                            <td scope="row" class="productRowFac_total">${precios[1]}</td>
+                            <td scope="row"><button class="btn btn-danger removeItemProductBtn" data-id="${data.idproducto}" data-rand="${randnum}" data-oferta="${oferta.idOferta == undefined && hasProductoOferta.estado ? hasProductoOferta.id : oferta.idOferta}">X</button></td>
+                        </tr>
+            `
+            $('#appendItemRowProduct').append(row)
+            getSubTotalAndTotal()
+
+        } else {
+            Swal.fire({
+                position: 'top',
+                title: resp.msg,
+                text: resp.errorData.errorMsg[2],
+                icon: 'error',
+                confirmButtonText: 'OK'
             })
+        }
+
     } else {
 
         RefreshCalcTotalRowPrice(resultCompare, 1)
@@ -1181,6 +1522,133 @@ function getProductFact(e) {
 
     }
     getSubTotalAndTotal()
+}
+function verificarProductoOferta(codigo) {
+    let jsonOferta = localStorage.getItem('ofertas')
+    jsonOferta = JSON.parse(jsonOferta)
+
+    if (jsonOferta) {
+        let result;
+        jsonOferta.id.map((e) => {
+            let id = `oferta_${e}`
+            let idnum = e
+            let producto = jsonOferta[id]['productosID']
+            producto.map((cod) => {
+                if (cod == codigo) {
+                    if (jsonOferta[id]['cantidadUsadaActual'] < jsonOferta[id]['cantidadMaximaActual']) {
+
+                        jsonOferta[id]['cantidadUsadaActual'] = parseInt(jsonOferta[id]['cantidadUsadaActual']) + 1
+                        localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+                        result = {
+                            estado: true,
+                            descuento: jsonOferta[id]['descuento'],
+                            id: idnum
+                        }
+                    }
+                }
+            })
+        })
+        return result
+    } else {
+        return { estado: false }
+    }
+}
+function updateOferta(idOferta, deleteOferta, cant, idRowDelete) {
+    let check = "check_" + idOferta
+    if (check == 'check_undefined' || check == 'check_') {
+        return
+    }
+
+    if (!deleteOferta) {
+        let jsonOferta = localStorage.getItem('ofertas')
+        //si existe alguna oferta registrada agrego verifico si ya existe y si se puede stackear  
+        // se parsea
+        jsonOferta = JSON.parse(jsonOferta)
+
+        //valido si existe el ID de la oferta en la lista de ofertas registradas en localstorage
+        let result = jsonOferta.id.some(e => e == idOferta)
+        //asigno la cantidad maxima actual a variable
+        if (result) {
+            let id = `oferta_${idOferta}`
+            if (jsonOferta[id]['unica'] == 1) {
+                //valido si la cantidad es por cada producto en la lista o solo por la oferta
+                if (jsonOferta[id]['productoOrlista'] == 1) {// cantidad por cada producto en la oferta
+                    //consigo la canstidad de productos
+                    let totalCodigos = jsonOferta[id]['productosID'].length
+                    //agrego a la cantidad maxima la cantidad por oferta X cantidad de productos
+                    jsonOferta[id]['cantidadMaximaActual'] = (parseInt(jsonOferta[id].cantidad) * totalCodigos)
+                } else if (jsonOferta[id]['productoOrlista'] == 2) { // solo por oferta
+                    //actualizo la cantidad maxima suamandole el valor de la cantidad de oferta
+                    jsonOferta[id]['cantidadMaximaActual'] = parseInt(jsonOferta[id].cantidad)
+                }
+
+                localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+            } else {//si pueden repertirse la misma oferta
+                //valido si la cantidad es por cada producto en la lista o solo por la oferta
+                if (jsonOferta[id]['productoOrlista'] == 1) {
+                    //consigo la canstidad de productos
+                    let totalCodigos = jsonOferta[id]['productosID'].length
+                    //agrego a la cantidad maxima la cantidad por oferta X cantidad de productos
+                    jsonOferta[id]['cantidadMaximaActual'] = (parseInt(jsonOferta[id].cantidad) * totalCodigos) * parseInt(cant)
+                } else if (jsonOferta[id]['productoOrlista'] == 2) { // solo por oferta
+                    //actualizo la cantidad maxima suamandole el valor de la cantidad de oferta
+                    jsonOferta[id]['cantidadMaximaActual'] = parseInt(jsonOferta[id].cantidad) * parseInt(cant)
+                }
+
+                localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+            }
+        }
+
+
+
+
+
+    } else {
+        let row_delete = document.getElementById(idRowDelete)
+        let jsonOferta = localStorage.getItem('ofertas')
+        // se parsea
+        jsonOferta = JSON.parse(jsonOferta)
+        let id = `oferta_${idOferta}`
+        if ((row_delete.dataset.hasoferta == 1) && (id != "oferta_undefined")) {
+            jsonOferta[id]['cantidadUsadaActual'] = parseInt(jsonOferta[id]['cantidadUsadaActual']) - 1
+            localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+            return
+        }
+        if (id != "oferta_undefined") {
+            //si existe alguna oferta registrada agrego verifico si ya existe y si se puede stackear  
+
+            jsonOferta.id.map((e, i) => {
+                if (e == idOferta) {
+                    jsonOferta.id.splice(i, 1);
+                }
+            })
+            delete jsonOferta[id]
+            localStorage.setItem('ofertas', JSON.stringify(jsonOferta))
+        }
+    }
+}
+
+
+async function getOferta(id) {
+    try {
+        let formData = new FormData()
+        formData.append("idOferta", id)
+        let data = await fetch("/admin/ofertas/getofertasbyid", {
+            method: "POST",
+            body: formData
+        })
+        let oferta = await data.json()
+        if (oferta.estado && oferta.error == '00000') {
+            console.log(oferta)
+            return oferta.data
+        } else {
+            return false
+        }
+
+    } catch (error) {
+        console.log(error)
+        return false
+    }
 }
 
 function ConvertLabelFormat(amountValue) {
@@ -1199,11 +1667,13 @@ function roundHundred(value, rd1, rd2) {
 }
 $("#bodyContent").on("click", ".removeItemProductBtn", function (e) {
 
-    removeItemProduct(e.target.dataset.id)
+    removeItemProduct(e.target.dataset.id, e.target.dataset.oferta, e.target.dataset.rand)
 })
 
-function removeItemProduct(id) {
-    $(`#itemRowProduct_${id}`).remove()
+function removeItemProduct(id, idOferta, rand) {
+
+    updateOferta(idOferta, true, 0, `itemRowProduct_${id}_${rand}`)
+    $(`#itemRowProduct_${id}_${rand}`).remove()
     getSubTotalAndTotal()
 }
 //total
@@ -1302,21 +1772,35 @@ function RefreshCalcTotalRowPrice(tds, sum) {
         let newTotal = parseFloat(totalAll + iva_sum)
         $(tds[9]).text(newTotal.toFixed(2))
     }
+    updateOferta(tds[4].dataset.oferta, false, (parseInt(cant) + parseInt(sum)))
 }
 
 function existProductRow(toSearch) {
-    let body = $("#appendItemRowProduct")[0]
     let body2 = document.getElementById('appendItemRowProduct')
-    for (let item of body2.children) {
-        let inner = item.children[0].innerText
-        if (toSearch == inner) {
+    let children;
+    let stop = false;
+    if (body2.children.length > 0) {
+        for (let item of body2.children) {
+            let inner = item.children[0].innerText
 
-            return item.children
+            if (toSearch == inner) {
+                if (item.children[0].dataset.oferta == 1) {
+                    stop = true
+                } else {
+
+                    children = item.children
+                    stop = false
+                }
+            } else {
+                stop = true
+            }
         }
-    }
-    return true
-}
+        return stop ? true : children
+    } else {
+        return true
 
+    }
+}
 /**
  * *************************************************************************************
  * *************************************************************************************
@@ -1488,9 +1972,9 @@ function saldoDevoluciones(fac) {
     let formData = new FormData()
     formData.append("fac", fac)
     fetch("/facturacion/consultar/saldo", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             console.table(resp)
 
@@ -1536,19 +2020,19 @@ function SearchProductModalFact(toSearch, page) {
     formData.append("toSearch", toSearch)
     formData.append("initLimit", initLimit)
     fetch("/facturacion/search/product/ctrlq", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             $('#contentSearchFac').html('')
             let paginacion = resp.paginacion
-            let items = `<li class="page-item pre_nex ${resp.previouspage <= 0? 'disabled' : ''}" data-minpage="1" data-page="${resp.previouspage <= 0 ? 1 : resp.previouspage}"><p class="page-link">Previous</p></li>`
+            let items = `<li class="page-item pre_nex ${resp.previouspage <= 0 ? 'disabled' : ''}" data-minpage="1" data-page="${resp.previouspage <= 0 ? 1 : resp.previouspage}"><p class="page-link">Previous</p></li>`
             for (let index = 0; index < paginacion.paginas; index++) {
                 let pageNow = index + 1
-                items += `<li class="page-item paginationBtn ${pageNow == page? 'active' : ''}" data-page="${index+1}"><a class="page-link" href="#">${index+1}</a></li>`
+                items += `<li class="page-item paginationBtn ${pageNow == page ? 'active' : ''}" data-page="${index + 1}"><a class="page-link" href="#">${index + 1}</a></li>`
 
             }
-            items += `<li class="page-item pre_nex ${resp.nextpage > paginacion.paginas ? 'disabled' : ''}" data-maxpage="${paginacion.paginas }" data-page="${resp.nextpage >= paginacion.paginas ? paginacion.paginas : resp.nextpage}"><p class="page-link">Next</p></li>`
+            items += `<li class="page-item pre_nex ${resp.nextpage > paginacion.paginas ? 'disabled' : ''}" data-maxpage="${paginacion.paginas}" data-page="${resp.nextpage >= paginacion.paginas ? paginacion.paginas : resp.nextpage}"><p class="page-link">Next</p></li>`
 
             resp.data.map((el, i) => {
                 let url = el.image_url.split(',')
@@ -1556,18 +2040,18 @@ function SearchProductModalFact(toSearch, page) {
                                         <div class="card mb-3 codeToAddInputSearchCard" style="width: 100%;" data-codebar="${el.codigo}">
                                         <div class="row no-gutters">
                                             <div class="col-md-4 cardImgBody">
-                                            <img src="${(url[0]==""?"/public/assets/img/not-found.png":url[0])}" class="card-img" alt="...">
+                                            <img src="${(url[0] == "" ? "/public/assets/img/not-found.png" : url[0])}" class="card-img" alt="...">
                                             </div>
                                             <div class="col-md-8">
                                             <div class="card-body">
                                                 <h6 class="card-title">${el.descripcion}</h6>
-                                                <p class="${el.precio_venta<1?"text-danger":""}">₡ ${el.precio_venta} |  Stock:${el.stock} </p>
+                                                <p class="${el.precio_venta < 1 ? "text-danger" : ""}">₡ ${el.precio_venta} |  Stock:${el.stock} </p>
                                                 <span class="icon_codeToAddInputSearch"><span class="codeToAddInputSearch">${el.codigo}</span></span>
                                                 </br>
-                                                <span class=""><small class="text-muted">${(el.iva > 0 ?"<strong>IVA: </strong>"+el.iva +"%": "")}${(el.descuento > 0 ?" | <strong>Descuento: </strong>"+el.descuento +"%": "")}</small></span>
+                                                <span class=""><small class="text-muted">${(el.iva > 0 ? "<strong>IVA: </strong>" + el.iva + "%" : "")}${(el.descuento > 0 ? " | <strong>Descuento: </strong>" + el.descuento + "%" : "")}</small></span>
                                                 </br>
                                                 <span class=""><small class="text-muted">Marca: ${el.marca} | Categoria: ${el.categoria} | Talla: ${el.talla}</small></span>
-                                                <p class=""><small class="text-muted">Estado: ${(el.estado == 1?"Activo":"Inactivo")}</small></p>
+                                                <p class=""><small class="text-muted">Estado: ${(el.estado == 1 ? "Activo" : "Inactivo")}</small></p>
                                             </div>
                                             </div>
                                         </div>
@@ -1604,19 +2088,19 @@ function searchClient(toSearch, page) {
     formData.append("toSearch", toSearch)
     formData.append("initLimit", initLimit)
     fetch("/clientes/search/searchclient", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             $('#contentSearchClient').html('')
             let paginacion = resp.paginacion
-            let items = `<li class="page-item pre_nexCliente ${resp.previouspage <= 0? 'disabled' : ''}" data-minpage="1" data-page="${resp.previouspage <= 0 ? 1 : resp.previouspage}"><p class="page-link">Previous</p></li>`
+            let items = `<li class="page-item pre_nexCliente ${resp.previouspage <= 0 ? 'disabled' : ''}" data-minpage="1" data-page="${resp.previouspage <= 0 ? 1 : resp.previouspage}"><p class="page-link">Previous</p></li>`
             for (let index = 0; index < paginacion.paginas; index++) {
                 let pageNow = index + 1
-                items += `<li class="page-item paginationBtn ${pageNow == page? 'active' : ''}" data-page="${index+1}"><a class="page-link" href="#">${index+1}</a></li>`
+                items += `<li class="page-item paginationBtn ${pageNow == page ? 'active' : ''}" data-page="${index + 1}"><a class="page-link" href="#">${index + 1}</a></li>`
 
             }
-            items += `<li class="page-item pre_nexCliente ${resp.nextpage > paginacion.paginas ? 'disabled' : ''}" data-maxpage="${paginacion.paginas }" data-page="${resp.nextpage >= paginacion.paginas ? paginacion.paginas : resp.nextpage}"><p class="page-link">Next</p></li>`
+            items += `<li class="page-item pre_nexCliente ${resp.nextpage > paginacion.paginas ? 'disabled' : ''}" data-maxpage="${paginacion.paginas}" data-page="${resp.nextpage >= paginacion.paginas ? paginacion.paginas : resp.nextpage}"><p class="page-link">Next</p></li>`
 
             resp.data.map((el, i) => {
                 let cliente = `    <div class="col-6">
@@ -1656,9 +2140,9 @@ function abrirCaja() {
     let user = parseInt(cb.options[cb.selectedIndex].value)
     if (user !== 0 && !isNaN(monto)) {
         fetch("/facturacion/cajas/abrirCaja", {
-                method: "POST",
-                body: formData
-            }).then(resp => resp.json())
+            method: "POST",
+            body: formData
+        }).then(resp => resp.json())
             .then(resp => {
 
 
@@ -1696,9 +2180,9 @@ function AbrirCajaEstado(id) {
     let formData = new FormData()
     formData.append("idcaja", id)
     fetch("/facturacion/cajas/abrirCajaEstado", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
 
 
@@ -1722,9 +2206,9 @@ function btnCerrarCajaEstado(id, monto) {
     let formData = new FormData()
     formData.append("idcaja", id)
     fetch("/facturacion/cajas/obtenerEstadoCajaEstado", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             //console.log(resp);
 
@@ -1740,13 +2224,13 @@ function btnCerrarCajaEstado(id, monto) {
                 <span>Caja Base:</span> <span>${monto}</span>
                 </div>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
-                <span>Efectivo:</span> <span>${(resp.efectivo.toFixed(2) == null?'0.00':resp.efectivo.toFixed(2))}</span>
+                <span>Efectivo:</span> <span>${(resp.efectivo.toFixed(2) == null ? '0.00' : resp.efectivo.toFixed(2))}</span>
                 </div>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
-                <span>Tarjetas:</span> <span>${(resp.tarjeta.toFixed(2) == null?'0.00':resp.tarjeta.toFixed(2))}</span>
+                <span>Tarjetas:</span> <span>${(resp.tarjeta.toFixed(2) == null ? '0.00' : resp.tarjeta.toFixed(2))}</span>
                 </div>
                 <div class="alert alert-success d-flex justify-content-between" role="alert">
-                <span>Transferencias:</span> <span>${(resp.transferencia.toFixed(2) == null?'0.00':resp.transferencia.toFixed(2))}</span>
+                <span>Transferencias:</span> <span>${(resp.transferencia.toFixed(2) == null ? '0.00' : resp.transferencia.toFixed(2))}</span>
                 </div>
                 <div class="alert alert-info d-flex justify-content-between" id="caja_totalsystem" data-total="${total.toFixed(2)}" role="alert">
                 <span><strong>Total:</span> <span>${total.toFixed(2)}</strong></span>
@@ -1836,9 +2320,9 @@ function getApartadosHasClient(id) {
     let formData = new FormData()
     formData.append("cliente", id)
     fetch("/facturacion/apartados/getApartadosHasClient", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
 
             if (resp.error == "00000") {
@@ -1876,9 +2360,9 @@ function getProductFacAbono(id) {
     formData.append("fac", id)
     $("#productosListAbono").html('')
     fetch("/facturacion/apartados/getProductsFromApartado", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             if (resp.error == "00000") {
 
@@ -1886,7 +2370,7 @@ function getProductFacAbono(id) {
 
                 products.map(item => {
                     let iva = parseInt(item.iva)
-                    $("#productosListAbono").append(`<li  class="list-group-item">${item.descripcion_short.toUpperCase()} | <strong class="text-primary">Precio:</strong> ${item.precio} ${iva>0?` | <strong class="text-primary">IVA:</strong> ${item.iva}`:''} | <strong class="text-primary">Cant:</strong> ${item.cantidad} | <strong class="text-primary">Total:</strong> ${item.total}</li>`)
+                    $("#productosListAbono").append(`<li  class="list-group-item">${item.descripcion_short.toUpperCase()} | <strong class="text-primary">Precio:</strong> ${item.precio} ${iva > 0 ? ` | <strong class="text-primary">IVA:</strong> ${item.iva}` : ''} | <strong class="text-primary">Cant:</strong> ${item.cantidad} | <strong class="text-primary">Total:</strong> ${item.total}</li>`)
                 })
             }
         })
@@ -1908,9 +2392,9 @@ $('#bodyContent').on("click", "#BtncancelPendingFac", function (e) {
     let formData = new FormData()
     formData.append('id', id)
     fetch("/facturacion/pendientes/productos", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.text())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.text())
         .then(resp => {
             //console.log(resp);
             let productos = resp
@@ -1948,9 +2432,9 @@ function setAbono() {
     formData.append('cards', stringCards)
     formData.append('totalCards', totalGroup)
     fetch("/facturacion/apartados/setAbono", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.text())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.text())
         .then(resp => {
             let h = resp;
             let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
@@ -1966,9 +2450,9 @@ function productosPendienteBtn(id) {
     let formData = new FormData()
     formData.append('id', id)
     fetch("/facturacion/pendientes/productos", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.text())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.text())
         .then(resp => {
             let productos = resp
             let wrapper = document.getElementById('productosPendientesRows')
@@ -1983,9 +2467,9 @@ function facturaChangeState(id) {
     let formData = new FormData()
     formData.append('id', id)
     fetch("/facturacion/pendientes/changeStateFac", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             if (resp.error == '00000')
 
@@ -2000,9 +2484,9 @@ function cerrarCajaFinal(id) {
     let formData = new FormData(form)
     formData.append('id', id)
     fetch("/facturacion/cajas/cerrarcajafinal", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             //console.log(resp);
             if (resp.error == "00000") {

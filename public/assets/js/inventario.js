@@ -670,6 +670,11 @@ function loadDataEditModal(e, modalId) {
                         $(option).prop("selected", true)
                     }
                 })
+                $(`${modalId}_cbOferta option`).each((i, option) => {
+                    if ($(option).val() == datos.idOferta) {
+                        $(option).prop("selected", true)
+                    }
+                })
 
 
                 makeBlobFile(urls, modalId)

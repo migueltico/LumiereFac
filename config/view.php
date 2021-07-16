@@ -76,6 +76,31 @@ class view
         }
         require_once "./views/elements/$template_url.php";
     }
+    public static function renderElementReturn(String $template_url, array $parameters = null)
+    {
+        if ($parameters !== null) {
+            foreach ($parameters as $property => $value) {
+                $$property = $value;              
+            }
+            
+        }
+        if (!empty($parameters['get'])) {
+            // echo 'Si tiene datos el get';
+            // print_r($get);
+            foreach ($get as $property => $value) {
+                $$property = $value;
+            }
+        }
+        if (!empty($parameters['post'])) {
+            foreach ($post as $property => $value) {
+                $$property = $value;
+            }
+        }
+        ob_start();
+        require "./views/elements/$template_url.php";
+        $html =ob_get_clean();
+        return $html;
+    }
     public static function renderT(String $template_url, array $block, array $parameters)
     {
         foreach ($parameters as $property => $value) {

@@ -92,6 +92,21 @@
             <div class="col-12">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
+                  <label class="input-group-text" for="EditProduct_cbDescuento">Ofertas</label>
+                </div>
+                <select name="idOferta" class="custom-select" id="EditProduct_cbOferta">
+                  <option selected value="0">N/A</option>
+                  <?php foreach ($ofertas as $oferta) : ?>
+                    <?php if ($oferta['iddescuento'] !== 0) : ?>
+                      <option value="<?= $oferta['idOferta'] ?>"><?= $oferta['nombreOferta'] ?> (<?= $oferta['descuento'] ?>%)</option>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
                   <label class="input-group-text" for="EditProduct_cbTalla">Talla</label>
                 </div>
                 <select name="talla" class="custom-select" id="EditProduct_cbTalla">

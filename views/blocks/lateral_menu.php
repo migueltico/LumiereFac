@@ -57,6 +57,9 @@
                 <?php if (array_key_exists("descuento_lote_modulo", $_SESSION['permisos'])) :  ?>
                     <li data-functionName="0" data-linkto="/admin/descuentos/lote" class="dataLink"><span class="spanStyleMenu"></span><span>Descuentos por Lote</span><span></span></li>
                 <?php endif; ?>
+                <?php if (array_key_exists("ofertas_modulo", $_SESSION['permisos'])) :  ?>
+                    <li data-functionName="0" data-linkto="/admin/ofertas" class="dataLink"><span class="spanStyleMenu"></span><span>Ofertas</span><span></span></li>
+                <?php endif; ?>
             </ul>
         </li>
         <li>

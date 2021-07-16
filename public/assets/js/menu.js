@@ -60,6 +60,7 @@ function scrollToTop() {
 function loadPage(e, link) {
     scrollToTop()
     localStorage.removeItem('saldo')
+    localStorage.removeItem('ofertas')
     let url = (link == null ? $(e.target).data('linkto') : link);
     let img = '<div class="loading"><img src="/public/assets/img/loading.gif"></div>';
     $(".bodyContent").html('')

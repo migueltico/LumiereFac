@@ -85,6 +85,127 @@ class adminController extends view
         $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
         view::renderElement('descuentos/descuentos', $data);
     }
+    public function ofertas($var)
+    {
+        $ofertas = admin::getAllOfertas();
+        $icon = help::icon();
+        $data['data'] = $ofertas['data']; // se pone de primero para que las variables se creen en el primer nivel
+        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
+        view::renderElement('ofertas/ofertas', $data);
+    }
+    //para el search
+    public function getproduct($var)
+    {
+        $codigo = $_POST['codigo'];
+
+        if ($this->verificarProductoDuplicadoOferta($codigo)) {
+            echo 'duplicado';
+            return;
+        }
+
+        $productos = admin::getproduct($codigo);
+        $icon = help::icon();
+        $data['data'] = $productos['data']; // se pone de primero para que las variables se creen en el primer nivel
+        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
+        if ($productos['rows'] == 1) {
+
+            view::renderElement('ofertas/articuloModal', $data);
+        } else {
+            echo '0';
+        }
+    }
+    public function verificarProductoDuplicadoOferta($codigo)
+    {
+        $ofertas = admin::getAllOfertas();
+
+        foreach ($ofertas['data'] as $oferta) {
+            $ids = explode(',', $oferta['productos']);
+            foreach ($ids as $id) {
+                if ($id == $codigo) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //para el edit
+    public function getproductReturn($id)
+    {
+        $codigo = $id;
+        $productos = admin::getproduct($codigo);
+        $icon = help::icon();
+        $data['data'] = $productos['data']; // se pone de primero para que las variables se creen en el primer nivel
+        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
+        if ($productos['rows'] == 1) {
+
+            $html = view::renderElementReturn('ofertas/articuloModal', $data);
+            return $html;
+        } else {
+            return '';
+        }
+    }
+    public function addoferta($var)
+    {
+        $data = array(
+            ":nombreOferta" => $_POST['nombreOferta'],
+            ":cantidad" => $_POST['cantidad'],
+            ":productoOrlista" => $_POST['productoOrlista'],
+            ":descuento" => $_POST['descuento'],
+            ":unica" => isset($_POST['unica']) ? 1 : 0,
+            ":productos" => $_POST['productos']
+        );
+        $productos = admin::addoferta($data);
+        $icon = help::icon();
+        $data['data'] = $productos['data']; // se pone de primero para que las variables se creen en el primer nivel
+        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
+        if ($productos['rows'] == 1) {
+
+            view::renderElement('ofertas/articuloModal', $data);
+        } else {
+            echo '0';
+        }
+    }
+    public function updateOferta($var)
+    {
+        $data = array(
+            ":id" => $_POST['idOferta'],
+            ":nombreOferta" => $_POST['nombreOferta'],
+            ":cantidad" => $_POST['cantidad'],
+            ":productoOrlista" => $_POST['productoOrlista'],
+            ":descuento" => $_POST['descuento'],
+            ":unica" => isset($_POST['unica']) ? 1 : 0,
+            ":productos" => $_POST['productos']
+        );
+        $productos = admin::updateOferta($data);
+        $icon = help::icon(); //las segundas se agregan despues para evitar ser borradas
+        header('Content-Type: application/json');
+        echo json_encode($productos);
+    }
+    public function deleteOferta($var)
+    {
+        $id = $_POST['idOferta'];
+        $ofertas = admin::deleteOferta($id);
+        header('Content-Type: application/json');
+        echo json_encode($ofertas);
+    }
+    public function getOfertasById($var)
+    {
+        $id = $_POST['idOferta'];
+        $ofertas = admin::getOfertasById($id);
+        $htmlRows = '';
+        if ($ofertas['rows'] > 0) {
+            $ids = explode(',', $ofertas['data']['productos']);
+
+            foreach ($ids as $id) {
+                $htmlRows .= $this->getproductReturn($id);
+            }
+        }
+        $ofertas['htmlRows'] = $htmlRows;
+        header('Content-Type: application/json');
+        echo json_encode($ofertas);
+    }
+
     public function descuentosPorLote($var)
     {
         $descuentos = admin::descuentos();

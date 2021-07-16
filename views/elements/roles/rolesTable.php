@@ -46,6 +46,11 @@
                             <label class="text-success" for="descuento_lote_modulo"><input type="checkbox" class="mr-2" name="descuento_lote_modulo" id="descuento_lote_modulo">Ver modulo</label>
                         </div>
                     </label>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Ofertas</strong>
+                        <div class="card p-3 textcolorhover">
+                            <label class="text-success" for="ofertas_modulo"><input type="checkbox" class="mr-2" name="ofertas_modulo" id="ofertas_modulo">Ver modulo</label>
+                        </div>
+                    </label>
                 </div>
             </div>
         </div>

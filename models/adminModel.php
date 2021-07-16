@@ -82,6 +82,42 @@ class adminModel
         $con = new conexion();
         return $con->SPCALL("SELECT * FROM descuentos");
     }
+    public static function getproduct($codigo)
+    {
+        $con = new conexion();
+        $result = $con->SQR_ONEROW("CALL sp_searchCodeProduct('$codigo')");
+
+        if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 0, "msg" => "Se encontro resultado");
+        } else if ($result['error'] !== '00000' || $result['data'] == false) {
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
+        }
+    }
+    public static function addoferta($datos)
+    {
+        $con = new conexion();
+        return $con->SQ('INSERT INTO ofertas (nombreOferta, cantidad, productoOrlista, descuento, unica, productos) VALUES	(:nombreOferta, :cantidad, :productoOrlista, :descuento, :unica, :productos)', $datos);
+    }
+    public static function updateOferta($datos)
+    {
+        $con = new conexion();
+        return $con->SQ('UPDATE ofertas SET nombreOferta=:nombreOferta, cantidad=:cantidad, productoOrlista=:productoOrlista, descuento=:descuento, unica=:unica, productos=:productos WHERE idOferta = :id', $datos);
+    }
+    public static function deleteOferta($id)
+    {
+        $con = new conexion();
+        return $con->SQNDNR("DELETE FROM ofertas WHERE idOferta = $id");
+    }
+    public static function getOfertasById($id)
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW("SELECT * FROM ofertas WHERE idOferta = $id");
+    }
+    public static function getAllOfertas()
+    {
+        $con = new conexion();
+        return $con->SPCALL("SELECT * FROM ofertas");
+    }
     public static function descuentosOnlyFac()
     {
         $con = new conexion();

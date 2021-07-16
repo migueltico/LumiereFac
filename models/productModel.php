@@ -88,37 +88,39 @@ class productModel
     public static function searchCodeProductCtrlQ($data, $nowPage)
     {
         try {
-        $con = new conexion();
-        $cantToshow = 50;
-        $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.descripcion LIKE '%$data%' OR p.marca LIKE '%$data%' AND p.estado = 1");
-        $totalRows = $totalRows['data']['cantidad'];
-        $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
-        $init = $paginacion['InitLimit'];
+            $con = new conexion();
+            $cantToshow = 50;
+            $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.descripcion LIKE '%$data%' OR p.marca LIKE '%$data%' AND p.estado = 1");
+            $totalRows = $totalRows['data']['cantidad'];
+            $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
+            $init = $paginacion['InitLimit'];
 
-        if (strpos($data, '%') !== false) {
-            $dataArray = explode("%", $data);
-            $string = "";
-            foreach ($dataArray as $value) {
-                $string .= $value . "%";
+            if (strpos($data, '%') !== false) {
+                $dataArray = explode("%", $data);
+                $string = "";
+                foreach ($dataArray as $value) {
+                    $string .= $value . "%";
+                }
+                $SqlMultiParam = "CALL sp_searchCodeProductCtrlQ('%$string',$init ,$cantToshow)";
+                $result = $con->SPCALL($SqlMultiParam);
+            } else {
+                $SqlOneParam = "CALL sp_searchCodeProductCtrlQ('%$data%',$init ,$cantToshow)";
+                $result = $con->SPCALL($SqlOneParam);
             }
-            $SqlMultiParam = "CALL sp_searchCodeProductCtrlQ('%$string',$init ,$cantToshow)";
-            $result = $con->SPCALL($SqlMultiParam);
-        } else {
-            $SqlOneParam = "CALL sp_searchCodeProductCtrlQ('%$data%',$init ,$cantToshow)";
-            $result = $con->SPCALL($SqlOneParam);
-        }
 
-        if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
-        } else if ($result['error'] !== '00000' || $result['data'] == false) {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
+            if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
+                return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
+            } else if ($result['error'] !== '00000' || $result['data'] == false) {
+                return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
+            }
+        } catch (\Throwable $th) {
+            return array(
+                "data" =>  $result['data'],
+                "rows" => $result['rows'], "cantidad" => $totalRows,
+                "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
+                "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe"
+            );
         }
-    } catch (\Throwable $th) {
-        return array("data" =>  $result['data'],
-         "rows" => $result['rows'], "cantidad" => $totalRows,
-          "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
-           "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe");
-    }
     }
     /**
      * obtiene todos los productos segun el resultado
@@ -157,10 +159,12 @@ class productModel
                 return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
             }
         } catch (\Throwable $th) {
-            return array("data" =>  $result['data'],
-             "rows" => $result['rows'], "cantidad" => $totalRows,
-              "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
-               "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe");
+            return array(
+                "data" =>  $result['data'],
+                "rows" => $result['rows'], "cantidad" => $totalRows,
+                "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
+                "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe"
+            );
         }
         // $con = new conexion();
         // if (strpos($data, 'id-') !== false) {
@@ -227,8 +231,14 @@ class productModel
     public static function updateProduct($datos)
     {
         $con = new conexion();
-        $setData = ':descripcion,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:modificado_por,:urls,:estado,:categoriaPrecio,:descuento,:idproducto,:descripcion_short';
-        $sql = "CALL sp_updateProduct($setData)";
+        $setData = ',,,,,,,,,,,,,,,';
+        // $newSql = "CALL sp_updateProduct($setData)";
+
+        $sql = "UPDATE producto AS p
+                SET p.descripcion = :descripcion, p.marca = :marca, p.estilo = :estilo, p.idcategoria = :categoria, p.idtalla = :talla,
+                p.codigo = :codigoBarras, p.iva = :iva_valor, p.activado_iva = :iva, p.modificado_por = :modificado_por ,p.image_url = :urls, 
+                p.estado = :estado, categoriaPrecio = :categoriaPrecio, iddescuento = :descuento, descripcion_short = :descripcion_short, idOferta =:idOferta 
+                WHERE p.idproducto = :idproducto";
         return $result = $con->SPCALLNR($sql, $datos);
     }
     /**

@@ -23,12 +23,14 @@ class inventarioController extends view
     $icon = help::icon();
     $categorias = product::getCategory();
     $cat_precios = admin::getCategoriaPrecios();
+    $ofertas = admin::getAllOfertas();
     //$categorias = product::getCategory();
     $tallas = product::getTallas();
     // $products = product::getProducts();
     $products = product::searchProduct("", 1,1);
     $descuentos = product::getDescuentos();
     $data["products"] = $products['data'];
+    $data["ofertas"] = $ofertas['data'];
     $paginationInfo =  $products;
     unset($paginationInfo['data']);
     $data["paginationInfo"] = $paginationInfo;
@@ -232,6 +234,7 @@ class inventarioController extends view
       ":idproducto" => (int) $_POST["idproducto"],
       ":categoriaPrecio" => $_POST["categoriaPrecio"],
       ":descuento" => $_POST["descuento"],
+      ":idOferta" => $_POST["idOferta"],
       ":estado" => (isset($_POST["estado"]) ? 1 : 0),
     );
 
