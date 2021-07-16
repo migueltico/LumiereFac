@@ -156,15 +156,8 @@ class adminController extends view
             ":productos" => $_POST['productos']
         );
         $productos = admin::addoferta($data);
-        $icon = help::icon();
-        $data['data'] = $productos['data']; // se pone de primero para que las variables se creen en el primer nivel
-        $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
-        if ($productos['rows'] == 1) {
-
-            view::renderElement('ofertas/articuloModal', $data);
-        } else {
-            echo '0';
-        }
+        header('Content-Type: application/json');
+        echo json_encode($productos);
     }
     public function updateOferta($var)
     {
@@ -178,7 +171,6 @@ class adminController extends view
             ":productos" => $_POST['productos']
         );
         $productos = admin::updateOferta($data);
-        $icon = help::icon(); //las segundas se agregan despues para evitar ser borradas
         header('Content-Type: application/json');
         echo json_encode($productos);
     }

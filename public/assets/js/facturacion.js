@@ -213,6 +213,7 @@ $('#bodyContent').on("click", "#ofertas_add_btnAddOferta", function (e) {
     }).then(resp => resp.json())
         .then(resp => {
             if (resp.error == '00000') {
+
                 Swal.fire({
                     position: 'top',
                     title: `Oferta`,
@@ -221,9 +222,13 @@ $('#bodyContent').on("click", "#ofertas_add_btnAddOferta", function (e) {
                     confirmButtonText: 'OK',
                     timer: 2500,
                     timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(`#ofertas_addOfertas`).modal('toggle')
+                        loadPage(null, "/admin/ofertas")
+                    }
                 })
-                $('#ofertas_addOfertas').modal('toggle')
-                loadPage(null, "/admin/ofertas")
+
             } else {
                 Swal.fire({
                     position: 'top',
@@ -249,7 +254,9 @@ $('#bodyContent').on("click", "#ofertas_add_btnEditOferta", function (e) {
         body: formData
     }).then(resp => resp.json())
         .then(resp => {
+
             if (resp.error == '00000') {
+
                 let nombre = document.getElementById('ofertas_edit_nombre')
                 let tipoOferta = document.getElementById('ofertas_edit_tipooferta')
                 let descuento = document.getElementById('ofertas_edit_descuento')
@@ -262,9 +269,14 @@ $('#bodyContent').on("click", "#ofertas_add_btnEditOferta", function (e) {
                     confirmButtonText: 'OK',
                     timer: 2500,
                     timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(`#ofertas_editOfertas`).modal('toggle')
+                        loadPage(null, "/admin/ofertas")
+                    }
                 })
-                $('#ofertas_editOfertas').modal('toggle')
-                loadPage(null, "/admin/ofertas")
+
+
             } else {
                 Swal.fire({
                     position: 'top',
