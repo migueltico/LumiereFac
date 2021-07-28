@@ -3,7 +3,6 @@
 namespace http\routes;
 
 use config\route;
-
 //------------- +++ RUTAS GET +++ -----------------//
 route::middleware(['loginMiddleware@updateSession'], function () {
     route::get('/', 'loginController@index',['loginMiddleware@auth']);

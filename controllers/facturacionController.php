@@ -176,7 +176,7 @@ class facturacionController extends view
     public function reprint()
     {
         $icon = help::icon();
-        $fac = fac::getPendingFac();
+        $fac = fac::getPendingFac(); 
         $data["facturas"] = $fac['data'];
         $data["icons"] =  $icon['icons'];
         echo view::renderElement('facturacion/reprint', $data);

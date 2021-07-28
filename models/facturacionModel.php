@@ -424,7 +424,7 @@ class facturacionModel
     }
     public static function getPendingFac()
     {
-        $con = new conexion();
+        $con = new conexion(); 
         $data = $con->SPCALL("SELECT f.idfactura,f.consecutivo,DATE_FORMAT(f.fecha,'%d-%m-%Y') as fecha,f.tipo, c.nombre,f.total,f.estado AS fac_estado,IF(SUM(f.efectivo + f.tarjeta+ f.efectivo )=0,0,1) AS cancelado 
                             FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente 
                             WHERE f.estado = 0 AND NOT(f.tipo= 1) GROUP BY f.consecutivo ORDER BY f.tipo DESC
