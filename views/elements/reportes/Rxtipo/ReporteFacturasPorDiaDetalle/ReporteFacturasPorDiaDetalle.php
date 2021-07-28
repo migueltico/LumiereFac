@@ -31,6 +31,7 @@
                 <!-- <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Tipo Pago <span style="font-size:0.6rem"> (1=Efectivo, 2= Tarjeta, 3= Transferencia)</span></th> -->
                 <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Efectivo</th>
                 <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Tarjetas</th>
+                <th data-type="1" data-inner="1" scope="col" style="text-align: left;">#Tarjetas</th>
                 <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Transf.</th>
                 <th data-type="1" data-inner="1" scope="col" style="text-align: left;">Total</th>
             </tr>
@@ -56,6 +57,7 @@
                     <td colspan="1" scope="row" style="text-align: left;"></td>
                     <td colspan="3" scope="row" style="text-align: left;"></td>
                     <td colspan="3" scope="row" style="text-align: left;font-weight:600">Fecha: <?= $rows['rows'][0]['fecha'] ?></td>
+                    <td colspan="1" scope="row" style="text-align: left;"></td>
                 </tr>
                 <?php
                 $total_diarioRow = 0;
@@ -76,6 +78,8 @@
                     $total =  ($rows["total"]);
                     $total_diarioRow += $total;
                     $tipoPago = [];
+
+                    $extra_tarjetas = "";
                     if ($rows["t_efectivo"] == '1') {
 
                         array_push($tipoPago, "1");
@@ -89,16 +93,29 @@
                         array_push($tipoPago, "3");
                     }
                     $tipoPago = implode(",", $tipoPago);
+
+                    if ($rows["n_tarjeta"] != "" || $rows["n_tarjeta"] != null) {
+                        $tarjetas_varias = explode(";", $rows["n_tarjeta"]);
+                        foreach ($tarjetas_varias as $tarjeta) {
+                            $tarjeta = explode(",", $tarjeta);
+                            $extra_tarjetas .= ", ".$tarjeta[0];
+                        }
+                    }
+
+                    //6451,4000,tarjeta;
+                    //8741,6000,tarjeta;
+                    //9541,10000,tarjeta
                     ?>
 
                     <tr class="TrRow">
 
-                        <td scope="row" data-value="<?= $rows["docNum"] ?>"  style="text-align: left;"><?= $rows["docNum"] ?></td>
-                        <td scope="row" data-value="<?= $rows["fecha"] ?>"  style="text-align: left;"><?= $rows["fecha"] ?></td>
-                        <td scope="row" data-value="<?= $rows["doc"] ?>"  style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
-                        <td scope="row" data-value="<?= $rows["tipoDoc"]  ?>"  style="text-align: left;"><?= $rows["tipoDoc"] ?></td>
+                        <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><?= $rows["docNum"] ?></td>
+                        <td scope="row" data-value="<?= $rows["fecha"] ?>" style="text-align: left;"><?= $rows["fecha"] ?></td>
+                        <td scope="row" data-value="<?= $rows["doc"] ?>" style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
+                        <td scope="row" data-value="<?= $rows["tipoDoc"]  ?>" style="text-align: left;"><?= $rows["tipoDoc"] ?></td>
                         <td scope="row" data-value="<?= $rows["efectivo"] ?>" style="text-align: left;"><?= number_format($rows["efectivo"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;"><?= number_format($rows["tarjeta"], 2, ".", ",") ?></td>
+                        <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;"><?= $rows["n_tarjeta"] . $extra_tarjetas ?></td>
                         <td scope="row" data-value="<?= $rows["transferencia"] ?>" style="text-align: left;"><?= number_format($rows["transferencia"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $total ?>" style="text-align: left;"><?= number_format($total, 2, ".", ",") ?></td>
 
@@ -108,6 +125,7 @@
                     <td colspan="4" scope="row" style="text-align: left;font-weight:600">Totales</td>
                     <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_efectivoRow, 2, ".", ",") ?> </td>
                     <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_tarjetaRow, 2, ".", ",") ?> </td>
+                    <td scope="row" style="text-align: left;font-weight:600"></td>
                     <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_transferenciaRow, 2, ".", ",") ?> </td>
                     <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_diarioRow, 2, ".", ",") ?> </td>
                 </tr>

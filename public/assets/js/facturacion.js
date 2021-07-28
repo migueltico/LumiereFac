@@ -1,8 +1,6 @@
+
 $('document').ready(function () {
-    // let btn_reprint = document.getElementById('rePrintFactBtn')
-    // btn_reprint.addEventListener('click', () => {
-    //     
-    // })
+    localStorage.setItem('fac_active_btn', 0)
 
 });
 $("#bodyContent").on("click", "#rePrintFactBtn", function (e) {
@@ -802,6 +800,14 @@ function resetFactScreen() {
 $('#bodyContent').on("click", "#btnMakeFact", function (e) {
     //ANCLA
     e.preventDefault();
+    $("#btnMakeFact").prop("disabled", true)
+    let fac_active_btn = localStorage.getItem('fac_active_btn')
+    if (fac_active_btn == 1) {
+        alert("Ya se encuentra una factura en proceso, por favor evite el doble click al facturar")
+        return
+    } else {
+        localStorage.setItem('fac_active_btn', 1)
+    }
     const cb = document.getElementById('MultiTipoPagoFact');
     let btnTypeApartado = document.getElementById('btnTypeApartado');
     let pagoContraEntrega = document.getElementById('pagoContraEntrega').checked;
@@ -913,7 +919,9 @@ function getProductsRowsForFac(method, pago, typeAbono) {
 
     }
     //console.log("final Json", finalJson);
-    printFact(finalJson)
+    setTimeout(() => { //Temporizador para evitar doble factura
+        printFact(finalJson)
+    }, 700)
 }
 
 
@@ -1175,7 +1183,10 @@ function printFact(datos) {
     let headers = {
         "Content-Type": "application/json"
     }
-
+    $("#btnMakeFact").prop("disabled", false)
+    localStorage.setItem('fac_active_btn', 0)
+    return
+    fac_active_btn = false
     let Okprint = document.getElementById('SendFactBoolean');
     // let formData = new FormData()
     // formData.append("datos", JSON.stringify(datos))
@@ -1230,13 +1241,10 @@ function ReprintFact(fac) {
 
 }
 $('#bodyContent').on("click", ".execute_reprint", function (e) {
-    console.log(e)
     let fac = e.target.dataset.fac
     ReprintFact(fac)
 })
 $('#bodyContent').on("keypress", "#SearchReprintFac_input", function (e) {
-    console.log(e)
-
     if (e.key == 'Enter') {
         let formData = new FormData()
         let value = e.target.value
@@ -1423,12 +1431,10 @@ async function getProductFact(e) {
 
                 //verifico si existe alguna oferta registrada
                 let jsonOferta = localStorage.getItem('ofertas')
-                console.log(jsonOferta)
                 //si existe alguna oferta registrada agrego verifico si ya existe y si se puede stackear
                 if (jsonOferta) {
                     // se parsea
                     jsonOferta = JSON.parse(jsonOferta)
-                    console.log(jsonOferta)
                     //valido si existe el ID de la oferta en la lista de ofertas registradas en localstorage
                     let resutl = jsonOferta.id.some(e => e == data.idOferta)
                     // valido si es true o false, si existe la oferta
@@ -1651,7 +1657,6 @@ async function getOferta(id) {
         })
         let oferta = await data.json()
         if (oferta.estado && oferta.error == '00000') {
-            console.log(oferta)
             return oferta.data
         } else {
             return false
