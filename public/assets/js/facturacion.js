@@ -1185,7 +1185,6 @@ function printFact(datos) {
     }
     $("#btnMakeFact").prop("disabled", false)
     localStorage.setItem('fac_active_btn', 0)
-    return
     fac_active_btn = false
     let Okprint = document.getElementById('SendFactBoolean');
     // let formData = new FormData()
