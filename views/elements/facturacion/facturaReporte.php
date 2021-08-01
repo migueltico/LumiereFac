@@ -4,7 +4,7 @@
         $gravado = array("noGravado", "gravado");
         $estado = array("inhabilitado", "habilitado");
         //var_dump($facturas);
-        var_dump($_SESSION);
+        //var_dump($_SESSION);
         ?>
         <?php foreach ($facturas as $factura) : ?>
             <?php
