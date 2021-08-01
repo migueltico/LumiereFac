@@ -94,8 +94,8 @@
                     }
                     $tipoPago = implode(",", $tipoPago);
 
-                    if ($rows["n_tarjeta"] != "" || $rows["n_tarjeta"] != null) {
-                        $tarjetas_varias = explode(";", $rows["n_tarjeta"]);
+                    if ($rows["n_tarjeta_multi"] != "" || $rows["n_tarjeta_multi"] != null) {
+                        $tarjetas_varias = explode(";", $rows["n_tarjeta_multi"]);
                         foreach ($tarjetas_varias as $tarjeta) {
                             $tarjeta = explode(",", $tarjeta);
                             $extra_tarjetas .= ", ".$tarjeta[0];
@@ -108,14 +108,17 @@
                     ?>
 
                     <tr class="TrRow">
-
-                        <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><?= $rows["docNum"] ?></td>
+                        <?php if($rows["doc"] == "FAC"):  ?>
+                        <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><a href="#" class="getDataFacModal" data-id="<?= $rows["docNum"] ?>"  data-toggle="modal" data-target="#reportDetalleModal"><?= $rows["docNum"] ?></a> </td>
+                       <?php else:  ?>
+                        <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><?= $rows["docNum"] ?> </td>
+                       <?php endif;  ?>
                         <td scope="row" data-value="<?= $rows["fecha"] ?>" style="text-align: left;"><?= $rows["fecha"] ?></td>
                         <td scope="row" data-value="<?= $rows["doc"] ?>" style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
                         <td scope="row" data-value="<?= $rows["tipoDoc"]  ?>" style="text-align: left;"><?= $rows["tipoDoc"] ?></td>
                         <td scope="row" data-value="<?= $rows["efectivo"] ?>" style="text-align: left;"><?= number_format($rows["efectivo"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;"><?= number_format($rows["tarjeta"], 2, ".", ",") ?></td>
-                        <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;"><?= $rows["n_tarjeta"] . $extra_tarjetas ?></td>
+                        <td scope="row" data-value="<?= $rows["n_tarjeta"] ?>" style="text-align: left;"><?= $rows["n_tarjeta"] . $extra_tarjetas ?></td>
                         <td scope="row" data-value="<?= $rows["transferencia"] ?>" style="text-align: left;"><?= number_format($rows["transferencia"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $total ?>" style="text-align: left;"><?= number_format($total, 2, ".", ",") ?></td>
 
@@ -140,9 +143,12 @@
                 <!-- <td scope="row" style="text-align: left;font-weight:600"></td> -->
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_efectivo, 2, ".", ",") ?></td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_tarjeta, 2, ".", ",") ?></td>
+                <td scope="row" style="text-align: left;font-weight:600"></td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_transferencia, 2, ".", ",") ?></td>
                 <td scope="row" style="text-align: left;font-weight:600"><?= number_format($total_diario, 2, ".", ",") ?></td>
             </tr>
         </tfoot>
     </table>
 </div>
+
+<?php include_once(self::modal('modalReportDetalle')) ?>

@@ -12,6 +12,36 @@ $("#bodyContent").on("click", "#rePrintFactBtn", function (e) {
             content.innerHTML = resp
         })
 })
+$("#bodyContent").on("click", "#buscarFacturasHistorial", function (e) {
+
+    let formData = new FormData()
+    let dateInit = document.getElementById('dateInit').value
+    let dateEnd = document.getElementById('dateEnd').value
+    formData.append('start', dateInit)
+    formData.append('end', dateEnd)
+    fetch("/facturacion/historial/historialdiariocontent", {
+        method: "POST",
+        body: formData
+    }).then(resp => resp.text())
+        .then(resp => {
+            let content = document.getElementById('historialDiarioContent')
+            content.innerHTML = resp
+        })
+})
+
+$("#bodyContent").on("click", ".getDataFacModal", function (e) {
+    let formData = new FormData()
+    let value = e.target.dataset.id
+    formData.append('fac', value)
+    fetch("/facturacion/searchFacByNumberGeneral", {
+        method: "POST",
+        body: formData
+    }).then(resp => resp.text())
+        .then(resp => {
+            let content = document.getElementById('reportDetalleContent')
+            content.innerHTML = resp
+        })
+})
 
 $('#bodyContent').on("click", "#btnCambios_fac", function (e) {
     $('#rowsFactDetailsSearch').html('')

@@ -49,6 +49,16 @@ class facturacionController extends view
         $data["facturas"] =  $result;
         echo view::renderElement('facturacion/historialDiario', $data);
     }
+    public function historialDiarioContent()
+    {
+        $icon = help::icon();
+        $start = $_POST['start'];
+        $end = $_POST['end'];
+        $result = fac::getHistorialDiario($start,$end);
+        $data["icons"] =  $icon['icons'];
+        $data["facturas"] =  $result;
+        echo view::renderElement('facturacion/historialDiarioRows', $data);
+    }
     public function lastFactRePrint()
     {
         $icon = help::icon();
@@ -156,6 +166,20 @@ class facturacionController extends view
         $data["icons"] =  $icon['icons'];
         $data["facturas"] =  $result;
         echo view::renderElement('facturacion/lastFactRePrint', $data);
+    }
+    public function searchFacByNumberGeneral()
+    {
+        $icon = help::icon();
+        $fac = (int) $_POST['fac'];
+
+        if($fac=='' || $fac == null ){
+            $this->lastFactRePrint();
+            return;
+        }
+        $result = fac::searchFacByNumber($fac);
+        $data["icons"] =  $icon['icons'];
+        $data["facturas"] =  $result;
+        echo view::renderElement('facturacion/facturaReporte', $data);
     }
     public function apartadosSinCancelar()
     {

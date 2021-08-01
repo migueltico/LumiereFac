@@ -75,7 +75,7 @@
                     <li data-functionName="0" data-linkto="/facturacion/pendientes" class="dataLink"><span class="spanStyleMenu"></span><span>Facturas Pendientes</span><span></span></li>
                 <?php endif; ?>
                 <?php if (array_key_exists("historial_diario_modulo", $_SESSION['permisos'])) :  ?>
-                    <li data-functionName="0" data-linkto="/facturacion/historial/diario" class="dataLink"><span class="spanStyleMenu"></span><span>Historial Diario</span><span></span></li>
+                    <li data-functionName="0" data-linkto="/facturacion/historial/diario" class="dataLink"><span class="spanStyleMenu"></span><span>Historial de Facturas</span><span></span></li>
                 <?php endif; ?>
                 <?php if (array_key_exists("Apartados_modulo", $_SESSION['permisos'])) :  ?>
                     <li data-functionName="0" data-linkto="/facturacion/historial/apartados" class="dataLink"><span class="spanStyleMenu"></span><span>Apartados</span><span></span></li>

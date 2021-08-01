@@ -299,7 +299,7 @@ class facturacionModel
         return $data;
     }
 
-    public static function getFacToRePrint(int $fac):array
+    public static function getFacToRePrint(int $fac): array
     {
         $con = new conexion();
         $facHeader = $con->SPCALL("SELECT *, c.nombre cliente, u.nombre cajero, f.consecutivo fac,f.impuesto, f.fecha, f.descuento,  f.monto_efectivo, f.monto_tarjeta, 
@@ -317,11 +317,30 @@ class facturacionModel
 
         return array("header" => $facHeader, "rows" => $facRows);
     }
-    public static function getHistorialDiario()
+    public static function getHistorialDiario($start = null, $end = null)
     {
+        if ($start  == null && $end == null) {
+            $start = date('Y-m-d');
+            $end = date('Y-m-d');
+        }
         $con = new conexion();
         $iduser = $_SESSION['id'];
-        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat FROM facturas  WHERE  idusuario = $iduser ORDER BY consecutivo DESC LIMIT 100");
+        $rol = (int)$_SESSION['idrol'];
+
+        $nameRol = strtoupper($_SESSION['rolname']);
+        $find   = 'ADMIN';
+        $pos = strpos($nameRol, $find);
+        $sql  = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' idusuario = $iduser ORDER BY consecutivo DESC";
+        $sql1 = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' ORDER BY consecutivo DESC";
+        $sql2 = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' idusuario = $iduser ORDER BY consecutivo DESC";
+        if ($pos === false) {
+            $sql = $sql2;
+        } else {
+            $sql = $sql1; //admin
+        }
+
+
+        $header = $con->SPCALL($sql);
         $data = array();
         if ($header['rows'] > 0) {
             foreach ($header['data'] as $factura) {
@@ -375,7 +394,9 @@ class facturacionModel
     {
         $con = new conexion();
         $iduser = $_SESSION['id'];
-        $header = $con->SPCALL("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, fecha FROM facturas  WHERE consecutivo = $fac");
+        $header = $con->SPCALL("SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, fecha, c.nombre cliente FROM facturas as f
+        LEFT JOIN cliente c ON c.idcliente = f.idcliente 
+        WHERE consecutivo = $fac");
         $data = array();
         if ($header['rows'] > 0) {
             foreach ($header['data'] as $factura) {
@@ -424,7 +445,7 @@ class facturacionModel
     }
     public static function getPendingFac()
     {
-        $con = new conexion(); 
+        $con = new conexion();
         $data = $con->SPCALL("SELECT f.idfactura,f.consecutivo,DATE_FORMAT(f.fecha,'%d-%m-%Y') as fecha,f.tipo, c.nombre,f.total,f.estado AS fac_estado,IF(SUM(f.efectivo + f.tarjeta+ f.efectivo )=0,0,1) AS cancelado 
                             FROM  facturas AS f INNER JOIN cliente AS c ON c.idcliente = f.idcliente 
                             WHERE f.estado = 0 AND NOT(f.tipo= 1) GROUP BY f.consecutivo ORDER BY f.tipo DESC

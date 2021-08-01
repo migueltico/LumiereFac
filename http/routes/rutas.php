@@ -93,6 +93,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/apartados/getProductsFromApartado', 'facturacionController@getProductsFromApartado');
         route::post('/apartados/setAbono', 'facturacionController@setAbono');
         route::post('/historial/diario', 'facturacionController@historialDiario');
+        route::post('/historial/historialdiariocontent', 'facturacionController@historialDiarioContent');
         route::post('/historial/apartados', 'facturacionController@apartadosSinCancelar');
         route::post('/consultar/factura', 'facturacionController@consultarFactura');
         route::post('/agregar/devolucion', 'facturacionController@devolucion');
@@ -100,6 +101,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/getlast/prints', 'facturacionController@lastFactRePrint');
         route::post('/reprintFact', 'facturacionController@reprintFact');
         route::post('/searchFacByNumber', 'facturacionController@searchFacByNumber');
+        route::post('/searchFacByNumberGeneral', 'facturacionController@searchFacByNumberGeneral');
     });
     //+++++++++++ CLIENTES +++++++++++//
     route::group('clientes', function () {

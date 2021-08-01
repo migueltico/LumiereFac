@@ -81,7 +81,7 @@
                             <label class="text-primary" for="fac_pend_cancelar"><input type="checkbox" class="mr-2" name="fac_pend_cancelar" id="fac_pend_cancelar">Cancelar factura</label>
                         </div>
                     </label>
-                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Historial Diarios</strong>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>Historial de facturas</strong>
                         <div class="card p-3 textcolorhover">
                             <label class="text-success" for="historial_diario_modulo"><input type="checkbox" class="mr-2" name="historial_diario_modulo" id="historial_diario_modulo">Ver modulo</label>
                         </div>
