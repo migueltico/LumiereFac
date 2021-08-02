@@ -17,6 +17,7 @@
         border-collapse: collapse;
     }
 </style>
+
 <div class="table-responsive">
 
 
@@ -98,7 +99,7 @@
                         $tarjetas_varias = explode(";", $rows["n_tarjeta_multi"]);
                         foreach ($tarjetas_varias as $tarjeta) {
                             $tarjeta = explode(",", $tarjeta);
-                            $extra_tarjetas .= ", ".$tarjeta[0];
+                            $extra_tarjetas .= ", " . $tarjeta[0];
                         }
                     }
 
@@ -108,11 +109,11 @@
                     ?>
 
                     <tr class="TrRow">
-                        <?php if($rows["doc"] == "FAC"):  ?>
-                        <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><a href="#" class="getDataFacModal" data-id="<?= $rows["docNum"] ?>"  data-toggle="modal" data-target="#reportDetalleModal"><?= $rows["docNum"] ?></a> </td>
-                       <?php else:  ?>
-                        <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><?= $rows["docNum"] ?> <?=$rows['doc']=="RECIBO" ?"  (#Fac ref:" . $rows['docRef'].")": "" ?></td>
-                       <?php endif;  ?>
+                        <?php if ($rows["doc"] == "FAC") :  ?>
+                            <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><a href="#" class="getDataFacModal" data-id="<?= $rows["docNum"] ?>" data-toggle="modal" data-target="#reportDetalleModal"><?= $rows["docNum"] ?></a> </td>
+                        <?php else :  ?>
+                            <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><?= $rows["docNum"] ?> <?= $rows['doc'] == "RECIBO" ? "  (#Fac ref:" . $rows['docRef'] . ")" : "" ?></td>
+                        <?php endif;  ?>
                         <td scope="row" data-value="<?= $rows["fecha"] ?>" style="text-align: left;"><?= $rows["fecha"] ?></td>
                         <td scope="row" data-value="<?= $rows["doc"] ?>" style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
                         <td scope="row" data-value="<?= $rows["tipoDoc"]  ?>" style="text-align: left;"><?= $rows["tipoDoc"] ?></td>

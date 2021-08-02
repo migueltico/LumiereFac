@@ -5,6 +5,10 @@ $('#bodyContent').on('change', "#reportTypeSelect", function (e) {
     let loadTable = document.getElementById("loadTable")
     loadTable.innerHTML = ""
     let reportTypeSelect = document.getElementById('reportTypeSelect').value
+
+    let excelId = document.getElementById('excelIdReporteDiarioDetallado')
+    excelId.style.display = "none"
+
     addComponent(reportTypeSelect)
     console.log(reportTypeSelect)
 })
@@ -33,7 +37,8 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
         case 'rxfacDiaDetalle':
             let urlRxfacDiaDetalle = {
                 html: "/reportes/rxfacDiaDetalle",
-                pdf: `/reportes/rxfacDiaDetallePDF`
+                pdf: `/reportes/rxfacDiaDetallePDF`,
+                excel: `/reportes/rxfacDiaDetalleExcel/?dateInit=${dateInit}&dateEnd=${dateEnd}`,
             }
             urlReporte = urlRxfacDiaDetalle[type]
             break;
@@ -79,9 +84,9 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
             loadTable.innerHTML = '<div class = "loading"><img src ="/public/assets/img/loading.gif" ></div>'
 
             fetch(urlReporte, {
-                    method: "POST",
-                    body: formData
-                }).then(resp => resp.text())
+                method: "POST",
+                body: formData
+            }).then(resp => resp.text())
                 .then(resp => {
 
                     if (type == 'html') {
@@ -93,9 +98,9 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
             break;
         case 'pdf':
             fetch(urlReporte, {
-                    method: "POST",
-                    body: formData
-                }).then(resp => resp.text())
+                method: "POST",
+                body: formData
+            }).then(resp => resp.text())
                 .then(resp => {
 
                     if (type == 'pdf') {
@@ -109,6 +114,9 @@ $('#bodyContent').on('click', ".generarReportesFac", function (e) {
                 })
 
             // window.open(urlReporte)
+            break;
+        case 'excel':
+            window.open(urlReporte,'_self' )
             break;
 
         default:
@@ -141,6 +149,10 @@ function addComponent(idSelect) {
             addnewcomponent.style.display = 'block'
             $(addnewcomponent).html(componente)
             break;
+        case 'rxfacDiaDetalle':
+            let excelId = document.getElementById('excelIdReporteDiarioDetallado')
+            excelId.style.display = "inline"
+            break
         default:
             return
     }

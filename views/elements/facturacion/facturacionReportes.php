@@ -42,9 +42,10 @@
                 <div id="addnewcomponent" class="col-lg-2 col-md-6 col-sm-12 mb-1" style="display: none;">
                     
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 mb-1">
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-1 flex-row">
                     <button data-type="html" class="btn btn-primary generarReportesFac">Generar</button>
                     <button data-type="pdf" class="btn btn-info generarReportesFac">PDF</button>
+                    <button data-type="excel" id="excelIdReporteDiarioDetallado" class="btn btn-primary generarReportesFac" style="display: none;">Excel</button>
                 </div>
             </div>
 

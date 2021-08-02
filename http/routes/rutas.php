@@ -142,6 +142,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/rxfacDia', 'reportesController@rxfacDia');
         route::post('/rxCajas', 'reportesController@rxCajas');
         route::post('/rxfacDiaDetalle', 'reportesController@rxfacDiaDetalle');
+        route::get('/rxfacDiaDetalleExcel', 'reportesController@rxfacDiaDetalleExcel');
         route::post('/rxfacDiaDetalleMetodoPago', 'reportesController@rxfacDiaDetalleMetodoPago');
         route::post('/rxfacDiaPDF', 'reportesController@rxfacDiaPDF');
         route::post('/rxfacDiaDetallePDF', 'reportesController@rxfacDiaDetallePDF');
