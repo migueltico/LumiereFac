@@ -24,10 +24,12 @@ class inventarioController extends view
     $categorias = product::getCategory();
     $cat_precios = admin::getCategoriaPrecios();
     $ofertas = admin::getAllOfertas();
+    $listaTiendas = admin::getAllTiendas();
+    // 
     //$categorias = product::getCategory();
     $tallas = product::getTallas();
     // $products = product::getProducts();
-    $products = product::searchProduct("", 1,1);
+    $products = product::searchProduct("", 1, 1);
     $descuentos = product::getDescuentos();
     $data["products"] = $products['data'];
     $data["ofertas"] = $ofertas['data'];
@@ -39,12 +41,48 @@ class inventarioController extends view
     $data["tallas"] = $tallas['data'];
     $data["cat_precios"] = $cat_precios['data'];
     $data["icons"] =  $icon['icons'];
+    $data["tiendas"] =  $listaTiendas;
     echo view::renderElement('inventario/ListaProductos', $data);
+  }
+  public function getproductTraslado($var)
+  {
+    $codigo = $_POST['codigo'];
+
+    $productos = admin::getproduct($codigo);
+    $icon = help::icon();
+    $data['data'] = $productos['data']; // se pone de primero para que las variables se creen en el primer nivel
+    $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
+    if ($productos['rows'] == 1) {
+      view::renderElement('inventario/tableTrasladoSearch', $data);
+    } else {
+      echo '0';
+    }
+  }
+  public function getTraslado($var)
+  {
+    $traslados = product::getTraslados();
+    $data['traslados'] = $traslados['data'];
+    echo view::renderElement('inventario/tablaTraslados', $data);
+  }
+  public function insertTraslado($var)
+  {
+    $comentario = $_POST['comentario'];
+    $tiendaData = explode(";", $_POST['tienda_traslado']);
+    $dbOrigen = $_SESSION['db'];
+    $dbTienda = $tiendaData[0];
+    $tienda_traslado =  $tiendaData[1];
+    $productos = json_decode($_POST['productos'], true);
+    $traslado = product::insertTraslado($dbOrigen, $tienda_traslado, $productos, $comentario, $dbTienda);
+    // if($traslado['dbTraslate'] == "SUCCESS" && !$traslado['error'] ){
+
+    // }
+    header('Content-Type: application/json');
+    echo json_encode($traslado);
   }
   public function addstock($var)
   {
     $icon = help::icon();
-    $products = product::searchProduct('', 1,1);
+    $products = product::searchProduct('', 1, 1);
     $data["products"] = $products['data'];
     $paginationInfo =  $products;
     unset($paginationInfo['data']);
@@ -103,7 +141,7 @@ class inventarioController extends view
     $toSearch = $_POST['toSearch'];
     $estado = $_POST['estado'];
     $icon = help::icon();
-    $products = product::searchProduct($toSearch, 1,$estado);
+    $products = product::searchProduct($toSearch, 1, $estado);
     $data["products"] = $products['data'];
     $paginationInfo =  $products;
     unset($paginationInfo['data']);
@@ -127,7 +165,7 @@ class inventarioController extends view
     $icon = help::icon();
     $categorias = product::getCategory();
     $tallas = product::getTallas();
-    $products = product::searchProduct('', (isset($_POST['pagination']) ? $_POST['pagination'] : 1),$estado);
+    $products = product::searchProduct('', (isset($_POST['pagination']) ? $_POST['pagination'] : 1), $estado);
     $cat_precios = admin::getCategoriaPrecios();
     $descuentos = product::getDescuentos();
     $data["products"] = $products['data'];
@@ -154,7 +192,7 @@ class inventarioController extends view
     $toSearch = $_POST['toSearch'];
     $estado = $_POST['estado'];
     $icon = help::icon();
-    $products = product::searchProduct($toSearch, (isset($_POST['pagination']) ? $_POST['pagination'] : 1),(isset($estado)?$estado:1));
+    $products = product::searchProduct($toSearch, (isset($_POST['pagination']) ? $_POST['pagination'] : 1), (isset($estado) ? $estado : 1));
     $categorias = product::getCategory();
     $tallas = product::getTallas();
     $cat_precios = admin::getCategoriaPrecios();
@@ -285,7 +323,7 @@ class inventarioController extends view
   }
   public function disableProduct()
   {
-    $result = product::disableProduct($_POST['id'],$_POST['estado']);
+    $result = product::disableProduct($_POST['id'], $_POST['estado']);
     header('Content-Type: application/json');
     echo json_encode($result);
   }

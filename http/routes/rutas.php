@@ -48,7 +48,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/categoriaprecios/edit', 'adminController@EditCategoriaPrecios');
         route::post('/categoriaprecios/delete', 'adminController@DeleteCategoriaPrecios');
         route::post('/ofertas', 'adminController@ofertas');
-        route::post('/ofertas/getproduct', 'adminController@getproduct');
+        route::post('/ofertas/getproduct', 'adminController@getproduct');        
         route::post('/ofertas/getofertasbyid', 'adminController@getOfertasById');
         route::post('/ofertas/addoferta', 'adminController@addoferta');
         route::post('/ofertas/deleteoferta', 'adminController@deleteOferta');
@@ -57,6 +57,9 @@ route::middleware(['loginMiddleware@updateSession'], function () {
     //+++++++++++ INVENTARIO +++++++++++//
     route::group('inventario', function () {
         route::post('/listarproductos', 'inventarioController@index');
+        route::post('/addtableProduct/getproductTraslado', 'inventarioController@getproductTraslado');
+        route::post('/gettraslado', 'inventarioController@getTraslado');
+        route::post('/insertTraslado', 'inventarioController@insertTraslado');
         route::post('/addproduct', 'inventarioController@addproduct');
         route::post('/updateProduct', 'inventarioController@updateProduct');
         route::post('/getProductById', 'inventarioController@getProductById');

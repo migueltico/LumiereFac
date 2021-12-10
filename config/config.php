@@ -26,7 +26,6 @@ if ($env == 1) {
     $DB_NAME = array(
         "Alajuela" => "maindb",
         "Heredia" => "herediadb",
-        "Sanjose" => "sanjosedb",
         "TestDB" => "testdb"
     );
 } else {

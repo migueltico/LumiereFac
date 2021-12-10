@@ -18,7 +18,53 @@ $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
         loadTable(e, page.dataset.page, input)
     }
 })
+$('#bodyContent').on("keypress", "#searchProductTrasladoAdd", function (e) {
+    if (e.charCode == 13) {
+        if (e.target.value.length > 0) {
+            searchProductToTraslado(e, 'searchProductTrasladoAdd', 'trasladoRowsModal')
+        } else {
+            Swal.fire({
+                position: 'top',
+                title: 'Falta codigo',
+                text: 'Debes ingresar el codigo de un producto',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 2500,
+                timerProgressBar: true
+            })
+        }
+    }
+})
+function searchProductToTraslado(e, idSearch, idTbody) {
+    let element = document.getElementById(idSearch)
+    let toSearch = document.getElementById(idSearch).value
+    element.focus();
+    element.setSelectionRange(0, toSearch.length);
+    let resultCompare = existProductRowIntableTraslate(toSearch, idTbody)
+    if (resultCompare == true) {
+        let formData = new FormData()
+        formData.append("codigo", toSearch)
+        fetch("/inventario/addtableProduct/getproductTraslado", {
+            method: "POST",
+            body: formData
+        }).then(resp => resp.text())
+            .then(resp => {
+                $(`#${idTbody}`).append(resp)
+            })
 
+    }
+}
+function existProductRowIntableTraslate(toSearch, idTable) {
+    let body2 = document.getElementById(idTable)
+    for (let item of body2.children) {
+        let inner = item.children[0].innerText
+        if (toSearch.trim() == inner) {
+            item.children[5].children[0].value = parseInt(item.children[5].children[0].value) + 1
+            return item.children
+        }
+    }
+    return true
+}
 //SE EJECUTA AL PRESIONAR EL BTN NUEVO PARA NUEVO PRODUCTO
 $('#bodyContent').on("click", "#newProduct", function (e) {
     let newProduct = document.getElementById("AddProductForm")
@@ -27,6 +73,65 @@ $('#bodyContent').on("click", "#newProduct", function (e) {
     $("#addProduct #addProduct_imageContainer").html('')
 })
 
+$('#bodyContent').on("click", "#newTraslado", function (e) {
+    console.log("Traslado")
+    let traslado_form = document.getElementById("traslado_form")
+    let trasladoRowsModal = document.getElementById("trasladoRowsModal")
+    traslado_form.reset();
+    trasladoRowsModal.innerHTML = ""
+    getTraslados()
+})
+//Traslado
+$('#bodyContent').on("click", "#btnCrearTraslado", async function (e) {
+    let traslado_form = document.getElementById("traslado_form")
+    let formData = new FormData(traslado_form)
+    let productos = []
+    let body = document.getElementById('trasladoRowsModal')
+    for (let item of body.children) {
+
+        let json = {
+            codigo: item.children[0].innerText,
+            descripcion: item.children[1].innerText,
+            marca: item.children[2].innerText,
+            estilo: item.children[3].innerText,
+            talla: item.children[4].innerText,
+            cantidad: item.children[5].children[0].value
+        }
+        productos.push(json)
+    }
+    formData.append("productos", JSON.stringify(productos))
+    try {
+        let sendData = await fetch('/inventario/insertTraslado', { method: "POST", body: formData })
+        let response = await sendData.json()
+
+        if (response.dbTraslate == "SUCCESS") {
+            $("#traslado_modal").modal("toggle")
+            loadPage(null, "/inventario/listarproductos")
+            Swal.fire({
+                position: 'top',
+                title: `Cambios Guardados`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                timer: 2500,
+                timerProgressBar: true
+            })
+        } else {
+            Swal.fire({
+                position: 'top',
+                title: `Hubo un error al guardar los cambios`,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 2500,
+                timerProgressBar: true
+            })
+        }
+        console.log(response)
+    } catch (error) {
+        console.log(error)
+    }
+
+
+})
 //Pagination Inventario
 $('#bodyContent').on("click", ".paginationInventario", function (e) {
     let page = this.dataset.page
@@ -52,9 +157,9 @@ $('#bodyContent').on("keypress", "#productSearch", function (e) {
         formData.append('estado', (estado.checked ? 0 : 1))
         // formData.append('pagination', pagination)
         fetch("/inventario/search", {
-                method: "POST",
-                body: formData
-            }).then(resp => resp.text())
+            method: "POST",
+            body: formData
+        }).then(resp => resp.text())
             .then(resp => {
 
                 selectText(toSearch, element)
@@ -64,6 +169,12 @@ $('#bodyContent').on("keypress", "#productSearch", function (e) {
 
 })
 
+async function getTraslados() {
+    let requestText = await fetch("/inventario/gettraslado", { method: "POST" })
+    let response = await requestText.text()
+    let container = document.getElementById('nav_lista_traslado')
+    container.innerHTML = response
+}
 function paginationSearch(toSearch, page) {
     let formData = new FormData()
     let initLimit = page
@@ -71,9 +182,9 @@ function paginationSearch(toSearch, page) {
     formData.append("toSearch", toSearch)
     formData.append("initLimit", initLimit)
     fetch("/clientes/search/searchclient", {
-            method: "POST",
-            body: formData
-        })
+        method: "POST",
+        body: formData
+    })
         .then(resp => resp.text())
         .then(resp => {
             //console.log(resp);
@@ -100,9 +211,9 @@ $('#bodyContent').on("keypress", "#productSearchStockInventario", function (e) {
         formData.append('estado', (estado.checked ? 0 : 1))
         formData.append("toSearch", toSearch)
         fetch("/inventario/search/stock", {
-                method: "POST",
-                body: formData
-            }).then(resp => resp.text())
+            method: "POST",
+            body: formData
+        }).then(resp => resp.text())
             .then(resp => {
                 $(".loadTable").html(resp)
                 selectText(toSearch, element)
@@ -120,9 +231,9 @@ $('#bodyContent').on("click", ".BtnCalcularSugerido", function (e) {
     formData.append("costo", costo)
     formData.append("unitario", unitario)
     fetch("/inventario/calcular/sugerido", {
-            method: "POST",
-            body: formData
-        }).then(resp => resp.json())
+        method: "POST",
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             let sugerido = document.getElementById(`sugerido_${id}`)
             let precioVenta = document.getElementById(`precioVenta_${id}`)
@@ -155,12 +266,12 @@ $('#bodyContent').on("click", ".SeeImgProduct", function (e) {
 
     urls.map((url, i) => {
         let img = `
-        <div class="carousel-item ${(i==0?'active':'')}">
-            <img src="${(url==""?"/public/assets/img/not-found.png":url)}" data-interval="1000" class="d-block w-100" alt="Imagen Articulo">
+        <div class="carousel-item ${(i == 0 ? 'active' : '')}">
+            <img src="${(url == "" ? "/public/assets/img/not-found.png" : url)}" data-interval="1000" class="d-block w-100" alt="Imagen Articulo">
         </div>
         `
         let indicator = `
-                        <li data-target="#carouselIndicators" data-slide-to=""${i}" class="${(i==0?'active':'')}"></li>
+                        <li data-target="#carouselIndicators" data-slide-to=""${i}" class="${(i == 0 ? 'active' : '')}"></li>
         `
 
         $('#galleryShow .carousel-indicators').append(indicator)
@@ -191,9 +302,9 @@ function refreshStock() {
     $(".loadTable").append(img)
     let url = '/inventario/refreshProductstock';
     fetch(url, {
-            method: 'POST',
-            body: formData
-        })
+        method: 'POST',
+        body: formData
+    })
         .then((result) => result.text())
         .then((html) => {
             $(".loadTable").html(html)
@@ -217,9 +328,9 @@ function saveProductPrice(e) {
     formData.append('sugerido', sugerido.innerText)
     formData.append('id', id)
     fetch("/inventario/saveProductPrice", {
-            method: 'POST',
-            body: formData
-        })
+        method: 'POST',
+        body: formData
+    })
         .then((resp) => resp.json())
         .then((resp) => {
             //console.log(resp);
@@ -260,9 +371,9 @@ function addStock(id) {
             formData.append('stock', (data.length == 0 ? 0 : data))
             formData.append('id', id)
             return fetch('/inventario/updateStock', {
-                    method: "POST",
-                    body: formData
-                })
+                method: "POST",
+                body: formData
+            })
                 .then(resp => resp.json()).then(resp => {
                     let stock = document.getElementById(`StockInner_${id}`)
                     let now = stock.innerText
@@ -315,9 +426,9 @@ function addMinStock(id) {
             formData.append('MinStock', (data.length == 0 ? 0 : data))
             formData.append('id', id)
             return fetch('/inventario/updateMinStock', {
-                    method: "POST",
-                    body: formData
-                })
+                method: "POST",
+                body: formData
+            })
                 .then(resp => resp.json()).then(resp => {
                     ////console.log(resp);
                     let MinStock = document.getElementById(`MinStockInner_${id}`)
@@ -373,9 +484,9 @@ function agregarProducto(e) {
         let urls = []
         formDatas.append("urls", urls)
         fetch(url, {
-                method: 'POST',
-                body: formDatas
-            })
+            method: 'POST',
+            body: formDatas
+        })
             .then((resp) => resp.json())
             .then((resp) => {
                 //console.log(resp);
@@ -417,8 +528,8 @@ function agregarProducto(e) {
 function generarCodigo(e, modalId) {
     let url = '/inventario/generar/codigobarras';
     fetch(url, {
-            method: 'POST',
-        })
+        method: 'POST',
+    })
         .then((result) => result.json())
         .then((resp) => {
             $(`${modalId}_txtcodigoBarra `).val(resp.codigo)
@@ -441,9 +552,9 @@ function loadTable(e, pagination, search = "") {
     $(".loadTable").html('')
     $(".loadTable").append(img)
     fetch(url, {
-            method: 'POST',
-            body: formData
-        })
+        method: 'POST',
+        body: formData
+    })
         .then((result) => result.text())
         .then((html) => {
             $(".loadTable").html(html)
@@ -611,9 +722,9 @@ function loadDataEditModal(e, modalId) {
     let filesImageHidden = $(`${modalId}_filesImageHidden`)[0]
     formDatas.append('idproducto', id)
     fetch('/inventario/getProductById', {
-            method: 'POST',
-            body: formDatas
-        }).then((result) => result.json())
+        method: 'POST',
+        body: formDatas
+    }).then((result) => result.json())
         .then((resp) => {
             ////console.log(resp);
             if (!resp.error) {
@@ -700,9 +811,9 @@ function UpdateEditModal(e, modalId) {
         //  }
 
         fetch("/inventario/updateProduct", {
-                method: 'POST',
-                body: formData
-            }).then(resp => resp.json())
+            method: 'POST',
+            body: formData
+        }).then(resp => resp.json())
             .then(resp => {
                 if (resp.error == "00000") {
                     // Swal.fire({
@@ -934,10 +1045,10 @@ function printPDF() {
         "Content-Type": "application/json"
     }
     fetch("/reportes/etiquetas", {
-            method: "POST",
-            headers: headers,
-            body: toPrint
-        }).then(resp => resp.text())
+        method: "POST",
+        headers: headers,
+        body: toPrint
+    }).then(resp => resp.text())
         .then(resp => {
             let h = resp;
             let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
@@ -955,9 +1066,9 @@ function disableProduct(id, estado, e) {
     formData.append("estado", estado)
 
     fetch("/inventario/update/product/estado", {
-            method: 'POST',
-            body: formData
-        }).then(resp => resp.json())
+        method: 'POST',
+        body: formData
+    }).then(resp => resp.json())
         .then(resp => {
             if (resp.error == "00000") {
                 loadTable(e, 1, "")

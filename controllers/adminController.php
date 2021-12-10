@@ -97,6 +97,7 @@ class adminController extends view
     public function getproduct($var)
     {
         $codigo = $_POST['codigo'];
+        $trasladoSearch = isset($_POST['traslado']) ?? false;
 
         if ($this->verificarProductoDuplicadoOferta($codigo)) {
             echo 'duplicado';
@@ -108,12 +109,16 @@ class adminController extends view
         $data['data'] = $productos['data']; // se pone de primero para que las variables se creen en el primer nivel
         $data["icons"] =  $icon['icons']; //las segundas se agregan despues para evitar ser borradas
         if ($productos['rows'] == 1) {
-
-            view::renderElement('ofertas/articuloModal', $data);
+            if ($trasladoSearch) {
+                view::renderElement('inventario/tableTrasladoSearch.php', $data);
+            } else {
+                view::renderElement('ofertas/articuloModal', $data);
+            }
         } else {
             echo '0';
         }
     }
+  
     public function verificarProductoDuplicadoOferta($codigo)
     {
         $ofertas = admin::getAllOfertas();

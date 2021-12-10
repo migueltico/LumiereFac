@@ -118,6 +118,16 @@ class adminModel
         $con = new conexion();
         return $con->SPCALL("SELECT * FROM ofertas");
     }
+    public static function getAllTiendas()
+    {
+        $data =[];
+        foreach ($GLOBALS["DB_NAME"] as $key => $db) {
+            $con = new conexion($db);
+            $dataSp = $con->SQR_ONEROW("SELECT nombre_local FROM generalinfo");
+            $data[$db] = $dataSp['data']['nombre_local'];
+        }
+        return $data;
+    }
     public static function descuentosOnlyFac()
     {
         $con = new conexion();

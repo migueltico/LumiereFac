@@ -5,7 +5,7 @@
             <div class="card" style="max-width: 100%;">
                 <div class="card-header"><strong style="font-size:1.2rem">Admin</strong></div>
                 <div class="card-body row">
-                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>General</strong>
+                    <label class="col-lg-3 col-md-6 col-sm-12" for=""><strong>General 2</strong>
                         <div class="card p-3 textcolorhover">
                             <label class="text-success" for="general_modulo"><input type="checkbox" class="mr-2" name="general_modulo" id="general_modulo">Ver modulo</label>
                             <label class="text-primary" for="general_guardar"><input type="checkbox" class="mr-2" name="general_guardar" id="general_guardar">Guardar cambios</label>

@@ -10,12 +10,16 @@ class conexion
 
 	public $con;
 	private $statement;
-	public function __construct()
+	public function __construct($db = null)
 	{
 		try {
-			//$pdo = new PDO("mysql:host=". HOST . ";dbname=". DB . ";",USER,PASS);
-			$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . $GLOBALS["DB_NAME"][$_SESSION['db']] . ";", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
-			 array(PDO::ATTR_PERSISTENT => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>true));
+			if ($db == null) {
+				$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . $GLOBALS["DB_NAME"][$_SESSION['db']] . ";", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
+				 array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>true));
+			}else{
+				$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=$db;", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
+				 array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>true));
+			}
 		} catch (\PDOException $e) {
 			echo 'Error al conectarse con la base de datos: ' . $e->getMessage();
 			exit;
