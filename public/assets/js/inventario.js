@@ -35,6 +35,15 @@ $('#bodyContent').on("keypress", "#searchProductTrasladoAdd", function (e) {
         }
     }
 })
+$('#bodyContent').on("click", ".seeTrasladoDetalle", async function ({ target }) {
+    let formData = new FormData()
+    let id = target.dataset.id
+    formData.append("id", id)
+    let request = await fetch("/inventario/getTrasladobyId", { method: "POST", body: formData })
+    let response = await request.text()
+    let detalle_traslado_modal = document.getElementById('detalle_traslado_modal')
+    detalle_traslado_modal.innerHTML = response
+})
 function searchProductToTraslado(e, idSearch, idTbody) {
     let element = document.getElementById(idSearch)
     let toSearch = document.getElementById(idSearch).value
@@ -49,7 +58,18 @@ function searchProductToTraslado(e, idSearch, idTbody) {
             body: formData
         }).then(resp => resp.text())
             .then(resp => {
-                $(`#${idTbody}`).append(resp)
+                if (resp != "0") {
+                    $(`#${idTbody}`).append(resp)
+                } else {
+                    Swal.fire({
+                        position: 'top',
+                        title: 'No se encontro el codigo de producto',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        timer: 2500,
+                        timerProgressBar: true
+                    })
+                }
             })
 
     }
@@ -130,6 +150,22 @@ $('#bodyContent').on("click", "#btnCrearTraslado", async function (e) {
         console.log(error)
     }
 
+
+})
+$('#bodyContent').on("click", ".acceptTrasladoOrDevolution", async function (e) {
+    console.log(e)
+    let dbOrigen = e.target.dataset.dborigen
+    let dbTraslado = e.target.dataset.dbtraslado
+    let id = e.target.dataset.id
+    let formData = new FormData()
+
+    formData.append("id", id)
+    formData.append("dbOrigen", dbOrigen)
+    formData.append("dbTraslado", dbTraslado)
+
+    let request = await fetch("/inventario/acceptTraslado", { method: "POST", body: formData })
+    let response = await request.json()
+    console.log(response)
 
 })
 //Pagination Inventario

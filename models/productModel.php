@@ -61,11 +61,13 @@ class productModel
          * 1: Pendiente
          * 2: Aceptado
          * 3: Cancelado
+         * 4: devolucion
+         * 5: AceptadaDevolucion
          */
         $tiendaOrigen = $_SESSION['info']['nombre_local'];
         $idUserOrigen = $_SESSION['id'];
         $data = array(
-            ":uniqId" => uniqid(rand(100,1000), true),
+            ":uniqId" => uniqid(rand(100, 1000), true),
             ":tiendaOrigen" => $tiendaOrigen,
             ":tiendaTraslado" => $tiendaTraslado,
             ":dbOrigen" => $dbOrigen,
@@ -114,16 +116,59 @@ class productModel
                 "Traslado",
                 "Inventario",
                 "Se actualizo la cantida del producto(s) por razones de Traslado",
-                json_encode(["productos"=>$productoModificado, "Tienda"=>$tiendaTraslado]),
+                json_encode(["productos" => $productoModificado, "Tienda" => $tiendaTraslado]),
                 $_SESSION['id']
             );
         }
         return $error;
     }
 
-    public static function getTraslados(){
+    public static function getTraslados()
+    {
         $con = new conexion();
         $result = $con->SQND("SELECT * FROM traslados ORDER BY createAt DESC LIMIT 50");
+        return $result;
+    }
+
+    public static function acceptTraslado($id, $dbOrigen, $dbTraslado)
+    {
+        /**
+         *  Estados
+         * 1: Pendiente
+         * 2: Aceptado
+         * 3: Cancelado
+         * 4: devolucion
+         * 5: AceptadaDevolucion
+         */
+
+        //Si pone 2 es por que es la DB a la cual se traslado el producto por ende se esta aceptando la trasferencia
+        //Si pone 5 es por que somos la DB origen y el check es para aceptar una devolucion
+        $db = $GLOBALS["DB_NAME"][$_SESSION['db']];
+        $estado = $db  == $dbTraslado ? 2 : 5;
+        $con = new conexion();
+        $result = $con->SQNDNR("UPDATE traslados SET estado = $estado WHERE uniqId='$id'");
+        $data = [];
+        $data['dbNow'] = $result;
+        if ($result['error'] == "00000") {
+            if ($estado == 2) { // Esta en la DB de traslado
+                $con1 = new conexion($dbOrigen); // actualizamos en Origen
+                $result1 = $con1->SQNDNR("UPDATE traslados SET estado = $estado WHERE uniqId='$id'");
+                $data['dbOrigen'] =  $result1;
+                $data['dbTraslado'] =  null;
+            } else {
+                $con1 = new conexion($dbTraslado); // actualizamos en traslado
+                $result1 = $con1->SQNDNR("UPDATE traslados SET estado = $estado WHERE uniqId='$id'");
+                $data['dbTraslado'] =  $result1;
+                $data['dbOrigen'] =  null;
+            }
+        }
+        return $data;
+    }
+
+    public static function getTrasladobyId($id)
+    {
+        $con = new conexion();
+        $result = $con->SQR_ONEROW("SELECT * FROM traslados WHERE uniqId ='$id'");
         return $result;
     }
     /**

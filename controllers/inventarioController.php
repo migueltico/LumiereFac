@@ -60,15 +60,46 @@ class inventarioController extends view
   }
   public function getTraslado($var)
   {
+    /**
+     *  Estados
+     * 1: Pendiente
+     * 2: Aceptado
+     * 3: Cancelado
+     */
     $traslados = product::getTraslados();
+    $icon = help::icon();
     $data['traslados'] = $traslados['data'];
+    $data["icons"] =  $icon['icons'];
     echo view::renderElement('inventario/tablaTraslados', $data);
+  }
+  public function getTrasladobyId($var)
+  {
+    /**
+     *  Estados
+     * 1: Pendiente
+     * 2: Aceptado
+     * 3: Cancelado
+     * 4: devolucion
+     * 5: AceptadaDevolucion
+     */
+    $id = $_POST['id'];
+    $traslados = product::getTrasladobyId($id);
+    $data['data'] = $traslados['data'];
+    view::renderElement('inventario/trasladoDetail', $data);
   }
   public function insertTraslado($var)
   {
+    /**
+     *  Estados
+     * 1: Pendiente
+     * 2: Aceptado
+     * 3: Cancelado
+     * 4: devolucion
+     * 5: AceptadaDevolucion
+     */
     $comentario = $_POST['comentario'];
     $tiendaData = explode(";", $_POST['tienda_traslado']);
-    $dbOrigen = $_SESSION['db'];
+    $dbOrigen = $GLOBALS["DB_NAME"][$_SESSION['db']];
     $dbTienda = $tiendaData[0];
     $tienda_traslado =  $tiendaData[1];
     $productos = json_decode($_POST['productos'], true);
@@ -76,6 +107,24 @@ class inventarioController extends view
     // if($traslado['dbTraslate'] == "SUCCESS" && !$traslado['error'] ){
 
     // }
+    header('Content-Type: application/json');
+    echo json_encode($traslado);
+  }
+  public function acceptTraslado($var)
+  {
+    /**
+     *  Estados
+     * 1: Pendiente
+     * 2: Aceptado
+     * 3: Cancelado
+     * 4: devolucion
+     * 5: AceptadaDevolucion
+     */
+    $id = $_POST['id'];
+    $dbOrigen = $_POST['dbOrigen'];
+    $dbTraslado = $_POST['dbTraslado'];
+
+    $traslado = product::acceptTraslado($id, $dbOrigen, $dbTraslado);
     header('Content-Type: application/json');
     echo json_encode($traslado);
   }

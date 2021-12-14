@@ -353,6 +353,8 @@ class facturacionModel
                 WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
+                }else{
+                    $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {
                     $recibosList = $con->SQND("SELECT *, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat,  (SELECT SUM(r2.abono) FROM recibos AS r2 WHERE idfactura =$id ) AS fullAbono  FROM recibos r WHERE r.idfactura =$id");
@@ -408,6 +410,8 @@ class facturacionModel
                 INNER JOIN tallas t ON t.idtallas = p.idtalla 
                 WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
+                    $factura['details'] = $detalis['data'];
+                }else{
                     $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {

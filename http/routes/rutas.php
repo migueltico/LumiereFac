@@ -58,8 +58,10 @@ route::middleware(['loginMiddleware@updateSession'], function () {
     route::group('inventario', function () {
         route::post('/listarproductos', 'inventarioController@index');
         route::post('/addtableProduct/getproductTraslado', 'inventarioController@getproductTraslado');
+        route::post('/getTrasladobyId', 'inventarioController@getTrasladobyId');
         route::post('/gettraslado', 'inventarioController@getTraslado');
         route::post('/insertTraslado', 'inventarioController@insertTraslado');
+        route::post('/acceptTraslado', 'inventarioController@acceptTraslado');
         route::post('/addproduct', 'inventarioController@addproduct');
         route::post('/updateProduct', 'inventarioController@updateProduct');
         route::post('/getProductById', 'inventarioController@getProductById');

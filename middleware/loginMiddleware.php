@@ -30,11 +30,11 @@ class loginMiddleware
         if (!isset($_COOKIE['lsd_r']) && !isset($_SESSION["id"])) {
             return ["return" => true, "send_json_error" => false, "send_msg" => false, "msg" => ""];
         }
-        $dataLogin = @explode(";", $_COOKIE['lsd_r']);
         if (isset($_SESSION["id"])) {
-
+            
             $id = $_SESSION["id"];
         } else {
+            $dataLogin = @explode(";", $_COOKIE['lsd_r']);
             $id = $dataLogin[0];
             $_SESSION["db"] = trim($dataLogin[4]);
         }

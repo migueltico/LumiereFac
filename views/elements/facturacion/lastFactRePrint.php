@@ -13,7 +13,7 @@
                             <span><strong>Total: <?= $factura['monto_envio'] > 0 ? " - (i.e)" : "" ?>: </strong><?= number_format($factura['total'], 2, '.', ',') ?></span>
                             <span><strong>Envio: </strong><?= number_format($factura['monto_envio'], 2, '.', ',') ?></span>
                             <span><strong>Tipo: </strong><?= ($factura['tipo'] == 1 ? 'Local' : ($factura['tipo'] == 2 ? 'Envio' : "Apartado")) ?></span>
-                            <span><?= count($factura['details']) ?> Productos</span>
+                            <span><?= @count($factura['details']) ?> Productos</span>
                             <span><strong>Fecha: </strong><?= $factura['fecha'] ?></span>
                         </button>
                     </h2>

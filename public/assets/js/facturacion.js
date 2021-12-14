@@ -1,4 +1,5 @@
 
+var _PAGA_CON = ""
 $('document').ready(function () {
     localStorage.setItem('fac_active_btn', 0)
 
@@ -823,7 +824,10 @@ $("#bodyContent").on("click", "#group_type_fac .btn", function (e) {
 function resetFactScreen() {
     localStorage.removeItem('saldo')
     localStorage.removeItem('ofertas')
+    localStorage.setItem('fac_active_btn', 0)
+    _PAGA_CON = ""
     $(`.modal-backdrop`).remove()
+    $("#btnMakeFact").prop("disabled", false)
     loadPage(null, "facturacion/facturar")
 
 }
@@ -847,7 +851,7 @@ $('#bodyContent').on("click", "#btnMakeFact", function (e) {
         let method = PagoMultipleFac(pagoContraEntrega, abono)
 
         if (method.state) {
-            getProductsRowsForFac(method.methodsArray, pagoContraEntrega, abono)
+            getProductsRowsForFac(method.methodsArray, pagoContraEntrega, abono, "multiple")
         }
     } else {
         let method = PagoUnicoFac()
@@ -855,7 +859,7 @@ $('#bodyContent').on("click", "#btnMakeFact", function (e) {
 
         // method.map(e => (e.state == false ? isOk = true : isOk = false))
         if (method[0].state) {
-            getProductsRowsForFac(method, pagoContraEntrega, abono)
+            getProductsRowsForFac(method, pagoContraEntrega, abono, "Unico")
         } else if (pagoContraEntrega.checked) {
 
         }
@@ -868,7 +872,7 @@ function convertToFacNumber() {
     ConvertLabelFormat(111)
 }
 
-function getProductsRowsForFac(method, pago, typeAbono) {
+function getProductsRowsForFac(method, pago, typeAbono, tipoPago) {
     let rows = document.getElementsByClassName('productRowFac')
     let amounts = document.getElementById('totalFactAmount').dataset.amount
     let cliente = document.getElementById('fac_cliente_input')
@@ -1067,12 +1071,15 @@ function verificaCamposPago(inputClass, multi) {
         case 'efectivoInputs':
             let Emonto = document.getElementsByClassName(`${inputClass}_monto`)[0].value
 
+
             if (Emonto.length > 0) {
                 let methods = {
                     tipo: "efectivo",
                     monto: parseFloat(Emonto.replace(",", "")).toFixed(2),
                     montoWithFormat: Emonto
                 }
+                console.log(_PAGA_CON.length)
+                _PAGA_CON += _PAGA_CON.length > 0 ? `;Efectivo,${methods.monto}` : `Efectivo,${methods.monto}`
                 return {
                     state: true,
                     methods
@@ -1141,6 +1148,7 @@ function verificaCamposPago(inputClass, multi) {
                     methods.totalExtraCards = totalGroup
                     //console.log("Set News tarjetas", methods);
                 }
+
                 if (hasMore) {
                     let btnTypeApartado = document.getElementById('btnTypeApartado');
                     let abono = btnTypeApartado.classList.contains("active");
@@ -1151,6 +1159,7 @@ function verificaCamposPago(inputClass, multi) {
                     montoTarjetaId = montoTarjetaId.replace(",", "")
                     montoTarjetaId = parseFloat(montoTarjetaId)
                     totalGroup = (totalGroup + montoTarjetaId)
+                    _PAGA_CON += _PAGA_CON.length > 0 ? `;Tarjeta,${parseFloat(totalGroup).toFixed(2)}` : `Tarjeta,${parseFloat(totalGroup).toFixed(2)}`
                     if (amounts !== totalGroup && !multi && !abono && !pagoContraEntrega) {
                         return {
                             state: false,
@@ -1195,6 +1204,7 @@ function verificaCamposPago(inputClass, multi) {
                     referencia,
                     montoWithFormat: Trmonto
                 }
+                _PAGA_CON += _PAGA_CON.length > 0 ? `;Transferencia,${methods.monto}` : `Transferencia,${methods.monto}`
                 return {
                     state: true,
                     methods
@@ -1209,44 +1219,70 @@ function verificaCamposPago(inputClass, multi) {
 }
 
 function printFact(datos) {
-    let body = ''
-    let headers = {
-        "Content-Type": "application/json"
-    }
-    $("#btnMakeFact").prop("disabled", false)
-    localStorage.setItem('fac_active_btn', 0)
-    fac_active_btn = false
-    let Okprint = document.getElementById('SendFactBoolean');
-    // let formData = new FormData()
-    // formData.append("datos", JSON.stringify(datos))
-    fetch("/facturacion/facturaVenta", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(datos)
-    }).then(resp => resp.text())
-        .then(resp => {
+    let pagos = _PAGA_CON.split(";")
+    let Texto = ""
+    let total = 0
+    pagos.map(pago => {
+        let text = pago.split(",")
+        Texto += `<li>${text[0]}: ${text[1]}</li>`
+        total += parseFloat(text[1])
+    });
 
-            if (Okprint.checked) {
-                $(`#FacSendModal`).modal('toggle')
-                let h = resp;
-                let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
-                window.print();
-                d.remove();
-            } else {
-                $(`#FacSendModal`).modal('toggle')
-                Swal.fire({
-                    position: 'top',
-                    title: "Factura",
-                    text: "Factura generada correctamente",
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    timer: 2500,
-                    timerProgressBar: true
-                })
-                Okprint.checked = true
+    let finalTexto = `<ul>${Texto}</ul><p><b>Total: <b>${total.toFixed(2)}</p>`
+    Swal.fire({
+        title: 'Verifica el tipo de Pago y Montos',
+        html: finalTexto,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Continuar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let body = ''
+            let headers = {
+                "Content-Type": "application/json"
             }
-            resetFactScreen()
-        })
+            $("#btnMakeFact").prop("disabled", false)
+            localStorage.setItem('fac_active_btn', 0)
+            fac_active_btn = false
+            let Okprint = document.getElementById('SendFactBoolean');
+            fetch("/facturacion/facturaVenta", {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(datos)
+            }).then(resp => resp.text())
+                .then(resp => {
+
+                    if (Okprint.checked) {
+                        $(`#FacSendModal`).modal('toggle')
+                        let h = resp;
+                        let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
+                        window.print();
+                        d.remove();
+                    } else {
+                        $(`#FacSendModal`).modal('toggle')
+                        Swal.fire({
+                            position: 'top',
+                            title: "Factura",
+                            text: "Factura generada correctamente",
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                            timer: 2500,
+                            timerProgressBar: true
+                        })
+                        Okprint.checked = true
+                        _PAGA_CON = ""
+                    }
+                    resetFactScreen()
+                })
+        } else {
+            localStorage.setItem('fac_active_btn', 0)
+            _PAGA_CON = ""
+            $("#btnMakeFact").prop("disabled", false)
+        }
+    })
+
+
 
 }
 

@@ -14,7 +14,8 @@ class conexion
 	{
 		try {
 			if ($db == null) {
-				$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . $GLOBALS["DB_NAME"][$_SESSION['db']] . ";", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
+				$dbNow = $GLOBALS["DB_NAME"][$_SESSION['db']];
+				$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . $dbNow . ";", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
 				 array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>true));
 			}else{
 				$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=$db;", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
@@ -191,7 +192,7 @@ class conexion
 	/**
 	 * SIMPLE QUERY, Si RETORNA DATOS,NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *
-	 * @param [type] $sql
+	 * @param string $sql
 	 * @return void
 	 */
 	public function SQND($sql)

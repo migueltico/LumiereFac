@@ -16,14 +16,26 @@ $(document).on('click', '.pass_show .ptxt', function () {
 $("#bodyHtml").on("click", "#subirBtn", function () {
     $("#bodyMain").scrollTop(0)
 })
-$("#bodyContent").on("click", ".table.sort thead tr th", function () {
-    let columnId = $(".table.sort thead tr th").index(this)
+$("#bodyContent").on("click", ".table.sort thead tr th", function (e) {
+    console.log(e)
+    let classTable = e.target.offsetParent.dataset.class
+    let body = e.target.offsetParent.lastElementChild
+    let columnId = null
+    console.log(classTable)
+    if (classTable != undefined && classTable != "undefined" && classTable != null) {
+        columnId = $(`.${classTable}.table.sort thead tr th`).index(this)
+        console.log(`.${classTable}.table.sort thead tr th`)
+    } else {
+        columnId = $(".table.sort thead tr th").index(this)
+        console.log(".table.sort thead tr th")
+    }
     let tipo = $(this).data('type')
     let inner = $(this).data('inner')
-    let tbodyMain = $(this).parent().parent().next('tbody')
-    let tbody = $(this).parent().parent().next('tbody').children()
+    let tbodyMain = $(body)
+    let tbody = $(tbodyMain).children()
     let sortr = $(tbodyMain).data('sorts')
     let result;
+    console.log(columnId)
     if (!inner) {
         result = ordenarFila(columnId, tipo, sortr, tbody)
     } else {

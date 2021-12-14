@@ -6,7 +6,7 @@
       <a href="#" class="btn btn-primary btn-sm" id="newProduct" data-toggle="modal" data-target="#addProduct" data-toggle="tooltip" data-placement="bottom" title="Agregar Nuevo producto"><?= $icons['plus-circle'] ?> Nuevo</a>
     <?php endif;  ?>
     <a href="#" id="btnRefrescarProducto" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="Refrescar Productos">Refrescar</a>
-    <a href="#" class="btn btn-success btn-sm ml-3" id="newTraslado" data-toggle="modal" data-target="#traslado_modal" data-toggle="tooltip" data-placement="bottom" title="Crear nuevo traslado"><?= $icons['shop'] ?> Traslado</a>
+    <!-- <a href="#" class="btn btn-success btn-sm ml-3" id="newTraslado" data-toggle="modal" data-target="#traslado_modal" data-toggle="tooltip" data-placement="bottom" title="Crear nuevo traslado"><?= $icons['shop'] ?> Traslado</a> -->
 
     <label class="form-check-label ml-2" for="checkestado">
       Buscar Inactivos
