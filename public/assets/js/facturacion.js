@@ -1177,7 +1177,7 @@ function verificaCamposPago(inputClass, multi) {
                     }
 
                 } else {
-
+                    _PAGA_CON += _PAGA_CON.length > 0 ? `;Tarjeta,${methods.monto}` : `Tarjeta,${methods.monto}`
                     return {
                         state: true,
                         methods,
