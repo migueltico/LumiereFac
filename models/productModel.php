@@ -92,7 +92,6 @@ class productModel
 
             $con = new conexion();
             $result = $con->SPCALLNR($sql, $data);
-            return $result;
             $error = [];
             $productoModificado = [];
             if ($result['error'] == "00000") {
