@@ -114,11 +114,11 @@ class conexion
 	/**
 	 * SIMPLE QUERY, NO RETORNA DATOS, SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *
-	 * @param String $sql
-	 * @param Array $datos
+	 * @param $sql
+	 * @param $datos
 	 * @return void
 	 */
-	public function SPCALLNR($sql, $datos)
+	public function SPCALLNR($sql, array $datos)
 	{
 		try {
 			$this->statement = $this->con->prepare($sql);
