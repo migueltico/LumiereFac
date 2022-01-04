@@ -62,6 +62,8 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/gettraslado', 'inventarioController@getTraslado');
         route::post('/insertTraslado', 'inventarioController@insertTraslado');
         route::post('/acceptTraslado', 'inventarioController@acceptTraslado');
+        route::post('/devolucionTrasladoBtn', 'inventarioController@devolucionTrasladoBtn');
+        route::post('/cancelarTraslado', 'inventarioController@cancelarTraslado');
         route::post('/addproduct', 'inventarioController@addproduct');
         route::post('/updateProduct', 'inventarioController@updateProduct');
         route::post('/getProductById', 'inventarioController@getProductById');

@@ -140,8 +140,8 @@ class conexion
 	/**
 	 * SIMPLE QUERY, NO RETORNA DATOS, NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *
-	 * @param [type] $sql
-	 * @param [type] $datos
+	 * @param String $sql
+	 * @param Array $datos
 	 * @return void
 	 */
 	public function SQNDNR($sql)
@@ -166,7 +166,7 @@ class conexion
 		/**
 	 * SIMPLE QUERY, Si RETORNA DATOS,NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *
-	 * @param [type] $sql
+	 * @param String $sql
 	 * @return void
 	 */
 	public function SQNDMULTISQL($sql)

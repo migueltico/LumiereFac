@@ -26,7 +26,7 @@ $productos = json_decode($data['productos'], true);
     </div>
 </div>
 <h3 class="text-center p-3">Lista de Productos</h3>
-<div class="table-responsive">
+<div class="table-responsive" style="min-height: 230px;">
     <table class="table sort trasladoRowsTableDetail" data-class="trasladoRowsTableDetail" id="sortable">
         <thead>
             <tr>

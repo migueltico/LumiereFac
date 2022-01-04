@@ -119,6 +119,17 @@ $('#bodyContent').on("click", "#btnCrearTraslado", async function (e) {
         }
         productos.push(json)
     }
+    if(productos.length == 0){
+        Swal.fire({
+            position: 'top',
+            title: `No hay articulos agregados en el traslado`,
+            icon: 'info',
+            confirmButtonText: 'OK',
+            timer: 2500,
+            timerProgressBar: true
+        })
+        return
+    }
     formData.append("productos", JSON.stringify(productos))
     try {
         let sendData = await fetch('/inventario/insertTraslado', { method: "POST", body: formData })
@@ -157,14 +168,53 @@ $('#bodyContent').on("click", ".acceptTrasladoOrDevolution", async function (e) 
     let dbOrigen = e.target.dataset.dborigen
     let dbTraslado = e.target.dataset.dbtraslado
     let id = e.target.dataset.id
+    let codigos = document.getElementById(`id_traslado_items${id}`).value
     let formData = new FormData()
 
     formData.append("id", id)
     formData.append("dbOrigen", dbOrigen)
     formData.append("dbTraslado", dbTraslado)
-
+    formData.append("codigos", codigos)
     let request = await fetch("/inventario/acceptTraslado", { method: "POST", body: formData })
     let response = await request.json()
+    getTraslados()
+    console.log(response)
+
+})
+$('#bodyContent').on("click", ".cancelarTrasladoBtn", async function (e) {
+    console.log(e)
+    let dbOrigen = e.target.dataset.dborigen
+    let dbTraslado = e.target.dataset.dbtraslado
+    let id = e.target.dataset.id
+    let codigos = document.getElementById(`id_traslado_items${id}`).value
+    let formData = new FormData()
+
+    formData.append("id", id)
+    formData.append("dbOrigen", dbOrigen)
+    formData.append("dbTraslado", dbTraslado)
+    formData.append("codigos", codigos)
+    let request = await fetch("/inventario/cancelarTraslado", { method: "POST", body: formData })
+    let response = await request.json()
+    getTraslados()
+    console.log(response)
+
+})
+$('#bodyContent').on("click", ".devolucionTrasladoBtn", async function (e) {
+    console.log(e)
+    let dbOrigen = e.target.dataset.dborigen
+    let dbTraslado = e.target.dataset.dbtraslado
+    let id = e.target.dataset.id
+    let codigos = document.getElementById(`id_traslado_items${id}`).value
+    let formData = new FormData()
+
+    formData.append("id", id)
+    formData.append("dbOrigen", dbOrigen)
+    formData.append("dbTraslado", dbTraslado)
+    formData.append("codigos", codigos)
+
+    let request = await fetch("/inventario/devolucionTrasladoBtn", { method: "POST", body: formData })
+    let response = await request.json()
+    getTraslados()
     console.log(response)
 
 })

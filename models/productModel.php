@@ -59,15 +59,21 @@ class productModel
         /**
          *  Estados
          * 1: Pendiente
-         * 2: Aceptado
-         * 3: Cancelado
-         * 4: devolucion
-         * 5: AceptadaDevolucion
+         * 2: Cancelado
+         * 3: devolucion
+         * 4: entregado
+         */
+
+        /**
+         *  aceptado
+         * 0: sin aceptar
+         * 1: aceptadoTraslado
+         * 2: AceptadoDevolucion
          */
         $tiendaOrigen = $_SESSION['info']['nombre_local'];
         $idUserOrigen = $_SESSION['id'];
         $data = array(
-            ":uniqId" => uniqid(rand(100, 1000), true),
+            ":uniqId" => uniqid(rand(100, 1000)),
             ":tiendaOrigen" => $tiendaOrigen,
             ":tiendaTraslado" => $tiendaTraslado,
             ":dbOrigen" => $dbOrigen,
@@ -75,11 +81,12 @@ class productModel
             ":productos" => json_encode($productos),
             ":comentarios" => $comentarios,
             ":idUserOrigen" => $idUserOrigen,
+            ":aceptado" => 0,
             ":estado" => 1
         );
         $sql = "INSERT INTO traslados 
-        (uniqId, tiendaOrigen, tiendaTraslado, dbOrigen, dbTraslado, productos, comentario, idUserOrigen, estado) 
-        VALUES(:uniqId, :tiendaOrigen, :tiendaTraslado, :dbOrigen, :dbTraslado, :productos, :comentarios, :idUserOrigen, :estado )";
+        (uniqId, tiendaOrigen, tiendaTraslado, dbOrigen, dbTraslado, productos, comentario, idUserOrigen, aceptado, estado) 
+        VALUES(:uniqId, :tiendaOrigen, :tiendaTraslado, :dbOrigen, :dbTraslado, :productos, :comentarios, :idUserOrigen, :aceptado, :estado )";
         $con = new conexion();
         $result = $con->SPCALLNR($sql, $data);
         $error = [];
@@ -104,8 +111,8 @@ class productModel
         if (!$error["error"]) {
             $con2 = new conexion($dbTraslado);
             $sql2 = "INSERT INTO traslados 
-        (uniqId, tiendaOrigen, tiendaTraslado, dbOrigen, dbTraslado, productos, comentario, idUserOrigen, estado) 
-        VALUES(:uniqId, :tiendaOrigen, :tiendaTraslado, :dbOrigen, :dbTraslado, :productos, :comentarios, :idUserOrigen, :estado )";
+        (uniqId, tiendaOrigen, tiendaTraslado, dbOrigen, dbTraslado, productos, comentario, idUserOrigen, aceptado, estado) 
+        VALUES(:uniqId, :tiendaOrigen, :tiendaTraslado, :dbOrigen, :dbTraslado, :productos, :comentarios, :idUserOrigen, :aceptado, :estado )";
             $result2 = $con2->SPCALLNR($sql, $data);
         }
         if ($result2['error'] != "00000") {
@@ -130,38 +137,174 @@ class productModel
         return $result;
     }
 
-    public static function acceptTraslado($id, $dbOrigen, $dbTraslado)
+    public static function acceptTraslado($id, $dbOrigen, $dbTraslado, $codigos)
     {
         /**
          *  Estados
          * 1: Pendiente
-         * 2: Aceptado
-         * 3: Cancelado
-         * 4: devolucion
-         * 5: AceptadaDevolucion
+         * 2: Cancelado
+         * 3: devolucion
+         * 4: entregado
          */
 
-        //Si pone 2 es por que es la DB a la cual se traslado el producto por ende se esta aceptando la trasferencia
-        //Si pone 5 es por que somos la DB origen y el check es para aceptar una devolucion
+        /**
+         *  aceptado
+         * 0: sin aceptar
+         * 1: aceptadoTraslado
+         * 2: AceptadoDevolucion
+         */
+
+        //Si pone 1 es por que es la DB a la cual se traslado el producto por ende se esta aceptando la trasferencia 
+        //Si pone 2 es por que somos la DB origen y el check es para aceptar una DEVOLUCION
         $db = $GLOBALS["DB_NAME"][$_SESSION['db']];
-        $estado = $db  == $dbTraslado ? 2 : 5;
+        $aceptado = $db  == $dbTraslado ? 1 : 2;
+        $estado = $aceptado == 2 ? 3 : 4;
         $con = new conexion();
-        $result = $con->SQNDNR("UPDATE traslados SET estado = $estado WHERE uniqId='$id'");
+        $result = $con->SQNDNR("UPDATE traslados SET aceptado = $aceptado, estado = $estado  WHERE uniqId='$id'");
+        $data = [];
+        $arrayArticulos = [];
+        $data['dbNow'] = $result;
+        if ($result['error'] == "00000") {
+            if ($aceptado == 2) { // Esta en la DB de traslado
+                $con1 = new conexion($dbTraslado); // actualizamos en Origen
+                $result1 = $con1->SQNDNR("UPDATE traslados SET aceptado = $aceptado, estado = $estado WHERE uniqId='$id'");
+                $data['dbOrigen'] =  $result1;
+                $data['dbTraslado'] =  null;
+                $err = self::returnArticulos($dbOrigen, $codigos);
+                $data['error'] =  $err;
+                if (!$err) {
+                    $tiendaOrigen = $_SESSION['info']['nombre_local'];
+                    $idUserOrigen = $_SESSION['id'];
+                    admin::saveLog(
+                        "Traslado",
+                        "Inventario",
+                        "Se Acepto devolucion desde la tienda de Origen",
+                        json_encode(["productos" => $codigos, "Tienda" => $tiendaOrigen]),
+                        $idUserOrigen
+                    );
+                }
+            } else {
+                $con1 = new conexion($dbOrigen); // actualizamos en traslado
+                $result1 = $con1->SQNDNR("UPDATE traslados SET aceptado = $aceptado, estado = $estado WHERE uniqId='$id'");
+                $data['dbTraslado'] =  $result1;
+                $data['dbOrigen'] =  null;
+                $err = self::updateStockTraslado($dbTraslado, $codigos);
+                $data['error'] =  $err;
+                if (!$err) {
+                    $tiendaOrigen = $_SESSION['info']['nombre_local'];
+                    $idUserOrigen = $_SESSION['id'];
+                    admin::saveLog(
+                        "Traslado",
+                        "Inventario",
+                        "Se Acepto el traslado",
+                        json_encode(["productos" => $codigos, "Tienda" => $tiendaOrigen]),
+                        $idUserOrigen
+                    );
+                }
+            }
+        }
+        return $data;
+    }
+    public static function updateStockTraslado($db, $arrayArticulos): bool
+    {
+        $con = new conexion($db);
+        $error = false;
+        foreach ($arrayArticulos as $articulo) {
+            $articuloArr = explode("@@", $articulo);
+            $codigo = (int) $articuloArr[0];
+            $cantidad = (int) $articuloArr[1];
+            $descripcion = $articuloArr[2];
+            $result = $con->SQNDNR("UPDATE producto SET stock = stock + $cantidad WHERE codigo= $codigo AND descripcion_short='$descripcion'");
+            if ($result['error'] != "00000") {
+                $error = true;
+            }
+        }
+        return $error;
+    }
+    public static function returnArticulos($db, $arrayArticulos): bool
+    {
+        $con = new conexion($db);
+        $error = false;
+        foreach ($arrayArticulos as $articulo) {
+            $articuloArr = explode("@@", $articulo);
+            $codigo = (int) $articuloArr[0];
+            $cantidad = (int) $articuloArr[1];
+            $result = $con->SQNDNR("UPDATE producto SET stock = stock + $cantidad WHERE codigo= $codigo");
+            if ($result['error'] != "00000") {
+                $error = true;
+            }
+        }
+        return $error;
+    }
+    public static function devolucionTrasladoBtn($id, $dbOrigen, $dbTraslado, $codigos)
+    {
+        /**
+         *  Estados
+         * 1: Pendiente
+         * 2: Cancelado
+         * 3: devolucion
+         * 4: entregado
+         */
+
+        /**
+         *  aceptado
+         * 0: sin aceptar
+         * 1: aceptadoTraslado
+         * 2: AceptadoDevolucion
+         */
+
+        //Si pone 1 es por que es la DB a la cual se traslado el producto por ende se esta generando la devolucion 
+        $db = $GLOBALS["DB_NAME"][$_SESSION['db']];
+        $aceptado = $db  == $dbTraslado ? 1 : 2;
+        $estado = 3;
+        $con = new conexion();
+        $result = $con->SQNDNR("UPDATE traslados SET aceptado = 0, estado = $estado  WHERE uniqId='$id'");
         $data = [];
         $data['dbNow'] = $result;
         if ($result['error'] == "00000") {
-            if ($estado == 2) { // Esta en la DB de traslado
-                $con1 = new conexion($dbOrigen); // actualizamos en Origen
-                $result1 = $con1->SQNDNR("UPDATE traslados SET estado = $estado WHERE uniqId='$id'");
-                $data['dbOrigen'] =  $result1;
-                $data['dbTraslado'] =  null;
-            } else {
-                $con1 = new conexion($dbTraslado); // actualizamos en traslado
-                $result1 = $con1->SQNDNR("UPDATE traslados SET estado = $estado WHERE uniqId='$id'");
-                $data['dbTraslado'] =  $result1;
-                $data['dbOrigen'] =  null;
-            }
+            $con1 = new conexion($dbOrigen); // actualizamos en traslado
+            $result1 = $con1->SQNDNR("UPDATE traslados SET aceptado = 0, estado = $estado WHERE uniqId='$id'");
+            $data['dbOrigen'] =  $result1;
+            $data['dbTraslado'] =  null;
+
+            $tiendaOrigen = $_SESSION['info']['nombre_local'];
+            $idUserOrigen = $_SESSION['id'];
+            admin::saveLog(
+                "Traslado",
+                "Inventario",
+                "Se Genero devolucion desde la tienda para Traslado",
+                json_encode(["productos" => $codigos, "Tienda" => $tiendaOrigen]),
+                $idUserOrigen
+            );
         }
+        return $data;
+    }
+    public static function cancelarTraslado($id, $dbOrigen, $dbTraslado, $codigos)
+    {
+        //Si pone 1 es por que es la DB a la cual se traslado el producto por ende se esta aceptando la trasferencia 
+        //Si pone 2 es por que somos la DB origen y el check es para aceptar una DEVOLUCION
+        $db = $GLOBALS["DB_NAME"][$_SESSION['db']];
+        $con = new conexion();
+        $result = $con->SQNDNR("DELETE FROM traslados WHERE uniqId='$id'");
+        $data = [];
+        $data['dbNow'] = $result;
+        if ($result['error'] == "00000") {
+            $con1 = new conexion($dbTraslado); // actualizamos en traslado
+            $result1 = $con1->SQNDNR("DELETE FROM traslados WHERE uniqId='$id'");
+            $data['dbTraslado'] =  $result1;
+            $data['dbOrigen'] =  null;
+            $err = self::returnArticulos($dbOrigen, $codigos);
+            $data['error'] =  $err;
+        }
+        $tiendaOrigen = $_SESSION['info']['nombre_local'];
+        $idUserOrigen = $_SESSION['id'];
+        admin::saveLog(
+            "Traslado",
+            "Inventario",
+            "Se Cancelo Traslado, se regresan los productos al stock",
+            json_encode(["productos" => $codigos, "Tienda" => $tiendaOrigen]),
+            $idUserOrigen
+        );
         return $data;
     }
 

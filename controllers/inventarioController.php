@@ -60,11 +60,19 @@ class inventarioController extends view
   }
   public function getTraslado($var)
   {
-    /**
+  /**
      *  Estados
      * 1: Pendiente
-     * 2: Aceptado
-     * 3: Cancelado
+     * 2: Cancelado
+     * 3: devolucion
+     * 4: entregado
+     */
+
+    /**
+     *  aceptado
+     * 0: sin aceptar
+     * 1: aceptadoTraslado
+     * 2: AceptadoDevolucion
      */
     $traslados = product::getTraslados();
     $icon = help::icon();
@@ -74,13 +82,19 @@ class inventarioController extends view
   }
   public function getTrasladobyId($var)
   {
-    /**
+  /**
      *  Estados
      * 1: Pendiente
-     * 2: Aceptado
-     * 3: Cancelado
-     * 4: devolucion
-     * 5: AceptadaDevolucion
+     * 2: Cancelado
+     * 3: devolucion
+     * 4: entregado
+     */
+
+    /**
+     *  aceptado
+     * 0: sin aceptar
+     * 1: aceptadoTraslado
+     * 2: AceptadoDevolucion
      */
     $id = $_POST['id'];
     $traslados = product::getTrasladobyId($id);
@@ -89,13 +103,19 @@ class inventarioController extends view
   }
   public function insertTraslado($var)
   {
-    /**
+  /**
      *  Estados
      * 1: Pendiente
-     * 2: Aceptado
-     * 3: Cancelado
-     * 4: devolucion
-     * 5: AceptadaDevolucion
+     * 2: Cancelado
+     * 3: devolucion
+     * 4: entregado
+     */
+
+    /**
+     *  aceptado
+     * 0: sin aceptar
+     * 1: aceptadoTraslado
+     * 2: AceptadoDevolucion
      */
     $comentario = $_POST['comentario'];
     $tiendaData = explode(";", $_POST['tienda_traslado']);
@@ -112,19 +132,67 @@ class inventarioController extends view
   }
   public function acceptTraslado($var)
   {
-    /**
+  /**
      *  Estados
      * 1: Pendiente
-     * 2: Aceptado
-     * 3: Cancelado
-     * 4: devolucion
-     * 5: AceptadaDevolucion
+     * 2: Cancelado
+     * 3: devolucion
+     * 4: entregado
+     */
+
+    /**
+     *  aceptado
+     * 0: sin aceptar
+     * 1: aceptadoTraslado
+     * 2: AceptadoDevolucion
      */
     $id = $_POST['id'];
     $dbOrigen = $_POST['dbOrigen'];
     $dbTraslado = $_POST['dbTraslado'];
+    $codigos = $this->getCodesFromStringTraslado($_POST['codigos']);
 
-    $traslado = product::acceptTraslado($id, $dbOrigen, $dbTraslado);
+    $traslado = product::acceptTraslado($id, $dbOrigen, $dbTraslado, $codigos);
+    header('Content-Type: application/json');
+    echo json_encode($traslado);
+  }
+  public function getCodesFromStringTraslado(string $codigos): array
+  {
+    $arrayCodes = explode(";",$codigos);
+    return $arrayCodes;
+  }
+  public function devolucionTrasladoBtn($var)
+  {
+  /**
+     *  Estados
+     * 1: Pendiente
+     * 2: Cancelado
+     * 3: devolucion
+     * 4: entregado
+     */
+
+    /**
+     *  Aceptado
+     * 0: sin aceptar
+     * 1: aceptadoTraslado
+     * 2: AceptadoDevolucion
+     */
+    $id = $_POST['id'];
+    $dbOrigen = $_POST['dbOrigen'];
+    $dbTraslado = $_POST['dbTraslado'];
+    $codigos = $this->getCodesFromStringTraslado($_POST['codigos']);
+
+    $traslado = product::devolucionTrasladoBtn($id, $dbOrigen, $dbTraslado, $codigos);
+    header('Content-Type: application/json');
+    echo json_encode($traslado);
+  }
+  public function cancelarTraslado($var)
+  {
+    $id = $_POST['id'];
+    $dbOrigen = $_POST['dbOrigen'];
+    $dbTraslado = $_POST['dbTraslado'];
+    $codigos = $this->getCodesFromStringTraslado($_POST['codigos']);
+
+    $traslado = product::cancelarTraslado($id, $dbOrigen, $dbTraslado, $codigos);
     header('Content-Type: application/json');
     echo json_encode($traslado);
   }

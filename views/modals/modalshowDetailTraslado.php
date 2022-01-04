@@ -1,4 +1,4 @@
-<div class="modal" id="traslado_detalles">
+<div class="modal" id="traslado_detalles" tabindex="1">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
