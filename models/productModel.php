@@ -87,47 +87,53 @@ class productModel
         $sql = "INSERT INTO traslados 
         (uniqId, tiendaOrigen, tiendaTraslado, dbOrigen, dbTraslado, productos, comentario, idUserOrigen, aceptado, estado) 
         VALUES(:uniqId, :tiendaOrigen, :tiendaTraslado, :dbOrigen, :dbTraslado, :productos, :comentarios, :idUserOrigen, :aceptado, :estado )";
-        $con = new conexion();
-        $result = $con->SPCALLNR($sql, $data);
-        $error = [];
-        $productoModificado = [];
-        if ($result['error'] == "00000") {
-            foreach ($productos as $producto) {
-                $codigo = $producto['codigo'];
-                $cantidad = $producto['cantidad'];
-                $resultP = $con->SQNDNR("UPDATE producto SET stock = stock - $cantidad WHERE codigo = $codigo");
+        try {
+            //code...
 
-                if ($resultP['error'] != "00000") {
-                    $error["error"] = true;
-                    $error[$producto['descripcion']] = $resultP['error'];
-                } else {
-                    $error["error"] = false;
-                    $error[$producto['descripcion']] = true;
-                    $productoModificado[$producto['descripcion']] = $cantidad;
+            $con = new conexion();
+            $result = $con->SPCALLNR($sql, $data);
+            $error = [];
+            $productoModificado = [];
+            if ($result['error'] == "00000") {
+                foreach ($productos as $producto) {
+                    $codigo = $producto['codigo'];
+                    $cantidad = $producto['cantidad'];
+                    $resultP = $con->SQNDNR("UPDATE producto SET stock = stock - $cantidad WHERE codigo = $codigo");
+
+                    if ($resultP['error'] != "00000") {
+                        $error["error"] = true;
+                        $error[$producto['descripcion']] = $resultP['error'];
+                    } else {
+                        $error["error"] = false;
+                        $error[$producto['descripcion']] = true;
+                        $productoModificado[$producto['descripcion']] = $cantidad;
+                    }
                 }
             }
-        }
 
-        if (!$error["error"]) {
-            $con2 = new conexion($dbTraslado);
-            $sql2 = "INSERT INTO traslados 
+            if (!$error["error"]) {
+                $con2 = new conexion($dbTraslado);
+                $sql2 = "INSERT INTO traslados 
         (uniqId, tiendaOrigen, tiendaTraslado, dbOrigen, dbTraslado, productos, comentario, idUserOrigen, aceptado, estado) 
         VALUES(:uniqId, :tiendaOrigen, :tiendaTraslado, :dbOrigen, :dbTraslado, :productos, :comentarios, :idUserOrigen, :aceptado, :estado )";
-            $result2 = $con2->SPCALLNR($sql, $data);
+                $result2 = $con2->SPCALLNR($sql, $data);
+            }
+            if ($result2['error'] != "00000") {
+                $error['dbTraslate'] = "FAIL";
+            } else {
+                $error['dbTraslate'] = "SUCCESS";
+                admin::saveLog(
+                    "Traslado",
+                    "Inventario",
+                    "Se actualizo la cantida del producto(s) por razones de Traslado",
+                    json_encode(["productos" => $productoModificado, "Tienda" => $tiendaTraslado]),
+                    $_SESSION['id']
+                );
+            }
+            return $error;
+        } catch (\Throwable $th) {
+            return $th;
         }
-        if ($result2['error'] != "00000") {
-            $error['dbTraslate'] = "FAIL";
-        } else {
-            $error['dbTraslate'] = "SUCCESS";
-            admin::saveLog(
-                "Traslado",
-                "Inventario",
-                "Se actualizo la cantida del producto(s) por razones de Traslado",
-                json_encode(["productos" => $productoModificado, "Tienda" => $tiendaTraslado]),
-                $_SESSION['id']
-            );
-        }
-        return $error;
     }
 
     public static function getTraslados()

@@ -114,8 +114,8 @@ class conexion
 	/**
 	 * SIMPLE QUERY, NO RETORNA DATOS, SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *
-	 * @param [type] $sql
-	 * @param [type] $datos
+	 * @param String $sql
+	 * @param Array $datos
 	 * @return void
 	 */
 	public function SPCALLNR($sql, $datos)
