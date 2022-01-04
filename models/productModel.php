@@ -132,7 +132,7 @@ class productModel
             }
             return $error;
         } catch (\Throwable $th) {
-            return ["error"=>$th->getMessage()];
+            return ["error"=>$th->getMessage(),"data"=>array($dbOrigen, $tiendaTraslado, $productos, $comentarios, $dbTraslado)];
         }
     }
 
