@@ -132,7 +132,7 @@ class productModel
             }
             return $error;
         } catch (\Throwable $th) {
-            return $th;
+            return ["error"=>$th->getMessage()];
         }
     }
 
