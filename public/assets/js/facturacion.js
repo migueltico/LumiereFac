@@ -709,6 +709,12 @@ $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
     let tr = document.getElementById("appendItemRowProduct")
     let count = tr.getElementsByTagName("tr")
     let Multi = document.getElementById("MultiTipoPagoFact")
+
+    let fac_active_btn = localStorage.getItem('fac_active_btn')
+    if (fac_active_btn == 1) {
+        localStorage.setItem('fac_active_btn', 0)
+    }
+
     Multi.checked = false
     multiState(e)
     if (count.length == 0) {
@@ -957,7 +963,13 @@ function getProductsRowsForFac(method, pago, typeAbono, tipoPago) {
         printFact(finalJson)
     }, 700)
 }
-
+function resetFactBlockeo() {
+    let fac_active_btn = localStorage.getItem('fac_active_btn')
+    if (fac_active_btn == 1) {
+        localStorage.setItem('fac_active_btn', 0)
+    }
+    $("#btnMakeFact").prop("disabled", false)
+}
 
 function PagoUnicoFac() {
     let InputsRadio = document.querySelectorAll(".fact_rbRadiosBtns")
@@ -976,6 +988,7 @@ function PagoUnicoFac() {
                     timer: 2500,
                     timerProgressBar: true
                 })
+                resetFactBlockeo()
                 return [result]
             } else if (result.methods.hasMore && !result.methods.total) {
                 Swal.fire({
@@ -986,6 +999,7 @@ function PagoUnicoFac() {
                     timer: 2500,
                     timerProgressBar: true
                 })
+                resetFactBlockeo()
                 return [result]
 
 
@@ -1029,6 +1043,7 @@ function PagoMultipleFac(pago, abono) {
                     timer: 2500,
                     timerProgressBar: true
                 })
+                resetFactBlockeo()
                 return methodsArray
             }
         }
@@ -1062,6 +1077,7 @@ function PagoMultipleFac(pago, abono) {
             confirmButtonText: 'OK',
             timer: 2500
         })
+        resetFactBlockeo()
     }
     return methodsArray
 }
