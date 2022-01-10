@@ -2,6 +2,7 @@
 
 namespace config;
 
+use config\conexion;
 use DateTime;
 
 // la calse debe llamarse igual que el controlador respetando mayusculas
@@ -23,6 +24,22 @@ class helper
     $clear = str_replace(array("¿", "", ",", ".", "/", ":", "@", "!", "¡", "=", "'", '"', "#", "$", "%", "&", "(", ")", "'", "°", "|", "[", "]", "{", "}"), "", str_replace(" ", "-", $url));
     $clear = strtolower($clear);
     return $clear;
+  }
+
+  public static function validarCodeAllDBs(int $code,array $dbs): bool
+  {
+    $result = false;
+    foreach ($dbs as $db) {
+
+      $con = new conexion($db);
+      $codigoResult = $con->SQND(
+        "SELECT * FROM producto WHERE codigo = $code"
+      );
+      if ($codigoResult['rows'] > 0) {
+        $result = true;
+      }
+    }
+    return $result;
   }
   public static function coverToSqlparams($asoccArray)
   {

@@ -568,7 +568,22 @@ function agregarProducto(e) {
         let form = document.getElementById('AddProductForm')
         let formDatas = new FormData(form)
         let urls = []
+        let dbs =''
+        $(".db_selected").each((i,element)=> {
+            if(element.checked)
+                dbs += element.dataset.db + ";"        
+        })
+        if(dbs.length == 0){
+            Swal.fire({
+                position: 'top',
+                title: "Selecciona una Tienda",
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+            return
+        }
         formDatas.append("urls", urls)
+        formDatas.append("dbs", dbs.slice(0, -1))
         fetch(url, {
             method: 'POST',
             body: formDatas
@@ -587,7 +602,16 @@ function agregarProducto(e) {
                     $("#addProduct #addProduct_imageContainer").html('')
                     $("#addProduct #addProduct_txtcodigoBarra").val('')
                     loadTable(e, 1, "")
-                } else {
+                } else if (resp.error == '2') {
+                    $("#addProduct #addProduct_txtcodigoBarra").val('')
+                    Swal.fire({
+                        position: 'top',
+                        title: "Codigo de barras",
+                        text: resp.msg,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }else {
                     $("#addProduct #addProduct_txtcodigoBarra").val('')
                     Swal.fire({
                         position: 'top',
@@ -604,7 +628,7 @@ function agregarProducto(e) {
                     title: 'Error!',
                     text: err,
                     icon: 'error',
-                    confirmButtonText: 'Cool'
+                    confirmButtonText: 'Ok'
                 })
                 $("#addProduct #addProduct_txtcodigoBarra").val('')
             });

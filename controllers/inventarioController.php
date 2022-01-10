@@ -60,7 +60,7 @@ class inventarioController extends view
   }
   public function getTraslado($var)
   {
-  /**
+    /**
      *  Estados
      * 1: Pendiente
      * 2: Cancelado
@@ -82,7 +82,7 @@ class inventarioController extends view
   }
   public function getTrasladobyId($var)
   {
-  /**
+    /**
      *  Estados
      * 1: Pendiente
      * 2: Cancelado
@@ -103,7 +103,7 @@ class inventarioController extends view
   }
   public function insertTraslado($var)
   {
-  /**
+    /**
      *  Estados
      * 1: Pendiente
      * 2: Cancelado
@@ -132,7 +132,7 @@ class inventarioController extends view
   }
   public function acceptTraslado($var)
   {
-  /**
+    /**
      *  Estados
      * 1: Pendiente
      * 2: Cancelado
@@ -157,12 +157,12 @@ class inventarioController extends view
   }
   public function getCodesFromStringTraslado(string $codigos): array
   {
-    $arrayCodes = explode(";",$codigos);
+    $arrayCodes = explode(";", $codigos);
     return $arrayCodes;
   }
   public function devolucionTrasladoBtn($var)
   {
-  /**
+    /**
      *  Estados
      * 1: Pendiente
      * 2: Cancelado
@@ -342,28 +342,36 @@ class inventarioController extends view
 
   public function addproduct()
   {
-    $datos = array(
-      ":descripcion" => $_POST["descripcion"],
-      ":descripcion_short" => $_POST["descripcion_short"],
-      ":marca" => $_POST["marca"],
-      ":estilo" => $_POST["estilo"],
-      ":categoria" => (int) $_POST["categoria"],
-      ":codigoBarras" =>  $_POST["codigoBarras"],
-      ":talla" => (int)$_POST["talla"],
-      ":iva_valor" => ((int) $_POST["iva_valor"] > 0 ? (int)$_POST["iva_valor"] : 0),
-      ":iva" => (isset($_POST["iva"]) ? 1 : 0),
-      ":idusuario" => (int) $_SESSION["id"],
-      ":modificado_por" => (int) $_SESSION["id"],
-      ":estado" => (isset($_POST["estado"]) ? 1 : 0),
-      ":categoriaPrecio" => $_POST["categoriaPrecio"],
-      ":urls" => $_POST["urls"]
-    );
-    $urls = upload::uploads();
-    $datos[":urls"] = implode(",", $urls['urls']);
-    $addProduct = product::Addproduct($datos);
-    header('Content-Type: application/json');
-    //echo json_encode(array($datos, $urls, $sucursal));
-    echo json_encode($addProduct);
+    $dbs = explode(";", $_POST['dbs']);
+    $sameCode = help::validarCodeAllDBs($_POST["codigoBarras"], $dbs);
+    if (!$sameCode) {
+      $datos = array(
+        ":descripcion" => $_POST["descripcion"],
+        ":descripcion_short" => $_POST["descripcion_short"],
+        ":marca" => $_POST["marca"],
+        ":estilo" => $_POST["estilo"],
+        ":categoria" => (int) $_POST["categoria"],
+        ":codigoBarras" =>  $_POST["codigoBarras"],
+        ":talla" => (int)$_POST["talla"],
+        ":iva_valor" => ((int) $_POST["iva_valor"] > 0 ? (int)$_POST["iva_valor"] : 0),
+        ":iva" => (isset($_POST["iva"]) ? 1 : 0),
+        ":idusuario" => (int) $_SESSION["id"],
+        ":modificado_por" => (int) $_SESSION["id"],
+        ":estado" => (isset($_POST["estado"]) ? 1 : 0),
+        ":categoriaPrecio" => $_POST["categoriaPrecio"],
+        ":urls" => $_POST["urls"]
+      );
+      $urls = upload::uploads();
+      $datos[":urls"] = implode(",", $urls['urls']);
+      $addProduct = product::Addproduct($datos, $dbs);
+      header('Content-Type: application/json');
+      echo json_encode($addProduct);
+    }else{
+      header('Content-Type: application/json');
+      echo json_encode( array("error" => 2, "msg" => "Ya existe el codigo en una de las Tiendas seleccionadas, Genere uno nuevo por favor"));
+     
+    }
+   
   }
 
   public function updateProduct($var)

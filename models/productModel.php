@@ -14,18 +14,36 @@ class productModel
      *
      * @return void
      */
-    public static function Addproduct($datos)
+    public static function Addproduct(array $datos, array $dbs)
     {
-        $con = new conexion();
-        $mainProduct = $con->SQ(
+        $dbNow = $GLOBALS["DB_NAME"][$_SESSION['db']];
+        $otherDbStatus = true;
+        $otherDbResults = [];
+        $conMain = new conexion();
+        $mainProduct = $conMain->SQ(
             'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
-            VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
+    VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
             $datos
         );
-        if ($mainProduct['error'] == '00000') {
-            return array("data" => null, "error" => 0, "msg" => "Registros ingresados correctamente", $mainProduct);
+        foreach ($dbs as $db) {
+
+            if ($dbNow != $db) {
+                $con = new conexion($db);
+                $mainProductOtherDbs = $con->SQ(
+                    'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
+    VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
+                    $datos
+                );
+                if ($mainProductOtherDbs['error'] != '00000') {
+                    $otherDbStatus = false;
+                }
+                array_push($otherDbResults, $mainProductOtherDbs);
+            }
+        }
+        if ($mainProduct['error'] == '00000' && $otherDbStatus) {
+            return array("data" => null, "error" => 0, "otherdb" => $otherDbResults, "msg" => "Registros ingresados correctamente", $mainProduct);
         } else {
-            return array("data" => null, "error" => 1,   "errorData" => $mainProduct, "msg" => "Error al Registras los datos");
+            return array("data" => null, "error" => 1, "otherdb" => $otherDbResults,   "errorData" => $mainProduct, "msg" => "Error al Registras los datos");
         }
     }
     /**
@@ -132,7 +150,7 @@ class productModel
             }
             return $error;
         } catch (\Throwable $th) {
-            return ["error"=>$th->getMessage(),"data"=>array($dbOrigen, $tiendaTraslado, $productos, $comentarios, $dbTraslado)];
+            return ["error" => $th->getMessage(), "data" => array($dbOrigen, $tiendaTraslado, $productos, $comentarios, $dbTraslado)];
         }
     }
 
