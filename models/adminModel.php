@@ -120,7 +120,7 @@ class adminModel
     }
     public static function getAllTiendas()
     {
-        $data =[];
+        $data = [];
         foreach ($GLOBALS["DB_NAME"] as $key => $db) {
             $con = new conexion($db);
             $dataSp = $con->SQR_ONEROW("SELECT nombre_local FROM generalinfo");
@@ -133,10 +133,23 @@ class adminModel
         $con = new conexion();
         return $con->SPCALL("SELECT * FROM descuentos WHERE showFac=1");
     }
-    public static function getCategoriaPrecios()
+    public static function getCategoriaPrecios(array $dbs = null): array
     {
-        $con = new conexion();
-        return $con->SPCALL('CALL sp_getCategoriaPrecios()');
+
+        $result = [];
+        if ($dbs == null) {
+            $con = new conexion();
+            $result = $con->SPCALL('CALL sp_getCategoriaPrecios()');
+        } else {
+            $cat = [];
+            foreach ($dbs as $db) {
+                $con = new conexion($db);
+                $codigoResult = $con->SPCALL('CALL sp_getCategoriaPrecios()');
+                $cat["$db"] = $codigoResult;
+            }
+            $result = $cat;
+        }
+        return $result;
     }
     public static function AddCategoriaPrecios($datos)
     {

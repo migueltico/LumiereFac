@@ -9,6 +9,17 @@ $('#bodyContent').on("click", "#addProduct #addProduct_generarCodigo", function 
     generarCodigo(e, '#addProduct')
 })
 
+//DB SELECTED
+$('#bodyContent').on("click", ".db_selected", function (e) {
+    let db = e.target.dataset.db
+    let element = `.${db}_selectCombo`
+    if ($(element).css('display') == 'none') {
+        $(element).css('display', 'block')
+    } else {
+        $(element).css('display', 'none')
+    }
+})
+
 //REFRESCA LA TABLA EN INVENTARIO
 $('#bodyContent').on("click", "#btnRefrescarProducto", function (e) {
     e.preventDefault();
@@ -89,6 +100,11 @@ function existProductRowIntableTraslate(toSearch, idTable) {
 $('#bodyContent').on("click", "#newProduct", function (e) {
     let newProduct = document.getElementById("AddProductForm")
     newProduct.reset();
+
+    //ocultar los combos de otras tiendas
+    $(".uncheck_db").each((i, element) => {
+        $(element).css("display", "none")
+    })
     resetInputImage(e, '#addProduct')
     $("#addProduct #addProduct_imageContainer").html('')
 })
@@ -119,7 +135,7 @@ $('#bodyContent').on("click", "#btnCrearTraslado", async function (e) {
         }
         productos.push(json)
     }
-    if(productos.length == 0){
+    if (productos.length == 0) {
         Swal.fire({
             position: 'top',
             title: `No hay articulos agregados en el traslado`,
@@ -562,18 +578,17 @@ function addMinStock(id) {
 }
 
 function agregarProducto(e) {
-
     if (!validarFormADD('#addProduct')) {
         let url = '/inventario/addproduct';
         let form = document.getElementById('AddProductForm')
         let formDatas = new FormData(form)
         let urls = []
-        let dbs =''
-        $(".db_selected").each((i,element)=> {
-            if(element.checked)
-                dbs += element.dataset.db + ";"        
+        let dbs = ''
+        $(".db_selected").each((i, element) => {
+            if (element.checked)
+                dbs += element.dataset.db + ";"
         })
-        if(dbs.length == 0){
+        if (dbs.length == 0) {
             Swal.fire({
                 position: 'top',
                 title: "Selecciona una Tienda",
@@ -582,8 +597,22 @@ function agregarProducto(e) {
             })
             return
         }
+
+        //Seleccionamos los COMBOS por Tienda
+        let dbs_string = document.getElementById("dbs_product").value
+        dbs_string = dbs_string.split(";")
+
+        let dataCombos = ""
+        dbs_string.forEach(db => {
+            let cat = document.getElementById(`addProduct_cbCategoria_${db}`).value
+            let catPre = document.getElementById(`addProduct_cbCategoriaPrecio_${db}`).value
+            let talla = document.getElementById(`addProduct_cbTalla_${db}`).value
+            dataCombos += `${db},${cat},${catPre},${talla};`
+        });
+
         formDatas.append("urls", urls)
         formDatas.append("dbs", dbs.slice(0, -1))
+        formDatas.append("combos", dataCombos.slice(0, -1))
         fetch(url, {
             method: 'POST',
             body: formDatas
@@ -611,7 +640,7 @@ function agregarProducto(e) {
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })
-                }else {
+                } else {
                     $("#addProduct #addProduct_txtcodigoBarra").val('')
                     Swal.fire({
                         position: 'top',

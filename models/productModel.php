@@ -14,36 +14,39 @@ class productModel
      *
      * @return void
      */
-    public static function Addproduct(array $datos, array $dbs)
+    public static function Addproduct(array $datos, array $dbs,  array $combos)
     {
-        $dbNow = $GLOBALS["DB_NAME"][$_SESSION['db']];
         $otherDbStatus = true;
         $otherDbResults = [];
-        $conMain = new conexion();
-        $mainProduct = $conMain->SQ(
-            'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
-    VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
-            $datos
-        );
-        foreach ($dbs as $db) {
 
-            if ($dbNow != $db) {
-                $con = new conexion($db);
-                $mainProductOtherDbs = $con->SQ(
-                    'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
-    VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
-                    $datos
-                );
-                if ($mainProductOtherDbs['error'] != '00000') {
-                    $otherDbStatus = false;
-                }
-                array_push($otherDbResults, $mainProductOtherDbs);
-            }
+        $combosData = [];
+
+        foreach ($combos as $combo) {
+            $comboArray = explode(",", $combo);
+            $dbName = $comboArray[0];
+            unset($comboArray[0]);
+            $combosData[$dbName] = $comboArray;
         }
-        if ($mainProduct['error'] == '00000' && $otherDbStatus) {
-            return array("data" => null, "error" => 0, "otherdb" => $otherDbResults, "msg" => "Registros ingresados correctamente", $mainProduct);
+
+        foreach ($dbs as $db) {
+            $datos[":categoria"] =(int) $combosData[$db][1];
+            $datos[":categoriaPrecio"] =(int) $combosData[$db][2];
+            $datos[":talla"] =(int) $combosData[$db][3];
+            $con = new conexion($db);
+            $mainProductOtherDbs = $con->SQ(
+                'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
+    VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
+                $datos
+            );
+            if ($mainProductOtherDbs['error'] != '00000') {
+                $otherDbStatus = false;
+            }
+            array_push($otherDbResults, $mainProductOtherDbs);
+        }
+        if ($otherDbStatus) {
+            return array("data" => null, "error" => 0, "otherdb" => $otherDbResults, "msg" => "Registros ingresados correctamente", $otherDbResults);
         } else {
-            return array("data" => null, "error" => 1, "otherdb" => $otherDbResults,   "errorData" => $mainProduct, "msg" => "Error al Registras los datos");
+            return array("data" => null, "error" => 1, "otherdb" => $otherDbResults,   "errorData" => $otherDbResults, "msg" => "Error al Registras los datos");
         }
     }
     /**
@@ -496,22 +499,44 @@ class productModel
      *
      * @return void
      */
-    public static function getCategory()
+    public static function getCategory(array $dbs = null): array
     {
-        $con = new conexion();
-
-        return $con->SQND('SELECT * FROM categoria');
+        $result = [];
+        if ($dbs == null) {
+            $con = new conexion();
+            $result = $con->SQND('SELECT * FROM categoria');
+        } else {
+            $cat = [];
+            foreach ($dbs as $db) {
+                $con = new conexion($db);
+                $codigoResult = $con->SQND('SELECT * FROM categoria');
+                $cat["$db"] = $codigoResult;
+            }
+            $result = $cat;
+        }
+        return $result;
     }
     /**
      * Obtiene todas las tallas
      *
      * @return void
      */
-    public static function getTallas()
+    public static function getTallas(array $dbs = null): array
     {
-        $con = new conexion();
-
-        return $con->SQND('SELECT * FROM tallas');
+        $result = [];
+        if ($dbs == null) {
+            $con = new conexion();
+            $result = $con->SQND('SELECT * FROM tallas');
+        } else {
+            $tallas = [];
+            foreach ($dbs as $db) {
+                $con = new conexion($db);
+                $tallasResult = $con->SQND('SELECT * FROM tallas');
+                $tallas["$db"] = $tallasResult;
+            }
+            $result = $tallas;
+        }
+        return $result;
     }
     /**
      * Actualiza el producto

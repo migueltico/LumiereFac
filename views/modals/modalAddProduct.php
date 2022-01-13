@@ -11,19 +11,23 @@
         <div class="modal-body display_flex_row">
           <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="col-12 mb-3">
-              <div class="alert alert-primary" role="alert">
-                
-                <p><strong>Nota:</strong> Al crear un producto en otra tienda, debe modificar manualmente la Categoria de precio, la categoria y la talla</p>
-                <p>Esto por que los ID de cada categoria y talla no son los mismos entre tiendas</p>
-              </div>
+              <?php
+              $dbs_string = "";
+              foreach ($GLOBALS['DB_NAME'] as $namedb => $db) {
+                if ($db != "testdb")
+                  $dbs_string .= $db . ";";
+              }
+              $dbs_string = rtrim($dbs_string, ";");
+              ?>
               <p>Seleccione las tiendas donde se creara el producto</p>
+              <input type="hidden" id="dbs_product" value="<?= $dbs_string  ?>">
               <div class="row">
                 <?php foreach ($GLOBALS['DB_NAME'] as $namedb => $db) :  ?>
                   <?php if ($db != "testdb") : ?>
                     <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6">
                       <div class="form-check form-switch">
-                        <input class="form-check-input db_selected" data-db="<?= $db ?>" type="checkbox" <?= $namedb == $_SESSION['db'] ? 'checked=true' : ''  ?> id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault"><?= $namedb ?></label>
+                        <input class="form-check-input db_selected" data-db="<?= $db ?>" type="checkbox" <?= $namedb == $_SESSION['db'] ? 'checked=true' : ''  ?> id="check_<?= $db ?>">
+                        <label class="form-check-label" for="check_<?= $db ?>"><?= $namedb ?></label>
                       </div>
                     </div>
                   <?php endif;   ?>
@@ -63,51 +67,73 @@
                 <input type="text" name="estilo" class="form-control  p-3" id="addProduct_estilo">
               </div>
             </div>
-
-            <div class="col-12">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <label class="input-group-text" for="addProduct_cbCategoria">Categoria</label>
-                </div>
-                <select name="categoria" class="custom-select" id="addProduct_cbCategoria">
-                  <option selected value="0">Seleccione una Categoria...</option>
-                  <?php foreach ($categorias as $categoria) : ?>
-                    <option value="<?= $categoria['idcategoria'] ?>"><?= $categoria['descripcion'] ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <label class="input-group-text" for="addProduct_cbCategoriaPrecio">Categoria de precio</label>
-                </div>
-                <select name="categoriaPrecio" class="custom-select" id="addProduct_cbCategoriaPrecio">
-                  <option selected value="0">Seleccione una Categoria...</option>
-                  <?php foreach ($cat_precios as $cat_precio) : ?>
-                    <?php if ($_SESSION["idrol"] == 1) : ?>
-                      <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= $cat_precio['descripcion'] ?> ( <?= $cat_precio['factor'] ?> )</option>
-                    <?php else : ?>
-                      <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= $cat_precio['descripcion'] ?></option>
-                    <?php endif; ?>
-                  <?php endforeach; ?>
-                </select>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <label class="input-group-text" for="addProduct_cbTalla">Talla</label>
-                </div>
-                <select name="talla" class="custom-select" id="addProduct_cbTalla">
-                  <option selected value="0">Seleccione una Talla...</option>
-                  <?php foreach ($tallas as $talla) : ?>
-                    <option value="<?= $talla['idtallas'] ?>"><?= ($talla['descripcion'] ==  $talla['talla'] ?  $talla['descripcion'] :  $talla['descripcion'] . " (" . $talla['talla'] . ")") ?></option>
-                  <?php endforeach; ?>
-                </select>
-              </div>
-            </div>
+            <?php if ($hasMoreDb) :  //Categorias 
+            ?>
+              <?php foreach ($GLOBALS['DB_NAME'] as $dbName => $db) :  ?>
+                <?php if ($db != "testdb") :   ?>
+                  <?php $categoriaDb = $categorias[$db]['data']  ?>
+                  <div class="col-12 <?= $db . "_selectCombo"  ?> <?= $dbName != $_SESSION['db'] ? 'uncheck_db' : ''  ?>" <?= $db != $GLOBALS['DB_NAME'][$_SESSION['db']] ? 'style="display: none;"' : "" ?>>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="addProduct_cbCategoria_<?= $db ?>">Categoria (<strong><?= $dbName ?></strong>)</label>
+                      </div>
+                      <select class="custom-select" id="addProduct_cbCategoria_<?= $db ?>">
+                        <option selected value="0">Seleccione una Categoria...</option>
+                        <?php foreach ($categoriaDb as $categoria) : ?>
+                          <option value="<?= $categoria['idcategoria'] ?>"><?= "(ID: " . $categoria['idcategoria'] . ") - " . $categoria['descripcion'] ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                <?php endif;   ?>
+              <?php endforeach; ?>
+            <?php endif;   ?>
+            <?php if ($hasMoreDb) : //Precio Categoria  
+            ?>
+              <?php foreach ($GLOBALS['DB_NAME'] as $dbName => $db) :  ?>
+                <?php if ($db != "testdb") :   ?>
+                  <?php $cat_preciosDb = $cat_precios[$db]['data']  ?>
+                  <div class="col-12 <?= $db . "_selectCombo"  ?> <?= $dbName != $_SESSION['db'] ? 'uncheck_db' : ''  ?>" <?= $db != $GLOBALS['DB_NAME'][$_SESSION['db']] ? 'style="display: none;"' : "" ?>>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="addProduct_cbCategoriaPrecio_<?= $db ?>">Categoria precio (<strong><?= $dbName ?></strong>)</label>
+                      </div>
+                      <select class="custom-select" id="addProduct_cbCategoriaPrecio_<?= $db ?>">
+                        <option selected value="0">Seleccione una Categoria...</option>
+                        <?php foreach ($cat_preciosDb as $cat_precio) : ?>
+                          <?php if ($_SESSION["idrol"] == 1) : ?>
+                            <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= "(ID: " . $cat_precio['idCategoriaPrecio'] . ") - " .  $cat_precio['descripcion'] ?> ( <?= $cat_precio['factor'] ?> )</option>
+                          <?php else : ?>
+                            <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= "(ID: " . $cat_precio['idCategoriaPrecio'] . ") - " .  $cat_precio['descripcion'] ?></option>
+                          <?php endif; ?>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                <?php endif;   ?>
+              <?php endforeach; ?>
+            <?php endif;   ?>
+            <?php if ($hasMoreDb) : //Tallas  
+            ?>
+              <?php foreach ($GLOBALS['DB_NAME'] as $dbName => $db) :  ?>
+                <?php if ($db != "testdb") :   ?>
+                  <?php $tallasDb = $tallas[$db]['data']  ?>
+                  <div class="col-12 <?= $db . "_selectCombo"  ?> <?= $dbName != $_SESSION['db'] ? 'uncheck_db' : ''  ?>" <?= $db != $GLOBALS['DB_NAME'][$_SESSION['db']] ? 'style="display: none;"' : "" ?>>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <label class="input-group-text" for="addProduct_cbTalla_<?= $db ?>">Talla (<strong><?= $dbName ?></strong>)</label>
+                      </div>
+                      <select class="custom-select" id="addProduct_cbTalla_<?= $db ?>">
+                        <option selected value="0">Seleccione una Talla....</option>
+                        <?php foreach ($tallasDb as $talla) : ?>
+                          <option value="<?= $talla['idtallas'] ?>"><?= "(ID: " . $talla['idtallas'] . ") - " . ($talla['descripcion'] ==  $talla['talla'] ?  $talla['descripcion'] :  $talla['descripcion'] . " (" . $talla['talla'] . ")") ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                <?php endif;   ?>
+              <?php endforeach; ?>
+            <?php endif;   ?>
             <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">

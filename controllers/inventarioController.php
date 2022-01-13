@@ -20,14 +20,15 @@ class inventarioController extends view
 
   public function index($var)
   {
+    $dbs = $GLOBALS['DB_NAME'];
     $icon = help::icon();
-    $categorias = product::getCategory();
-    $cat_precios = admin::getCategoriaPrecios();
+    $categorias = product::getCategory($dbs);
+    $cat_precios = admin::getCategoriaPrecios($dbs);
     $ofertas = admin::getAllOfertas();
     $listaTiendas = admin::getAllTiendas();
     // 
     //$categorias = product::getCategory();
-    $tallas = product::getTallas();
+    $tallas = product::getTallas($dbs);
     // $products = product::getProducts();
     $products = product::searchProduct("", 1, 1);
     $descuentos = product::getDescuentos();
@@ -37,9 +38,17 @@ class inventarioController extends view
     unset($paginationInfo['data']);
     $data["paginationInfo"] = $paginationInfo;
     $data["descuentos"] = $descuentos['data'];
-    $data["categorias"] = $categorias['data'];
-    $data["tallas"] = $tallas['data'];
-    $data["cat_precios"] = $cat_precios['data'];
+    if (!isset($categorias['data'])) {
+      $data["categorias"] = $categorias;
+      $data["cat_precios"] = $cat_precios;
+      $data["tallas"] = $tallas;
+      $data["hasMoreDb"] = true;
+    } else {
+      $data["categorias"] = $categorias['data'];
+      $data["cat_precios"] = $cat_precios['data'];
+      $data["tallas"] = $tallas['data'];
+      $data["hasMoreDb"] = false;
+    }
     $data["icons"] =  $icon['icons'];
     $data["tiendas"] =  $listaTiendas;
     echo view::renderElement('inventario/ListaProductos', $data);
@@ -343,6 +352,7 @@ class inventarioController extends view
   public function addproduct()
   {
     $dbs = explode(";", $_POST['dbs']);
+    $combos = explode(";", $_POST['combos']);
     $sameCode = help::validarCodeAllDBs($_POST["codigoBarras"], $dbs);
     if (!$sameCode) {
       $datos = array(
@@ -350,28 +360,26 @@ class inventarioController extends view
         ":descripcion_short" => $_POST["descripcion_short"],
         ":marca" => $_POST["marca"],
         ":estilo" => $_POST["estilo"],
-        ":categoria" => (int) $_POST["categoria"],
+        ":categoria" => null,
         ":codigoBarras" =>  $_POST["codigoBarras"],
-        ":talla" => (int)$_POST["talla"],
+        ":talla" => null,
         ":iva_valor" => ((int) $_POST["iva_valor"] > 0 ? (int)$_POST["iva_valor"] : 0),
         ":iva" => (isset($_POST["iva"]) ? 1 : 0),
         ":idusuario" => (int) $_SESSION["id"],
         ":modificado_por" => (int) $_SESSION["id"],
         ":estado" => (isset($_POST["estado"]) ? 1 : 0),
-        ":categoriaPrecio" => $_POST["categoriaPrecio"],
+        ":categoriaPrecio" => null,
         ":urls" => $_POST["urls"]
       );
       $urls = upload::uploads();
       $datos[":urls"] = implode(",", $urls['urls']);
-      $addProduct = product::Addproduct($datos, $dbs);
+      $addProduct = product::Addproduct($datos, $dbs, $combos);
       header('Content-Type: application/json');
       echo json_encode($addProduct);
-    }else{
+    } else {
       header('Content-Type: application/json');
-      echo json_encode( array("error" => 2, "msg" => "Ya existe el codigo en una de las Tiendas seleccionadas, Genere uno nuevo por favor"));
-     
+      echo json_encode(array("error" => 2, "msg" => "Ya existe el codigo en una de las Tiendas seleccionadas, Genere uno nuevo por favor"));
     }
-   
   }
 
   public function updateProduct($var)

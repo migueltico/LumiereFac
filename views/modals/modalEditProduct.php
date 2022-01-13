@@ -7,6 +7,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <?php  $dbEdit = $GLOBALS["DB_NAME"][$_SESSION['db']] ?>
       <form id="EditProductForm" class="display_flex_row" enctype="multipart/form-data" method="post">
         <input type="hidden" name="idproducto" id="EditProduct_idproducto">
         <div class="modal-body display_flex_row">
@@ -51,7 +52,7 @@
                 </div>
                 <select name="categoria" class="custom-select" id="EditProduct_cbCategoria">
                   <option selected value="0">Seleccione una Categoria...</option>
-                  <?php foreach ($categorias as $categoria) : ?>
+                  <?php foreach ($categorias[$dbEdit]['data'] as $categoria) : ?>
                     <option value="<?= $categoria['idcategoria'] ?>"><?= $categoria['descripcion'] ?></option>
                   <?php endforeach; ?>
                 </select>
@@ -64,7 +65,7 @@
                 </div>
                 <select name="categoriaPrecio" class="custom-select" id="EditProduct_cbCategoriaPrecio">
                   <option selected value="0">Seleccione una Categoria...</option>
-                  <?php foreach ($cat_precios as $cat_precio) : ?>
+                  <?php foreach ($cat_precios[$dbEdit]['data'] as $cat_precio) : ?>
                     <?php if ($_SESSION["idrol"] == 1) : ?>
                       <option value="<?= $cat_precio['idCategoriaPrecio'] ?>"><?= $cat_precio['descripcion'] ?> ( <?= $cat_precio['factor'] ?> )</option>
                     <?php else : ?>
@@ -111,7 +112,7 @@
                 </div>
                 <select name="talla" class="custom-select" id="EditProduct_cbTalla">
                   <option selected value="0">Seleccione una Talla...</option>
-                  <?php foreach ($tallas as $talla) : ?>
+                  <?php foreach ($tallas[$dbEdit]['data'] as $talla) : ?>
                     <option value="<?= $talla['idtallas'] ?>"><?= ($talla['descripcion'] ==  $talla['talla'] ?  $talla['descripcion'] :  $talla['descripcion'] . " (" . $talla['talla'] . ")") ?></option>
                   <?php endforeach; ?>
                 </select>
