@@ -1,6 +1,6 @@
 <div class="menuContainer" id="menuContainerId">
     <?php if (isset($_SESSION["db"])) :   ?>
-        <?php if ($_SESSION["db"] == 'TestDB') :   ?>
+        <?php if ($_SESSION["db"] == 'TestDB' || $_SESSION["db"] == 'TestDB2') :   ?>
             <div style="font-weight:bold;width: 100%;padding-top:10px;padding-bottom:10px;background:yellow;color:black;text-align:center;">
                 <p class="mb-0">Entorno de Pruebas</p>
                 <span><?= $_SERVER['SERVER_NAME'] ?></span>

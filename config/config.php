@@ -19,6 +19,7 @@ define('DB_HOST', 'localhost');
 // define('DB_USER', 'root');
 define('DB_USER', 'root');
 define('DB_PASS', '');
+define('TESTPAGE', '');
 $env_test = false;
 if ($env == 1) {
     $DB_USER = "adminUser";
@@ -26,13 +27,15 @@ if ($env == 1) {
     $DB_NAME = array(
         "Alajuela" => "maindb",
         "Heredia" => "herediadb",
-        "TestDB" => "testdb"
+        "TestDB" => "testdb",
+        "TestDB2" => "testdb2"
     );
 } else {
     $DB_USER = "root";
     $DB_PASS = "";
     $DB_NAME = array(
-        "TestDB" => "maindb"
+        "TestDB" => "maindb",
+        "TestDB2" => "maindb"
     );
 }
 

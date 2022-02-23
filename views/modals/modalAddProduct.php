@@ -12,18 +12,30 @@
           <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
             <div class="col-12 mb-3">
               <?php
+              $dbSession = $_SESSION["db"];
               $dbs_string = "";
               foreach ($GLOBALS['DB_NAME'] as $namedb => $db) {
-                if ($db != "testdb")
+                if (($dbSession != 'TestDB' || $dbSession != 'TestDB2') && ($db != "testdb" && $db != "testdb2")) {
                   $dbs_string .= $db . ";";
+                } else if (($dbSession == 'TestDB' || $dbSession == 'TestDB2')) {
+                  $dbs_string .= $db . ";";
+                }
               }
               $dbs_string = rtrim($dbs_string, ";");
               ?>
-              <p>Seleccione las tiendas donde se creara el producto</p>
+              <p>Seleccione las tiendas donde se creara el producto <?= $dbSession  ?></p>
               <input type="hidden" id="dbs_product" value="<?= $dbs_string  ?>">
               <div class="row">
+
                 <?php foreach ($GLOBALS['DB_NAME'] as $namedb => $db) :  ?>
-                  <?php if ($db != "testdb") : ?>
+                  <?php if (($dbSession != 'TestDB' || $dbSession != 'TestDB2') && ($db != "testdb" && $db != "testdb2")) : ?>
+                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input db_selected" data-db="<?= $db ?>" type="checkbox" <?= $namedb == $_SESSION['db'] ? 'checked=true' : ''  ?> id="check_<?= $db ?>">
+                        <label class="form-check-label" for="check_<?= $db ?>"><?= $namedb ?></label>
+                      </div>
+                    </div>
+                  <?php elseif (($dbSession == 'TestDB' || $dbSession == 'TestDB2')) :   ?>
                     <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6">
                       <div class="form-check form-switch">
                         <input class="form-check-input db_selected" data-db="<?= $db ?>" type="checkbox" <?= $namedb == $_SESSION['db'] ? 'checked=true' : ''  ?> id="check_<?= $db ?>">
