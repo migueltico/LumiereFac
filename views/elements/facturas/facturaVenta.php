@@ -1,5 +1,8 @@
 <div class="hoja">
     <?php
+
+    use config\view;
+
     $info = $data['data'];
     $hoy = date("Y-m-d H:i:s");
     $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
@@ -49,29 +52,62 @@
                 <span class="text-left"><?= strtoupper($desc[0]) ?> (<?= strtoupper($item['talla']) ?>)</span>
             </div>
             <div class="col-2 colFac ">
-                <span><?= $item['precio'] ?></span>
+                <?php if ($wasPayTarjeta) :  ?>
+                    <?php
+                    //remove ',' from price
+                    $newPrice  = str_replace(',', '', $item['precio']);
+                    //reduce price by 13%
+                    $newPrice  = $newPrice / 1.13;
+                    //number format
+                    $newPrice  = number_format($newPrice, 2, '.', ',');
+
+                    ?>
+                    <span><?= $newPrice ?></span>
+                <?php else : ?>
+                    <span><?= $item['precio'] ?></span>
+                <?php endif; ?>
             </div>
             <div class="colFac col-2 text-right">
+
                 <span class="text-right"><?= $item['total_iva'] ?></span>
             </div>
             <!-- NEXT ROW -->
             <div class="col-1 colFac">
             </div>
-            <?php if ($item['descuento'] !== 0) : ?>
+            <?php if ($item['descuento'] != 0) : ?>
                 <div class="colFac col-3">
                     <?php $HasDescuento = true; ?>
                     <span>DESC <?= strtoupper($item['descuento']) ?></span>
                 </div>
             <?php endif; ?>
-            <?php if ($item['descuento'] !== 0) : ?>
-                <div class="colFac col-4 text-left">
-                    <span class="text-right">SUB T. <?= $item['subtotal'] ?></span>
-                </div>
+            <?php if ($item['descuento'] != 0) : ?>
+                <?php if ($wasPayTarjeta) :  ?>
+                    <?php
+                    //remove ',' from price
+                    $newPrice  = str_replace(',', '', $item['subtotal']);
+                    //reduce price by 13%
+                    $newPrice  = $newPrice / 1.13;
+                    //number format
+                    $newPrice  = number_format($newPrice, 2, '.', ',');
+
+                    ?>
+                    <div class="colFac col-4 text-left">
+                        <span class="text-right">SUB T. <?= $newPrice ?></span>
+                    </div>
+                <?php else : ?>
+                    <div class="colFac col-4 text-left">
+                        <span class="text-right">SUB T. <?= $item['subtotal'] ?></span>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
-            <?php if ($item['iva'] !== 0) : ?>
+            <?php if ($item['iva'] != 0 || $wasPayTarjeta) : ?>
                 <?php $HasIva = true; ?>
                 <div class="col-2 colFac">
-                    <span>IVA:<?= $item['iva'] ?>%</span>
+                    <?php if ($wasPayTarjeta) :  ?>
+                        <span>IVA:13%</span>
+                    <?php else : ?>
+                        <span>IVA:<?= $item['iva'] ?>%</span>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
             <div class="col-1 colFac">
@@ -92,11 +128,37 @@
             <div class="col-9 text-right" style="font-size: 1.1rem;">DESC: </div>
             <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $descuento ?> </div>
         <?php endif;  ?>
-        <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>
-        <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $subtotal_descuento ?> </div>
+        <?php if ($wasPayTarjeta) :  ?>
+            <?php
+            //remove ',' from price
+            $newPrice  = str_replace(',', '', $subtotal_descuento);
+            //reduce price by 13%
+            $newPrice  = $newPrice / 1.13;
+            //number format
+            $newPrice  = number_format($newPrice, 2, '.', ',');
+
+            ?>
+            <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $newPrice ?> </div>
+        <?php else : ?>
+            <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $subtotal_descuento ?> </div>
+        <?php endif; ?>
         <?php if ($HasIva) : ?>
-            <div class="col-9 text-right" style="font-size: 1.1rem;">I.V.A: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?=number_format($iva, '2', '.', ',')  ?> </div>
+            <?php if ($wasPayTarjeta) :  ?>
+                <div class="col-9 text-right" style="font-size: 1.1rem;">I.V.A: </div>
+                <?php
+                //remove ',' from price
+                $newPrice  = str_replace(',', '', $total);
+                $ivaAmount =  $newPrice - ($newPrice / 1.13);
+                //number format
+                $newPrice  = number_format($ivaAmount, 2, '.', ',');
+                ?>
+                <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $newPrice  ?> </div>
+            <?php else : ?>
+                <div class="col-9 text-right" style="font-size: 1.1rem;">I.V.A: </div>
+                <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $iva ?> </div>
+            <?php endif; ?>
         <?php endif;  ?>
         <?php if ($tipoVenta == 2) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">ENVIO: </div>

@@ -927,6 +927,13 @@ function getProductsRowsForFac(method, pago, typeAbono, tipoPago) {
 
         itemsFac = 0
     }
+    //comprueba si  existe en methods em tipo es igual a 'tarjeta' con un foreach
+    let hasTarjeta = false
+    method.map(e => {
+        if (e.methods.tipo == 'tarjeta') {
+            hasTarjeta = true
+        }
+    })
     let Okprint = document.getElementById('SendFactBoolean');
     let tipoVenta = parseInt($("#group_type_fac .active").data("tipo"))
     let totalAmountWithOutFormat = parseFloat(amounts.replace(",", ""))
@@ -955,10 +962,10 @@ function getProductsRowsForFac(method, pago, typeAbono, tipoPago) {
         hasSaldo: localStorage.saldo != 'false' && localStorage.saldo != undefined ? true : false,
         saldo: localStorage.saldo != 'false' && localStorage.saldo != undefined ? parseFloat(saldoUsed) : false,
         saldo_ref: inputSearchFacSaldo.trim(),
-        new_saldo: inputFacNewSaldoNow.trim()
+        new_saldo: inputFacNewSaldoNow.trim(),
+        wasPayTarjeta: hasTarjeta
 
     }
-    //console.log("final Json", finalJson);
     setTimeout(() => { //Temporizador para evitar doble factura
         printFact(finalJson)
     }, 700)
