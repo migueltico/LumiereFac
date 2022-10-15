@@ -1,0 +1,5 @@
+- Crear db
+- Aplicar estructura del archivo Copia DB nuevas.sql, y cambiar el nombre por defecto de la DB que aparece a la que se requiere
+- Agregar un usuario manualmente y agregar el estado en 1 con una contraseña a gusto o copiar la de admin de otra DB, tambien se puede actualizar la password a hash si se ingresa manualmente
+- Crear un rol
+- Crear un primer cliente, y asignar el ID en admin general
