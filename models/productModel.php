@@ -452,6 +452,8 @@ class productModel
                 return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
             }
         } catch (\Throwable $th) {
+            var_dump($th->getMessage());
+            return [];
             return array(
                 "data" =>  $result['data'],
                 "rows" => $result['rows'], "cantidad" => $totalRows,
