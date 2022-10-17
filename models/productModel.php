@@ -29,9 +29,9 @@ class productModel
         }
 
         foreach ($dbs as $db) {
-            $datos[":categoria"] =(int) $combosData[$db][1];
-            $datos[":categoriaPrecio"] =(int) $combosData[$db][2];
-            $datos[":talla"] =(int) $combosData[$db][3];
+            $datos[":categoria"] = (int) $combosData[$db][1];
+            $datos[":categoriaPrecio"] = (int) $combosData[$db][2];
+            $datos[":talla"] = (int) $combosData[$db][3];
             $con = new conexion($db);
             $mainProductOtherDbs = $con->SQ(
                 'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
@@ -415,6 +415,21 @@ class productModel
             );
         }
     }
+    public static function searchCodeProductWithState($param1, $param2, $param3, $param4)
+    {
+        $con = new conexion();
+        $sql = "
+        SELECT p.*, c.descripcion AS categoria,p.estilo, t.talla AS talla, d.iddescuento,d.descripcion AS descuento_descripcion, d.descuento
+        FROM producto AS p
+        INNER JOIN categoria AS c ON p.idcategoria = c.idcategoria
+        LEFT JOIN usuario AS u ON p.modificado_por = u.idusuario
+        INNER JOIN tallas AS t ON p.idtalla = t.idtallas
+        LEFT OUTER JOIN descuentos AS d ON p.iddescuento = d.iddescuento
+        WHERE (p.descripcion LIKE $param1 OR p.marca  LIKE $param1 OR p.estilo LIKE $param1 OR p.codigo LIKE $param1) AND p.estado = $param4 ORDER BY p.idproducto ASC LIMIT $param2, $param3;
+        ";
+        $result = $con->SPCALL($sql);
+        return $result;
+    }
     /**
      * obtiene todos los productos segun el resultado
      *
@@ -446,11 +461,13 @@ class productModel
                 }
                 $SqlMultiParam = "CALL sp_searchCodeProductWithState('%$string',$init ,$cantToshow,$estado )";
                 var_dump(3);
-                $result = $con->SPCALL($SqlMultiParam);
+                // $result = $con->SPCALL($SqlMultiParam);
+                $result = self::searchCodeProductWithState("'%$string'", $init, $cantToshow, $estado);
             } else {
                 $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
                 var_dump(4, $SqlOneParam);
-                $result = $con->SPCALL($SqlOneParam);
+                // $result = $con->SPCALL($SqlOneParam);
+                $result = self::searchCodeProductWithState("'%$data%'", $init, $cantToshow, $estado);
                 var_dump(5);
             }
             if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
