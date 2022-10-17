@@ -450,23 +450,16 @@ class productModel
                 $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
                 var_dump(4);
                 $result = $con->SPCALL($SqlOneParam);
+                var_dump(5);
             }
             if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
-                var_dump(5);
+                var_dump(6);
                 return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
             } else if ($result['error'] !== '00000' || $result['data'] == false) {
-                var_dump(6);
                 return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
             }
         } catch (\Throwable $th) {
             var_dump($th->getMessage());
-            var_dump($th);
-            var_dump(
-                ["data" =>  $result['data'],
-                "rows" => $result['rows'], "cantidad" => $totalRows,
-                "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
-                "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe"]
-            );
             return [];
             return array(
                 "data" =>  $result['data'],
