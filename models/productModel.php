@@ -437,6 +437,7 @@ class productModel
             var_dump(2);
             $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
             $init = $paginacion['InitLimit'];
+            $result = [];
             if (strpos($data, '%') !== false) {
                 $dataArray = explode("%", $data);
                 $string = "";
@@ -448,7 +449,7 @@ class productModel
                 $result = $con->SPCALL($SqlMultiParam);
             } else {
                 $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
-                var_dump(4);
+                var_dump(4, SqlOneParam);
                 $result = $con->SPCALL($SqlOneParam);
                 var_dump(5);
             }
