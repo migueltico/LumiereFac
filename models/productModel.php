@@ -449,7 +449,7 @@ class productModel
                 $result = $con->SPCALL($SqlMultiParam);
             } else {
                 $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
-                var_dump(4, SqlOneParam);
+                var_dump(4, $SqlOneParam);
                 $result = $con->SPCALL($SqlOneParam);
                 var_dump(5);
             }
