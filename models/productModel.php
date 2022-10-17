@@ -424,6 +424,8 @@ class productModel
     {
         try {
             //code...
+            var_dump($data, $nowPage, $estado);
+            var_dump(1);
 
             $cantToshow = 100;
             $data = trim($data);
@@ -432,6 +434,7 @@ class productModel
             // $totalRows = $con->SQR_ONEROW("SELECT COUNT(p.idproducto) AS cantidad FROM producto AS p WHERE p.estado = 1");
             // $totalRows = $con->SQR_ONEROW("sp_SearchProduct_Inventario('%$data%')");
             $totalRows = $totalRows['data']['cantidad'];
+            var_dump(2);
             $paginacion = helper::paginacion($totalRows, $cantToshow, $nowPage);
             $init = $paginacion['InitLimit'];
             if (strpos($data, '%') !== false) {
@@ -441,18 +444,29 @@ class productModel
                     $string .= $value . "%";
                 }
                 $SqlMultiParam = "CALL sp_searchCodeProductWithState('%$string',$init ,$cantToshow,$estado )";
+                var_dump(3);
                 $result = $con->SPCALL($SqlMultiParam);
             } else {
                 $SqlOneParam = "CALL sp_searchCodeProductWithState('%$data%',$init ,$cantToshow,$estado )";
+                var_dump(4);
                 $result = $con->SPCALL($SqlOneParam);
             }
             if ($result['error'] == '00000'  &&  $result['rows'] > 0) {
+                var_dump(5);
                 return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => $paginacion, "nextpage" => (int) $nowPage + 1, "previouspage" => (int) $nowPage - 1, "error" => 0, "msg" => "Se encontro resultado");
             } else if ($result['error'] !== '00000' || $result['data'] == false) {
+                var_dump(6);
                 return array("data" =>  $result['data'], "rows" => $result['rows'], "cantidad" => $totalRows, "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,   "errorData" => $result, "msg" => "No se encontro el Producto disponible o no existe");
             }
         } catch (\Throwable $th) {
             var_dump($th->getMessage());
+            var_dump($th);
+            var_dump(
+                ["data" =>  $result['data'],
+                "rows" => $result['rows'], "cantidad" => $totalRows,
+                "nowPage" => $nowPage, "paginacion" => 0, "error" => 1,
+                "errorData" => $th->getMessage(), "msg" => "No se encontro el Producto disponible o no existe"]
+            );
             return [];
             return array(
                 "data" =>  $result['data'],
