@@ -313,4 +313,10 @@ class adminController extends view
         header('Content-Type: application/json');
         echo json_encode($result);
     }
+    public function makeBackupDB()
+    {
+        $result = admin::makeBackupDB();
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
 }

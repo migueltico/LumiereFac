@@ -4,6 +4,7 @@ namespace http\routes;
 
 use config\route;
 //------------- +++ RUTAS GET +++ -----------------//
+route::get('/makeBackupDB', 'adminController@makeBackupDB');
 route::middleware(['loginMiddleware@updateSession'], function () {
     route::get('/', 'loginController@index',['loginMiddleware@auth']);
     route::get('/updateTotalFacturadoCajas', 'facturacionController@updateTotalFacturadoCajas');

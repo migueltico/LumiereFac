@@ -219,4 +219,35 @@ class adminModel
         );
         return $con->SQ('INSERT INTO log (accion, modulo, detalle, datos, idusuario) VALUES	(:accion,:modulo,:detalle,:datos,:idusuario)', $datos);
     }
+    public static function makeBackupDB()
+    {
+        try {
+            //create a bakcup of the database and save it to the backup folder
+            $backupPath = $_SERVER['DOCUMENT_ROOT'] . '/backups/';
+            $exce = 'mysqldump -h localhost -P 3306 -u mysqlbackup -p!@#migue!@#  maindb > ' . $backupPath .'maindb_'. date('Y-m-d_H-i-s') . '.sql';
+            $response = exec($exce, $output, $return);
+
+            //delete files older than 30 days
+            $files = glob($backupPath . '*');
+            $now = time();
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    if ($now - filemtime($file) >= 30 * 24 * 60 * 60) {
+                        unlink($file);
+                    }
+                }
+            }
+
+            //get name all files in the backup folder
+            $files = glob($backupPath . '*');
+            $files = array_map('basename', $files);
+
+            return ['status' => true, 'pathFolder' => $exce, 'message' => 'Backup realizado con exito', 'data' => $files, 'response' => [$response, $output, $return]];
+        } catch (\Throwable $th) {
+            return [
+                'status' => false,
+                'message' => $th->getMessage()
+            ];
+        }
+    }
 }

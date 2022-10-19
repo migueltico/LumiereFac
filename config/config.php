@@ -16,6 +16,7 @@ define('CONTENTS', './views/contents/');
 define('ELEMENTS', './views/elements/');
 define('MODALS', './views/modals/');
 define('DB_HOST', 'localhost');
+define('BACKUP_FOLDER', $_SERVER['DOCUMENT_ROOT'] . '/backups/');
 // define('DB_USER', 'root');
 define('DB_USER', 'root');
 define('DB_PASS', '');
@@ -50,6 +51,7 @@ $middleware_array = [];
 $middleware_active = false;
 $error404 = false;
 $errorMsg = ["send_msg" => false, "data" => null, "url" => null];
+
 use config\view;
 
 class Config
