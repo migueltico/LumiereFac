@@ -224,7 +224,7 @@ class adminModel
         try {
             //create a bakcup of the database and save it to the backup folder
             $backupPath = $_SERVER['DOCUMENT_ROOT'] . '/backups/';
-            $exce = 'mysqldump -h localhost -P 3306 -u mysqlbackup -p!@#migue!@#  maindb > ' . $backupPath .'maindb_'. date('Y-m-d_H-i-s') . '.sql';
+            $exce = 'mysqldump -h localhost -P 3306 -u adminUser -pMXx12Lumiere2!#W@rr  maindb > ' . $backupPath .'maindb_'. date('Y-m-d_H-i-s') . '.sql';
             $response = exec($exce, $output, $return);
 
             //delete files older than 30 days
