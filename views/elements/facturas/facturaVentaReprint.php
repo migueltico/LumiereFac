@@ -174,7 +174,7 @@
             <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($monto_envio, 2, '.', ',') ?> </div>
         <?php endif;  ?>
         <div class="col-9 text-right" style="font-size: 1.1rem;">TOTAL A PAGAR: </div>
-        <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $total ?> </div>
+        <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($total, 2, '.', ',') ?></div>
         <div class="col-12 text-right" style="font-size: 1.1rem;">-----------------------------------------</div>
         <!-- "0" = no pago | "1" Si pago -->
         <?php if ($hasPay == 1) : ?>

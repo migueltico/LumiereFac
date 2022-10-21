@@ -1,9 +1,60 @@
+<?php
+function calcIva(float $precio, int $iva, bool $hasIva, string $defaultReturn = null)
+{
+    if ($hasIva) {
+        $floatIva   = (float)($iva / 100);
+        $floatPrice = (float)(1 + $floatIva);
+        $priceWithOutIva = (float) $precio * $floatPrice;
+        $result = (float)($priceWithOutIva - $precio);
+        return $result;
+    } else
+        return $defaultReturn == null ? 0 : $defaultReturn;
+}
+function calcIvaFromTotalAmount(float $total, int $iva, bool $hasIva, float $envio = null)
+{
+    if ($hasIva) {
+        if($envio != null){
+            $total = $total - $envio;
+        }
+        $floatIva   = (float)($iva / 100);
+        $floatPrice = (float)(1 + $floatIva);
+        $priceWithOutIva = (float) $total / $floatPrice;
+        $result = (float)($total - $priceWithOutIva);
+        return $result;
+    } else
+        return $envio == null ? 0 : $envio;
+}
+function calcPrecioSinIva(float $precio, int $iva, bool $hasIva = true, string $defaultReturn = null)
+{
+    if ($hasIva) {
+        $precioSinIva = $precio / (1 + ($iva / 100));
+        $precioSinIva = $precioSinIva;
+        return $precioSinIva;
+    } else
+        return $defaultReturn == null ? 0 : $defaultReturn;
+}
+function aplicarDescuento(float $precio, int $descuento)
+{
+    $descuentoReal = $descuento !=  0 ? $precio * ($descuento / 100) : 0;
+    $precio = $precio - $descuentoReal;
+    return $precio;
+}
+// {
+//     if ($hasIva) {
+//         $precio = $precio - calcIva($precio, $iva, $hasIva); 37530   33212.38938053097   4317.61061946903   2464.25 + 1853.36 = 4317.61
+//     }
+//     return $precio;
+// }
+?>
+
 <div class="col-lg-12 col-md-12 col-sm-12">
     <div class="accordion" id="accordionExample">
         <?php
         $gravado = array("noGravado", "gravado");
         $estado = array("inhabilitado", "habilitado");
-        //var_dump($facturas);
+        // echo "<pre>";
+        // print_r($facturas);
+        // echo "</pre>";
         //var_dump($_SESSION);
         ?>
         <?php foreach ($facturas as $factura) : ?>
@@ -19,6 +70,8 @@
                     $extra_tarjetas .= ", " . $tarjeta[0];
                 }
             }
+            $tarjetaData = $factura['tarjeta'];
+            $hasTarjetaIva = $tarjetaData == 1 || $tarjetaData == "1"  ? true : false;
             ?>
             <div class="card  mb-2 border-bottom border-primary">
                 <div class="card-header" id="headingOne">
@@ -49,11 +102,12 @@
                             <div class="col-3">
                                 <p><strong>Cliente:</strong> <?= $factura['cliente']  ?></p>
                                 <p><strong>Tarjetas:</strong> <?= $tarjetas  ?></p>
-                                <p><strong>Transferencia:</strong> <?=$transferencia  ?></p>
+                                <p><strong>Transferencia:</strong> <?= $transferencia  ?></p>
                             </div>
                             <div class="col-3">
                                 <p><strong>Descuento:</strong> <?= number_format($factura['descuento'], 2, '.', ',') ?></p>
-                                <p><strong>Impuesto:</strong> <?= number_format($factura['impuesto'], 2, '.', ',') ?></p>
+                                <!-- <p><strong>Impuesto:</strong> <?= number_format($factura['impuesto'], 2, '.', ',') ?></p> -->
+                                <p><strong>Impuesto:</strong> <?= number_format(calcIvaFromTotalAmount($factura['total'], 13, $hasTarjetaIva, $factura['monto_envio']), 2, '.', ',') ?></p>
                                 <p><strong>Saldo:</strong> <?= number_format($factura['saldo'], 2, '.', ',') ?> </p>
                             </div>
                         </div>
@@ -119,8 +173,10 @@
                                         <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Marca</th>
                                         <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Estilo</th>
                                         <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Precio</th>
-                                        <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Cantidad</th>
-                                        <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Descuento</th>
+                                        <th data-type="1" data-inner="1" scope="col" style="text-align: center;">Desc %</th>
+                                        <th data-type="1" data-inner="0" scope="col" style="text-align: left;">Precio Desc.</th>
+                                        <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Cant.</th>
+                                        <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Sub.T</th>
                                         <th data-type="1" data-inner="1" scope="col" style="text-align: center;">IVA</th>
                                         <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Total</th>
 
@@ -130,21 +186,56 @@
                                     <?php
                                     $gravado = array("noGravado", "gravado");
                                     $estado = array("inhabilitado", "habilitado");
+                                    $totalProducts = 0;
+                                    $totalIva = 0;
+                                    $totalPreDesc = 0;
+                                    $totalSubTotalPreciosConDesPorCantidad = 0;
                                     ?>
                                     <?php foreach ($factura['details'] as $detail) : ?>
+                                        <?php
+                                        $precioSinIvaRow = calcPrecioSinIva($detail['precio'], 13, $hasTarjetaIva);
+                                        $finalDescuento  = aplicarDescuento($precioSinIvaRow, $detail['descuento']);
+                                        $subTotal = calcIva($finalDescuento * (int)$detail["cantidad"], 13, $hasTarjetaIva, 'N/A');
+                                        $subTotalAmount = $finalDescuento * (int)$detail["cantidad"];
+                                        $iva = calcIva($finalDescuento * (int)$detail["cantidad"], 13, $hasTarjetaIva, 'IVA');
+                                        $totalProducts += $detail['total'];
+                                        $totalIva += $iva;
+                                        $totalPreDesc += $precioSinIvaRow * (int)$detail["cantidad"];
+                                        $totalSubTotalPreciosConDesPorCantidad += $subTotalAmount;
+
+                                        // $finalIvaPrecioProducto = aplicarIva($finalDescuento, $detail['iva']);
+                                        ?>
                                         <tr class="TrRow">
                                             <td scope="row" style="text-align: left;"><?= $detail["codigo"] ?></td>
-                                            <td scope="row" style="text-align: left;"><?= $detail["descripcion"] ?></td>
+                                            <td scope="row" style="text-align: left;max-width:300px"><?= $detail["descripcion"] ?></td>
                                             <td scope="row" style="text-align: left;"><?= $detail["talla"] ?></td>
                                             <td scope="row" style="text-align: left;"><?= $detail["marca"] ?></td>
                                             <td scope="row" style="text-align: left;"><?= $detail["estilo"] ?></td>
-                                            <td scope="row" style="text-align: left;"><?= number_format($detail['precio'], 2, '.', ',') ?></td>
+                                            <td scope="row" style="text-align: left;"><?= number_format($precioSinIvaRow, 2, '.', ',') ?></td>
+                                            <td scope="row" style="text-align: center;"><?= $detail["descuento"] > 1 ? $detail['descuento'] . "%" : 'N/A' ?></td>
+                                            <td scope="row" style="text-align: left;"><?= number_format($finalDescuento, 2, '.', ',') ?></td><!-- Descuento Price Amount -->
                                             <td scope="row" style="text-align: center;"><?= $detail["cantidad"] ?></td>
-                                            <td scope="row" style="text-align: center;"><?= $detail["descuento"] > 1 ? $detail['descuento'] : 'N/A' ?></td>
-                                            <td scope="row" style="text-align: center;"><?= $detail["iva"] > 1 ? $detail['iva'] : 'N/A' ?></td>
+                                            <td scope="row" style="text-align: center;"><?= number_format($finalDescuento * (int)$detail["cantidad"], 2, '.', ',') ?></td><!-- Sub Total -->
+                                            <td scope="row" style="text-align: center;"><?= number_format($subTotal, 2, '.', ',') ?></td><!-- Iva Sub Total -->
+                                            <!-- <td scope="row" style="text-align: center;"><?= $detail["iva"] > 1 ? $detail['iva'] : 'N/A' ?></td> -->
                                             <td scope="row" style="text-align: left;"><?= number_format($detail['total'], 2, '.', ',') ?></td>
                                         </tr>
                                     <?php endforeach; ?>
+                                    <!-- Tr with sub total and iva Sub total and Total -->
+                                    <tr class="TrRow" style="background: #ddd ;">
+                                        <td scope="row" style="text-align: left;"></td>
+                                        <td scope="row" style="text-align: left;"></td>
+                                        <td scope="row" style="text-align: left;"></td>
+                                        <td scope="row" style="text-align: left;"></td>
+                                        <td scope="row" style="text-align: left;"></td>
+                                        <td scope="row" style="text-align: left;"></td>
+                                        <td scope="row" style="text-align: center;"></td>
+                                        <td scope="row" style="text-align: center;"></td>
+                                        <td scope="row" style="text-align: left;"></td>
+                                        <td scope="row" style="text-align: center; font-weight:bold;font-size:1.1rem"><?= number_format($totalSubTotalPreciosConDesPorCantidad, 2, '.', ',') ?></td>
+                                        <td scope="row" style="text-align: center; font-weight:bold;font-size:1.1rem"><?= number_format($totalIva, 2, '.', ',') ?></td>
+                                        <td scope="row" style="text-align: left; font-weight:bold;font-size:1.1rem"><?= number_format($totalProducts, 2, '.', ',') ?></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -152,6 +243,10 @@
                 </div>
             </div>
             <h2 style="text-align: right;">Total: <?= number_format($factura['total'], 2, '.', ',') ?></h2>
+            <?php if ($factura["monto_envio"] > 0) : ?>
+                <h6 style="text-align: right;">*incluye precio por envio.</h6>
+            <?php endif; ?>
+
         <?php endforeach; ?>
     </div>
 </div>

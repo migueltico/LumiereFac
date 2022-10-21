@@ -1,6 +1,7 @@
 <div class="card mb-5 shadow">
     <div class="card-header">
         <h4>Reportes de factura</h4>
+        <!-- //TODO: actualizar suma de tarjetas en cada reportes, no toma en cuenta tarjetas multiples -->
         <div class="row mb-2">
             <div class="col-lg-4 col-md-6 col-sm-12 mb-1">
                 <div class="input-group mb-3">

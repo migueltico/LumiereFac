@@ -50,14 +50,14 @@
                 <?php foreach ($rows['rows'] as $rows) : ?>
                     <?php
                     $total_efectivo += $rows["efectivo"];
-                    $total_tarjeta += $rows["tarjeta"];
+                    $total_tarjeta += (float)$rows["tarjeta"] + (float)$rows["multipago_total"];
                     $total_transferencia += $rows["transferencia"];
                     $total_efectivoRow += $rows["efectivo"];
-                    $total_tarjetaRow += $rows["tarjeta"];
+                    $total_tarjetaRow += $rows["tarjeta"] + $rows["multipago_total"];
                     $total_transferenciaRow += $rows["transferencia"];
-                    $total_diario += $rows["total"];
+                    $total_diario += ((float)$rows["total"] + (float)$rows["multipago_total"]);
                     $total =  ($rows["total"]);
-                    $total_diarioRow += $total;
+                    $total_diarioRow += $total + (float)$rows["multipago_total"];
                     $tipoPago = [];
                     if ($rows["t_efectivo"] == '1') {
 
@@ -83,9 +83,9 @@
                         <!-- <td scope="row" style="text-align: center;"><?php //$tipoPago == "" ? "Sin abono" : $tipoPago
                                                                             ?></td> -->
                         <td scope="row" data-value="<?= $rows["efectivo"] ?>" style="text-align: left;">₡<?= number_format($rows["efectivo"], 2, ".", ",") ?></td>
-                        <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;">₡<?= number_format($rows["tarjeta"], 2, ".", ",") ?></td>
+                        <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;">₡<?= number_format($rows["tarjeta"] + $rows["multipago_total"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $rows["transferencia"] ?>" style="text-align: left;">₡<?= number_format($rows["transferencia"], 2, ".", ",") ?></td>
-                        <td scope="row" data-value="<?= $total ?>" style="text-align: left;">₡<?= number_format($total, 2, ".", ",") ?></td>
+                        <td scope="row" data-value="<?= $total + $rows["multipago_total"] ?>" style="text-align: left;">₡<?= number_format($total, 2, ".", ",") ?></td>
 
                     </tr>
                 <?php endforeach; ?>

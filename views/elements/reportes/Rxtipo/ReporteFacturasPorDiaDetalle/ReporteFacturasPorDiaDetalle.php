@@ -65,6 +65,9 @@
                 $total_efectivoRow = 0;
                 $total_tarjetaRow = 0;
                 $total_transferenciaRow = 0;
+                echo "<pre>";
+                print_r($rows['rows'][0]);
+                echo "</pre>";
                 ?>
                 <?php foreach ($rows['rows'] as $rows) : ?>
                     <?php
@@ -72,11 +75,11 @@
                     $total_tarjeta += $rows["tarjeta"];
                     $total_transferencia += $rows["transferencia"];
                     $total_efectivoRow += $rows["efectivo"];
-                    $total_tarjetaRow += $rows["tarjeta"];
+                    $total_tarjetaRow += (float)$rows["tarjeta"] + (float)$rows["multipago_total"];
                     $total_transferenciaRow += $rows["transferencia"];
 
                     $total_diario += $rows["total"];
-                    $total =  ($rows["total"]);
+                    $total =  ($rows["total"] + $rows["multipago_total"]);
                     $total_diarioRow += $total;
                     $tipoPago = [];
 
@@ -110,7 +113,10 @@
 
                     <tr class="TrRow">
                         <?php if ($rows["doc"] == "FAC") :  ?>
-                            <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><a href="#" class="getDataFacModal" data-id="<?= $rows["docNum"] ?>" data-toggle="modal" data-target="#reportDetalleModal"><?= $rows["docNum"] ?></a> </td>
+                            <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;text-decoration:underline">
+                                <a href="#" class="getDataFacModal" data-id="<?= $rows["docNum"] ?>" data-toggle="modal" data-target="#reportDetalleModal"><?= $rows["docNum"] ?>
+                                </a>
+                            </td>
                         <?php else :  ?>
                             <td scope="row" data-value="<?= $rows["docNum"] ?>" style="text-align: left;"><?= $rows["docNum"] ?> <?= $rows['doc'] == "RECIBO" ? "  (#Fac ref:" . $rows['docRef'] . ")" : "" ?></td>
                         <?php endif;  ?>
@@ -118,7 +124,7 @@
                         <td scope="row" data-value="<?= $rows["doc"] ?>" style="text-align: left;text-transform:capitalize;"><?= strtolower($rows["doc"]) ?></td>
                         <td scope="row" data-value="<?= $rows["tipoDoc"]  ?>" style="text-align: left;"><?= $rows["tipoDoc"] ?></td>
                         <td scope="row" data-value="<?= $rows["efectivo"] ?>" style="text-align: left;"><?= number_format($rows["efectivo"], 2, ".", ",") ?></td>
-                        <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;"><?= number_format($rows["tarjeta"], 2, ".", ",") ?></td>
+                        <td scope="row" data-value="<?= $rows["tarjeta"] ?>" style="text-align: left;"><?= number_format(($rows["tarjeta"] + $rows['multipago_total']), 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $rows["n_tarjeta"] ?>" style="text-align: left;"><?= $rows["n_tarjeta"] . $extra_tarjetas ?></td>
                         <td scope="row" data-value="<?= $rows["transferencia"] ?>" style="text-align: left;"><?= number_format($rows["transferencia"], 2, ".", ",") ?></td>
                         <td scope="row" data-value="<?= $total ?>" style="text-align: left;"><?= number_format($total, 2, ".", ",") ?></td>

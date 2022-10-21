@@ -148,11 +148,28 @@
             <?php if ($wasPayTarjeta) :  ?>
                 <div class="col-9 text-right" style="font-size: 1.1rem;">I.V.A: </div>
                 <?php
+                // //remove ',' from price
+                // $newPrice  = str_replace(',', '', $total);
+                // $ivaAmount =  $newPrice - ($newPrice / 1.13);
+                // //number format
+                // $newPrice  = number_format($ivaAmount, 2, '.', ',');
+                ?>
+                <?php
                 //remove ',' from price
-                $newPrice  = str_replace(',', '', $total);
-                $ivaAmount =  $newPrice - ($newPrice / 1.13);
-                //number format
-                $newPrice  = number_format($ivaAmount, 2, '.', ',');
+                if ($tipoVenta == 2) {
+                    $newPrice  = str_replace(',', '', $total);
+                    $monto_envio  = str_replace(',', '', $monto_envio);
+                    //reduce price by 13%
+                    $newPriceWithOutEnvio  = ($newPrice - $monto_envio);
+                    $ivaAmount  = $newPriceWithOutEnvio - ($newPriceWithOutEnvio / 1.13);
+                    //number format
+                    $newPrice  = number_format($ivaAmount, 2, '.', ',');
+                } else {
+                    $newPrice  = str_replace(',', '', $total);
+                    $ivaAmount =  $newPrice - ($newPrice / 1.13);
+                    //number format
+                    $newPrice  = number_format($ivaAmount, 2, '.', ',');
+                }
                 ?>
                 <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $newPrice  ?> </div>
             <?php else : ?>
