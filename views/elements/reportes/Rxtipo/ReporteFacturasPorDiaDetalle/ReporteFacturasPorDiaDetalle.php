@@ -65,9 +65,6 @@
                 $total_efectivoRow = 0;
                 $total_tarjetaRow = 0;
                 $total_transferenciaRow = 0;
-                echo "<pre>";
-                print_r($rows['rows'][0]);
-                echo "</pre>";
                 ?>
                 <?php foreach ($rows['rows'] as $rows) : ?>
                     <?php
