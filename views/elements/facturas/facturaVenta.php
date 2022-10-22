@@ -52,7 +52,7 @@
                 <span class="text-left"><?= strtoupper($desc[0]) ?> (<?= strtoupper($item['talla']) ?>)</span>
             </div>
             <div class="col-2 colFac ">
-                <?php if ($wasPayTarjeta) :  ?>
+                <?php if ($wasPayTarjeta && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb') :  ?>
                     <?php
                     //remove ',' from price
                     $newPrice  = str_replace(',', '', $item['precio']);
@@ -81,7 +81,7 @@
                 </div>
             <?php endif; ?>
             <?php if ($item['descuento'] != 0) : ?>
-                <?php if ($wasPayTarjeta) :  ?>
+                <?php if ($wasPayTarjeta && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb') :  ?>
                     <?php
                     //remove ',' from price
                     $newPrice  = str_replace(',', '', $item['subtotal']);
@@ -100,10 +100,10 @@
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
-            <?php if ($item['iva'] != 0 || $wasPayTarjeta) : ?>
+            <?php if ($item['iva'] != 0 || ($wasPayTarjeta && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb')) : ?>
                 <?php $HasIva = true; ?>
                 <div class="col-2 colFac">
-                    <?php if ($wasPayTarjeta) :  ?>
+                    <?php if ($wasPayTarjeta  && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb') :  ?>
                         <span>IVA:13%</span>
                     <?php else : ?>
                         <span>IVA:<?= $item['iva'] ?>%</span>
@@ -126,9 +126,9 @@
     <div class="row col">
         <?php if ($HasDescuento) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">DESC: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $descuento ?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($descuento, 2, '.', ',') ?> </div>
         <?php endif;  ?>
-        <?php if ($wasPayTarjeta) :  ?>
+        <?php if ($wasPayTarjeta && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb') :  ?>
             <?php
             //remove ',' from price
             $newPrice  = str_replace(',', '', $subtotal_descuento);
@@ -139,13 +139,13 @@
 
             ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $newPrice ?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?=$newPrice  ?> </div>
         <?php else : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= $subtotal_descuento ?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($subtotal_descuento, 2, '.', ',')   ?> </div>
         <?php endif; ?>
         <?php if ($HasIva) : ?>
-            <?php if ($wasPayTarjeta) :  ?>
+            <?php if ($wasPayTarjeta && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb') :  ?>
                 <div class="col-9 text-right" style="font-size: 1.1rem;">I.V.A: </div>
                 <?php
                 // //remove ',' from price

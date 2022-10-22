@@ -1,6 +1,9 @@
 <?php
 function calcIva(float $precio, int $iva, bool $hasIva, string $defaultReturn = null)
 {
+    if ($GLOBALS["DB_NAME"][$_SESSION['db']] == 'maindb') {
+        return 0;
+    }
     if ($hasIva) {
         $floatIva   = (float)($iva / 100);
         $floatPrice = (float)(1 + $floatIva);
@@ -12,8 +15,11 @@ function calcIva(float $precio, int $iva, bool $hasIva, string $defaultReturn = 
 }
 function calcIvaFromTotalAmount(float $total, int $iva, bool $hasIva, float $envio = null)
 {
+    if ($GLOBALS["DB_NAME"][$_SESSION['db']] == 'maindb') {
+        return 0;
+    }
     if ($hasIva) {
-        if($envio != null){
+        if ($envio != null) {
             $total = $total - $envio;
         }
         $floatIva   = (float)($iva / 100);
@@ -26,6 +32,9 @@ function calcIvaFromTotalAmount(float $total, int $iva, bool $hasIva, float $env
 }
 function calcPrecioSinIva(float $precio, int $iva, bool $hasIva = true, string $defaultReturn = null)
 {
+    if ($GLOBALS["DB_NAME"][$_SESSION['db']] == 'maindb') {
+        return $precio;
+    }
     if ($hasIva) {
         $precioSinIva = $precio / (1 + ($iva / 100));
         $precioSinIva = $precioSinIva;
@@ -39,12 +48,6 @@ function aplicarDescuento(float $precio, int $descuento)
     $precio = $precio - $descuentoReal;
     return $precio;
 }
-// {
-//     if ($hasIva) {
-//         $precio = $precio - calcIva($precio, $iva, $hasIva); 37530   33212.38938053097   4317.61061946903   2464.25 + 1853.36 = 4317.61
-//     }
-//     return $precio;
-// }
 ?>
 
 <div class="col-lg-12 col-md-12 col-sm-12">
@@ -195,9 +198,9 @@ function aplicarDescuento(float $precio, int $descuento)
                                         <?php
                                         $precioSinIvaRow = calcPrecioSinIva($detail['precio'], 13, $hasTarjetaIva);
                                         $finalDescuento  = aplicarDescuento($precioSinIvaRow, $detail['descuento']);
-                                        $subTotal = calcIva($finalDescuento * (int)$detail["cantidad"], 13, $hasTarjetaIva, 'N/A');
+                                        $subTotal = calcIva($finalDescuento * (int)$detail["cantidad"], 13, $hasTarjetaIva, 0);
                                         $subTotalAmount = $finalDescuento * (int)$detail["cantidad"];
-                                        $iva = calcIva($finalDescuento * (int)$detail["cantidad"], 13, $hasTarjetaIva, 'IVA');
+                                        $iva = calcIva($finalDescuento * (int)$detail["cantidad"], 13, $hasTarjetaIva, 0);
                                         $totalProducts += $detail['total'];
                                         $totalIva += $iva;
                                         $totalPreDesc += $precioSinIvaRow * (int)$detail["cantidad"];
