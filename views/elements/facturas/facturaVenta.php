@@ -126,7 +126,7 @@
     <div class="row col">
         <?php if ($HasDescuento) : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">DESC: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($descuento, 2, '.', ',') ?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?=$descuento?></div>
         <?php endif;  ?>
         <?php if ($wasPayTarjeta && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb') :  ?>
             <?php
@@ -142,7 +142,7 @@
             <div class="col-3 text-left " style="font-size: 1.1rem;"><?=$newPrice  ?> </div>
         <?php else : ?>
             <div class="col-9 text-right" style="font-size: 1.1rem;">SUBTOTAL: </div>
-            <div class="col-3 text-left " style="font-size: 1.1rem;"><?= number_format($subtotal_descuento, 2, '.', ',')   ?> </div>
+            <div class="col-3 text-left " style="font-size: 1.1rem;"><?=$subtotal_descuento?>  </div>
         <?php endif; ?>
         <?php if ($HasIva) : ?>
             <?php if ($wasPayTarjeta && $GLOBALS["DB_NAME"][$_SESSION['db']] != 'maindb') :  ?>

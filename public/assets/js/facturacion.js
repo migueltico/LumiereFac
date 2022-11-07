@@ -642,41 +642,73 @@ $('#bodyContent').on("change", "#MultiTipoPagoFact", function (e) {
 })
 
 function multiState(e) {
-    const cb = document.getElementById('MultiTipoPagoFact');
+    const MultipagoSwitch = document.getElementById('MultiTipoPagoFact');
     let rowtarjetas = document.querySelectorAll(".rowtarjetas")
     const InputSwitch = document.getElementsByClassName('fact_switchBtns');
     const InputRadio = document.getElementsByClassName('fact_rbRadiosBtns');
+    let totalFactura = document.getElementById('totalFactAmount')
     const removeElements = (elms) => elms.forEach(el => el.remove())
     removeElements(rowtarjetas)
+    let btnApartado = document.getElementById("btnTypeApartado")
     $(".cardHeaderSwitch").removeClass('selectedMethodPay')
-    let pago = document.getElementById("pagoContraEntrega").checked
-    if (!pago) {
-        if (cb.checked) {
-            $('.lbMontoToPay').prop('disabled', false)
-            $(".lbMontoToPay").val('0.00')
-            for (let i = 0; i < InputSwitch.length; i++) {
-                InputSwitch[i].checked = false
-                InputSwitch[i].style.display = "block"
-                InputRadio[i].style.display = "none"
+    let pagoContraEntrega = document.getElementById("pagoContraEntrega").checked
+    if (!pagoContraEntrega) {
+        if (MultipagoSwitch.checked) {
+            if(hasClass(btnApartado, "active")){
+                $('.lbMontoToPay').prop('disabled', false)
+                $(".lbMontoToPay").val(roundUpToNearest100(totalFactura.dataset.amount.replace(",","") / 3).toFixed(2))
+                for (let i = 0; i < InputSwitch.length; i++) {
+                    InputSwitch[i].checked = false
+                    InputSwitch[i].style.display = "block"
+                    InputRadio[i].style.display = "none"
+                }
 
+            }else{                
+
+                $('.lbMontoToPay').prop('disabled', false)
+                $(".lbMontoToPay").val('0.00')
+                for (let i = 0; i < InputSwitch.length; i++) {
+                    InputSwitch[i].checked = false
+                    InputSwitch[i].style.display = "block"
+                    InputRadio[i].style.display = "none"
+
+                }
             }
         } else {
-            let amounts = document.getElementById('totalFactAmount')
-            //console.log(localStorage.saldo, localStorage.saldo != 'false' && localStorage.saldo != undefined)
-            if (localStorage.saldo != 'false' && localStorage.saldo != undefined) {
-                $(".lbMontoToPay").val(amounts.dataset.amountsaldo)
-            } else {
-                $(".lbMontoToPay").val(amounts.dataset.amount)
-            }
-            $(".cardHeaderSwitch").first().addClass('selectedMethodPay')
-            $(".fact_switchBtns input[type='checkbox").prop("checked", false)
-            $('.lbMontoToPay').prop('disabled', true)
-            InputRadio[0].checked = true
-            for (let i = 0; i < InputSwitch.length; i++) {
-                InputSwitch[i].checked = false
-                InputSwitch[i].style.display = "none"
-                InputRadio[i].style.display = "block"
-                cb.style.display = "block"
+                if(hasClass(btnApartado, "active")){
+                
+                //console.log(localStorage.saldo, localStorage.saldo != 'false' && localStorage.saldo != undefined)
+                if (localStorage.saldo != 'false' && localStorage.saldo != undefined) {
+                    $(".lbMontoToPay").val(totalFactura.dataset.amountsaldo)
+                } else {
+                    $(".lbMontoToPay").val(roundUpToNearest100(totalFactura.dataset.amount.replace(",","") / 3).toFixed(2))
+                }
+                $(".cardHeaderSwitch").first().addClass('selectedMethodPay')
+                $(".fact_switchBtns input[type='checkbox").prop("checked", false)
+                $('.lbMontoToPay').prop('disabled', true)
+                InputRadio[0].checked = true
+                for (let i = 0; i < InputSwitch.length; i++) {
+                    InputSwitch[i].checked = false
+                    InputSwitch[i].style.display = "none"
+                    InputRadio[i].style.display = "block"
+                    MultipagoSwitch.style.display = "block"
+                }
+            }else{               
+                if (localStorage.saldo != 'false' && localStorage.saldo != undefined) {
+                    $(".lbMontoToPay").val(totalFactura.dataset.amountsaldo)
+                } else {
+                    $(".lbMontoToPay").val(totalFactura.dataset.amount)
+                }
+                $(".cardHeaderSwitch").first().addClass('selectedMethodPay')
+                $(".fact_switchBtns input[type='checkbox").prop("checked", false)
+                $('.lbMontoToPay').prop('disabled', true)
+                InputRadio[0].checked = true
+                for (let i = 0; i < InputSwitch.length; i++) {
+                    InputSwitch[i].checked = false
+                    InputSwitch[i].style.display = "none"
+                    InputRadio[i].style.display = "block"
+                    MultipagoSwitch.style.display = "block"
+                }
             }
         }
     }
@@ -753,7 +785,7 @@ $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
     }
     if (hasClass(btnApartado, "active")) {
         $('.lbMontoToPay').prop('disabled', false)
-        $('.lbMontoToPay').val('0.00')
+        $('.lbMontoToPay').val(roundUpToNearest100(amountFloat / 3).toFixed(2))
     } else {
         $('.lbMontoToPay').prop('disabled', true)
     }
@@ -837,10 +869,14 @@ function resetFactScreen() {
     loadPage(null, "facturacion/facturar")
 
 }
+/**
+ * Facturar Inicio
+ */
 $('#bodyContent').on("click", "#btnMakeFact", function (e) {
-    //ANCLA
     e.preventDefault();
+    //desactiva boton para evitar doble facturacion
     $("#btnMakeFact").prop("disabled", true)
+    //se setea en el localstorage el estado del boton de facturacion para evitar doble facturacion
     let fac_active_btn = localStorage.getItem('fac_active_btn')
     if (fac_active_btn == 1) {
         alert("Ya se encuentra una factura en proceso, por favor evite el doble click al facturar")
@@ -848,16 +884,18 @@ $('#bodyContent').on("click", "#btnMakeFact", function (e) {
     } else {
         localStorage.setItem('fac_active_btn', 1)
     }
+
     const cb = document.getElementById('MultiTipoPagoFact');
     let btnTypeApartado = document.getElementById('btnTypeApartado');
-    let pagoContraEntrega = document.getElementById('pagoContraEntrega').checked;
-    let abono = btnTypeApartado.classList.contains("active");
-    pagoContraEntrega = (pagoContraEntrega ? 0 : 1)
+    let PagoNormal = document.getElementById('pagoContraEntrega').checked;
+    let isApartado = btnTypeApartado.classList.contains("active");
+    PagoNormal = (PagoNormal ? 0 : 1)
+    //se valida si el multi pago esta activo
     if (cb.checked) {
-        let method = PagoMultipleFac(pagoContraEntrega, abono)
+        let method = PagoMultipleFac(PagoNormal, isApartado)
 
         if (method.state) {
-            getProductsRowsForFac(method.methodsArray, pagoContraEntrega, abono, "multiple")
+            getProductsRowsForFac(method.methodsArray, PagoNormal, isApartado, "multiple")
         }
     } else {
         let method = PagoUnicoFac()
@@ -865,8 +903,8 @@ $('#bodyContent').on("click", "#btnMakeFact", function (e) {
 
         // method.map(e => (e.state == false ? isOk = true : isOk = false))
         if (method[0].state) {
-            getProductsRowsForFac(method, pagoContraEntrega, abono, "Unico")
-        } else if (pagoContraEntrega.checked) {
+            getProductsRowsForFac(method, PagoNormal, isApartado, "Unico")
+        } else if (PagoNormal.checked) {
 
         }
 
@@ -878,7 +916,7 @@ function convertToFacNumber() {
     ConvertLabelFormat(111)
 }
 
-function getProductsRowsForFac(method, pago, typeAbono, tipoPago) {
+function getProductsRowsForFac(method, pagoContraEntrega, isApartado, tipoPago) {
     let rows = document.getElementsByClassName('productRowFac')
     let amounts = document.getElementById('totalFactAmount').dataset.amount
     let cliente = document.getElementById('fac_cliente_input')
@@ -955,10 +993,10 @@ function getProductsRowsForFac(method, pago, typeAbono, tipoPago) {
         cantidadArticulos,
         tipoVenta,
         monto_envio,
-        firstAbono: typeAbono,
+        firstAbono: isApartado,
         sendFac: (Okprint.checked ? 1 : 0),
         estado: (tipoVenta == 1 ? 1 : 0),
-        hasPay: pago,
+        hasPay: pagoContraEntrega,
         hasSaldo: localStorage.saldo != 'false' && localStorage.saldo != undefined ? true : false,
         saldo: localStorage.saldo != 'false' && localStorage.saldo != undefined ? parseFloat(saldoUsed) : false,
         saldo_ref: inputSearchFacSaldo.trim(),
@@ -1015,11 +1053,11 @@ function PagoUnicoFac() {
     }
 }
 
-function PagoMultipleFac(pago, abono) {
+function PagoMultipleFac(hasPagoNormal, isApartado) {
     let montoToPay = document.getElementsByClassName("lbMontoToPay")
-    let amounts = document.getElementById('totalFactAmount').dataset.amount
+    let montoTotalFactura = document.getElementById('totalFactAmount').dataset.amount
     let Allswitch = document.getElementsByClassName('switchGroupAmount')
-    let finalAmount = 0.00
+    let sumaDeCamposTotal = 0.00
     let result;
     let methodsArray = []
     for (let switchItem of Allswitch) {
@@ -1038,7 +1076,7 @@ function PagoMultipleFac(pago, abono) {
                     valor += result.methods.totalExtraCards
                 }
                 //console.log("with Extra mount", valor);
-                finalAmount = parseFloat(finalAmount) + parseFloat(valor)
+                sumaDeCamposTotal = parseFloat(sumaDeCamposTotal) + parseFloat(valor)
                 methodsArray.push(result)
             } else {
                 methodsArray.push(result)
@@ -1058,19 +1096,44 @@ function PagoMultipleFac(pago, abono) {
     if (localStorage.saldo !== undefined && localStorage.saldo !== false && localStorage.saldo !== 'false') {
         let newAmount = document.getElementById("amountModalTitle")
         parseInt(newAmount.innerText.replace(",", ""))
-        amounts = parseFloat(newAmount.innerHTML.replace(',', ""))
+        montoTotalFactura = parseFloat(newAmount.innerHTML.replace(',', ""))
     } else {
-        amounts = amounts.replace(',', "")
+        montoTotalFactura = montoTotalFactura.replace(',', "")
     }
-    if (parseFloat(finalAmount) == parseFloat(amounts) && pago == 1) {
+        //get 3third part of amount
+    let thirdPart = roundUpToNearest100(montoTotalFactura / 3)
+    let thirPartWithFormat = ConvertLabelFormat(thirdPart)
+    console.log("thirdPart", thirdPart);
+
+    //PAGO ES LO MISMO QUE PAGO CONTRA ENTREGA
+    if ((parseFloat(sumaDeCamposTotal) == parseFloat(montoTotalFactura) && hasPagoNormal) || 
+        (!hasPagoNormal && !isApartado)) {
         return {
             state: true,
             methodsArray
         }
-    } else if (pago == 0 || abono) {
-        methodsArray = {
-            state: true,
-            methodsArray
+     }else if(hasPagoNormal && isApartado){
+        //verificamos que el monto de apartado sea al menos el 1/3 del total
+        if(parseFloat(sumaDeCamposTotal) >= parseFloat(thirdPart)){
+             methodsArray = {
+                 state: true,
+                 methodsArray
+             }    
+        }else{
+            
+            methodsArray = {
+                state: false,
+                methodsArray
+            }
+            Swal.fire({
+                position: 'top',
+                title: `Se debe abonar al menos ${thirPartWithFormat} del total de la factura`,
+                icon: 'error',
+                confirmButtonText: 'OK',
+                timer: 4500,
+                timerProgressBar: true
+            })
+            resetFactBlockeo()
         }
     } else {
         methodsArray = {
@@ -1088,12 +1151,14 @@ function PagoMultipleFac(pago, abono) {
     }
     return methodsArray
 }
-
+function roundUpToNearest100(num) {
+    return Math.ceil(num / 100) * 100;
+}
 function verificaCamposPago(inputClass, multi) {
     switch (inputClass) {
         case 'efectivoInputs':
             let Emonto = document.getElementsByClassName(`${inputClass}_monto`)[0].value
-
+            let withOutFormatMonto = Number(Emonto.replace(',', ""));
 
             if (Emonto.length > 0) {
                 let methods = {
@@ -1242,6 +1307,8 @@ function verificaCamposPago(inputClass, multi) {
 }
 
 function printFact(datos) {
+    // habilitarBotonFac();
+    // return
     let pagos = _PAGA_CON.split(";")
     let Texto = ""
     let total = 0
@@ -1265,9 +1332,7 @@ function printFact(datos) {
             let headers = {
                 "Content-Type": "application/json"
             }
-            $("#btnMakeFact").prop("disabled", false)
-            localStorage.setItem('fac_active_btn', 0)
-            fac_active_btn = false
+            habilitarBotonFac();
             let Okprint = document.getElementById('SendFactBoolean');
             fetch("/facturacion/facturaVenta", {
                 method: "POST",
@@ -1303,12 +1368,18 @@ function printFact(datos) {
             _PAGA_CON = ""
             $("#btnMakeFact").prop("disabled", false)
         }
+
+        
     })
 
 
 
 }
-
+function habilitarBotonFac() {
+    $("#btnMakeFact").prop("disabled", false);
+    localStorage.setItem('fac_active_btn', 0);
+    fac_active_btn = false;
+}
 function ReprintFact(fac) {
     let formData = new FormData()
     formData.append('fac', fac)
