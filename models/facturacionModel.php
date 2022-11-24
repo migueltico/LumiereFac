@@ -331,9 +331,9 @@ class facturacionModel
         $nameRol = strtoupper($_SESSION['rolname']);
         $find   = 'ADMIN';
         $pos = strpos($nameRol, $find);
-        $sql  = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' AND idusuario = $iduser ORDER BY consecutivo DESC";
-        $sql1 = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' ORDER BY consecutivo DESC";
-        $sql2 = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' AND idusuario = $iduser ORDER BY consecutivo DESC";
+        $sql  = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' AND idusuario = $iduser AND f.estado <> '2' ORDER BY consecutivo DESC";
+        $sql1 = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' AND f.estado <> '2' ORDER BY consecutivo DESC";
+        $sql2 = "SELECT f.*, DATE_FORMAT(fecha,'%d-%m-%Y') fechaFormat, c.nombre cliente FROM facturas f LEFT JOIN cliente c on c.idcliente = f.idcliente WHERE formatDate BETWEEN '$start' AND '$end' AND idusuario = $iduser AND f.estado <> '2' ORDER BY consecutivo DESC";
         if ($pos === false) {
             $sql = $sql2;
         } else {
