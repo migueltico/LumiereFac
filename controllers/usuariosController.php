@@ -132,8 +132,6 @@ class usuariosController extends view
     {
         $icon = help::icon();
         $params = $var['params'];
-        var_dump(urldecode($params['db']));
-        exit;
         $_SESSION["db"] = urldecode($params['db']);
         $validate = users::validatePassRequest($params['identificador']);
         if ($validate['rows'] > 0) {
