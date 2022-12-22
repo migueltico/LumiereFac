@@ -353,7 +353,7 @@ class facturacionModel
                 WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
-                }else{
+                } else {
                     $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {
@@ -411,7 +411,7 @@ class facturacionModel
                 WHERE d.idfactura =$id");
                 if ($detalis['rows'] > 0) {
                     $factura['details'] = $detalis['data'];
-                }else{
+                } else {
                     $factura['details'] = $detalis['data'];
                 }
                 if ($tipo == 3) {
@@ -497,17 +497,22 @@ class facturacionModel
     public static function obtenerEstadoCajaEstadoPagos($data)
     {
         $con = new conexion();
-        $totales = $con->SRQ("SELECT 
-        (SELECT SUM(total) FROM facturas WHERE idcaja =:idcaja)  AS total_facturas,  
-        (SELECT SUM(abono) FROM recibos WHERE idcaja = :idcaja) AS total_recibos,
-        (SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_efectivo, 
-        (SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_tarjeta, 
-        (SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_transferencia, 
-        (SELECT SUM(multipago_total) FROM recibos WHERE idcaja = :idcaja) AS recibos_multipago_total, 
-        (SELECT SUM(monto_efectivo) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_efectivo, 
-        (SELECT SUM(monto_transferencia) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_transferencia, 
-        (SELECT SUM(multipago_total) FROM facturas WHERE idcaja = :idcaja) AS facturas_multipago_total, 
-        (SELECT SUM(monto_tarjeta) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_tarjeta", $data);
+
+        $total_facturas="(SELECT SUM(total) FROM facturas WHERE idcaja =:idcaja)  AS total_facturas";
+        $total_recibos="(SELECT SUM(abono) FROM recibos WHERE idcaja = :idcaja) AS total_recibos";
+        $recibos_monto_efectivo="(SELECT SUM(monto_efectivo) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_efectivo";
+        $recibos_monto_tarjeta="(SELECT SUM(monto_tarjeta) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_tarjeta";
+        $recibos_monto_transferencia="(SELECT SUM(monto_transferencia) FROM recibos WHERE idcaja = :idcaja) AS recibos_monto_transferencia";
+        $recibos_multipago_total="(SELECT SUM(multipago_total) FROM recibos WHERE idcaja = :idcaja) AS recibos_multipago_total";
+        $facturas_monto_efectivo="(SELECT SUM(monto_efectivo) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_efectivo";
+        $facturas_monto_transferencia="(SELECT SUM(monto_transferencia) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_transferencia";
+        $facturas_multipago_total="(SELECT SUM(multipago_total) FROM facturas WHERE idcaja = :idcaja) AS facturas_multipago_total";
+        $facturas_monto_tarjeta="(SELECT SUM(monto_tarjeta) FROM facturas WHERE idcaja = :idcaja) AS facturas_monto_tarjeta";
+
+
+
+        $totales = $con->SRQ("SELECT $total_facturas, $total_recibos, $recibos_monto_efectivo, $recibos_monto_tarjeta, $recibos_monto_transferencia, $recibos_multipago_total, $facturas_monto_efectivo, $facturas_monto_transferencia, $facturas_multipago_total, $facturas_monto_tarjeta", $data);
+
         $recibos_monto_efectivo = $totales['data']['recibos_monto_efectivo'];
         $recibos_monto_tarjeta = $totales['data']['recibos_monto_tarjeta'];
         $recibos_monto_transferencia = $totales['data']['recibos_monto_transferencia'];
@@ -579,6 +584,26 @@ class facturacionModel
                             WHERE (f.idcliente = $cliente AND f.tipo =3  AND f.estado=0) 
                             GROUP BY r.idfactura");
         return $data;
+    }
+    public static function getApartadoSaldoHasClientByFac($idfactura){
+        $con = new conexion();
+        $query = "SELECT DATE_FORMAT(f.fecha,'%d-%m-%Y') as fecha, 
+                        DATE_FORMAT(DATE_ADD(f.fecha, INTERVAL 30 DAY),'%d-%m-%Y') AS fecha_final,
+                        f.consecutivo,
+                        f.total,
+                        f.idcliente,
+                        f.idusuario,
+                        SUM(r.monto_transferencia+r.monto_tarjeta+r.monto_efectivo) AS abonado,
+                        FORMAT(f.total - SUM(r.monto_transferencia + r.monto_tarjeta + r.monto_efectivo), 2) AS saldo
+                 FROM facturas AS f 
+                 INNER JOIN recibos AS r
+                 ON r.idfactura = f.consecutivo 
+                 WHERE f.consecutivo = $idfactura
+                 GROUP BY r.idfactura";
+        
+        $data = $con->SQND($query);
+        return $data;
+        
     }
     public static function getProductsFromApartado($fac)
     {

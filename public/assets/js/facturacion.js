@@ -2612,11 +2612,27 @@ function setAbono() {
         body: formData
     }).then(resp => resp.text())
         .then(resp => {
-            let h = resp;
-            let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
-            window.print();
-            d.remove();
-            resetFactScreen()
+            if(resp.includes("hoja")){
+                let h = resp;
+                let d = $("<div>").addClass("printContainer").html(h).appendTo("html");
+                window.print();
+                d.remove();
+                resetFactScreen()
+                
+            }else{
+                let obj = JSON.parse(resp)
+                if(obj.error){
+                    Swal.fire({
+                        position: 'top',
+                        title: `${obj.msg}`,
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                        timer: 2500,
+                        timerProgressBar: true
+                    })
+                }
+            }
+            
 
         })
 }

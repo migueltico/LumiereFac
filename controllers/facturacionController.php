@@ -11,6 +11,8 @@ use models\clientesModel as cliente;
 use models\facturacionModel as fac;
 //Funciones de ayuda
 use config\helper as help;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
+
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class facturacionController extends view
 
@@ -54,7 +56,7 @@ class facturacionController extends view
         $icon = help::icon();
         $start = $_POST['start'];
         $end = $_POST['end'];
-        $result = fac::getHistorialDiario($start,$end);
+        $result = fac::getHistorialDiario($start, $end);
         $data["icons"] =  $icon['icons'];
         $data["facturas"] =  $result;
         echo view::renderElement('facturacion/historialDiarioRows', $data);
@@ -158,7 +160,7 @@ class facturacionController extends view
         $icon = help::icon();
         $fac = (int) $_POST['fac'];
 
-        if($fac=='' || $fac == null ){
+        if ($fac == '' || $fac == null) {
             $this->lastFactRePrint();
             return;
         }
@@ -172,7 +174,7 @@ class facturacionController extends view
         $icon = help::icon();
         $fac = (int) $_POST['fac'];
 
-        if($fac=='' || $fac == null ){
+        if ($fac == '' || $fac == null) {
             $this->lastFactRePrint();
             return;
         }
@@ -200,7 +202,7 @@ class facturacionController extends view
     public function reprint()
     {
         $icon = help::icon();
-        $fac = fac::getPendingFac(); 
+        $fac = fac::getPendingFac();
         $data["facturas"] = $fac['data'];
         $data["icons"] =  $icon['icons'];
         echo view::renderElement('facturacion/reprint', $data);
@@ -509,6 +511,16 @@ class facturacionController extends view
         $NewData['methods'] = [];
 
 
+        $saldo = fac::getApartadoSaldoHasClientByFac((int)$_POST['idfactura']);
+        if ($saldo['rows'] == 1) {
+            $saldoTotal = (float) str_replace(",", "", $saldo['data'][0]['saldo']);
+            $abono = (float)$data[':abono'];
+            if ((float)$abono > (float)$saldoTotal) {
+                header('Content-Type: application/json');
+                echo json_encode(['error' => true, 'msg' => "El monto abonado excede el monto en saldo (Abono: $abono ,Saldo: $saldoTotal)"]);
+                exit;
+            }
+        }
 
 
 
