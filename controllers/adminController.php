@@ -118,7 +118,7 @@ class adminController extends view
             echo '0';
         }
     }
-  
+
     public function verificarProductoDuplicadoOferta($codigo)
     {
         $ofertas = admin::getAllOfertas();
@@ -161,8 +161,16 @@ class adminController extends view
             ":productos" => $_POST['productos']
         );
         $productos = admin::addoferta($data);
+        $productosUpdateOfertaID = $productos;
+        if ($productos['id'] > 0) {
+            $id = $productos['id'];
+            $listProducts = explode(',', $_POST['productos']);
+            $productosUpdateOfertaID = admin::updateOfertaID($id, $listProducts);
+        } else {
+            $productosUpdateOfertaID = ['error' => 'error al crear la oferta', 'Data' => $productos];
+        }
         header('Content-Type: application/json');
-        echo json_encode($productos);
+        echo json_encode($productosUpdateOfertaID);
     }
     public function updateOferta($var)
     {

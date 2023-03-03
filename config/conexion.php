@@ -15,11 +15,19 @@ class conexion
 		try {
 			if ($db == null) {
 				$dbNow = $GLOBALS["DB_NAME"][$_SESSION['db']];
-				$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . $dbNow . ";charset=utf8mb4;", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
-				 array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>true));
-			}else{
-				$this->con = new \PDO("mysql:host=" . DB_HOST . ";dbname=$db;charset=utf8mb4;", $GLOBALS["DB_USER"], $GLOBALS["DB_PASS"],
-				 array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",PDO::MYSQL_ATTR_USE_BUFFERED_QUERY=>true));
+				$this->con = new \PDO(
+					"mysql:host=" . DB_HOST . ";dbname=" . $dbNow . ";charset=utf8mb4;",
+					$GLOBALS["DB_USER"],
+					$GLOBALS["DB_PASS"],
+					array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'", PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true)
+				);
+			} else {
+				$this->con = new \PDO(
+					"mysql:host=" . DB_HOST . ";dbname=$db;charset=utf8mb4;",
+					$GLOBALS["DB_USER"],
+					$GLOBALS["DB_PASS"],
+					array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'", PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true)
+				);
 			}
 		} catch (\PDOException $e) {
 			echo 'Error al conectarse con la base de datos: ' . $e->getMessage();
@@ -110,6 +118,25 @@ class conexion
 			return ["error" => $e];
 		}
 	}
+	public function SQI($sql, $datos)
+	{
+		try {
+			$this->statement = $this->con->prepare($sql);
+			$this->statement->execute($datos);
+			if (!$this->statement) {
+				$stm = false;
+			} else {
+				$stm = true;
+			}
+			$id = $this->con->lastInsertId();
+			$estado = array('estado' => $stm, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo(), 'id' => $id);
+			$return = $estado;
+			// Obtener el ID de la última inserción
+			return $return;
+		} catch (\PDOException $e) {
+			return ["error" => $e];
+		}
+	}
 
 	/**
 	 * SIMPLE QUERY, NO RETORNA DATOS, SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
@@ -163,7 +190,7 @@ class conexion
 			return $e;
 		}
 	}
-		/**
+	/**
 	 * SIMPLE QUERY, Si RETORNA DATOS,NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *
 	 * @param String $sql
@@ -172,7 +199,7 @@ class conexion
 	public function SQNDMULTISQL($sql)
 	{
 		try {
-			
+
 			$this->statement = $this->con->prepare($sql);
 			$this->statement->execute();
 			if (!$this->statement) {

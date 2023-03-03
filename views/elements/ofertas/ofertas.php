@@ -22,6 +22,7 @@
                         <table class="table sort" id="sortable">
                             <thead>
                                 <tr>
+                                    <th data-type="0" data-inner="0" scope="col" style="text-align: left;">ID</th>
                                     <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Nombre Oferta</th>
                                     <th data-type="1" data-inner="0" scope="col" style="text-align: center;">Descuento</th>
                                     <th data-type="0" data-inner="0" scope="col" style="text-align: left;">Oferta por factura</th>
@@ -37,6 +38,7 @@
                                 ?>
                                 <?php foreach ($data as $oferta) : ?>
                                     <tr class="TrRow" id="oferta_<?= $oferta["idOferta"] ?>">
+                                        <td scope="row" style="text-align: left;"><?= $oferta["idOferta"] ?></td>
                                         <td scope="row" style="text-align: left;"><?= $oferta["nombreOferta"] ?></td>
                                         <td scope="row" style="text-align: center;"><?= $oferta["descuento"] ?>%</td>
                                         <td scope="row" style="text-align: left;"><?= $oferta["unica"] == 0 ? 'Varias' : 'Una sola' ?></td>
