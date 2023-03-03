@@ -86,6 +86,6 @@ class usuariosModel
     public static function disableUser($data)
     {
         $con = new conexion();
-        return $con->SRQ('UPDATE usuario SET estado = :estado WHERE idusuario = :id', $data);
+        return $con->SQ('UPDATE usuario SET estado = :estado WHERE idusuario = :id', $data);
     }
 }
