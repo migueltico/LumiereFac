@@ -129,6 +129,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/editUserPerfil', 'usuariosController@editUserPerfil');
         route::post('/updatePass', 'usuariosController@updatePass');
         route::post('/confirmPassNow', 'usuariosController@confirmPassNow');
+        route::post('/disableUser', 'usuariosController@disableUser');
     });
     //+++++++++++ SERVER +++++++++++//
     route::get('/getPassword/:db/:identificador', 'usuariosController@getNewPassword');

@@ -20,29 +20,32 @@
             $estado = array("inhabilitado", "habilitado", "nuevoState");
             ?>
             <?php foreach ($users as $user) : ?>
-                <tr class="TrRow">
-                    <td scope="row" style="text-align: center;"><?= $user["idusuario"] ?></td>
-                    <td scope="row" style="text-align: left;"><?= $user["nombre"] ?></td>
-                    <td scope="row" style="text-align: left;"><?= $user["usuario"] ?></td>
-                    <td scope="row" style="text-align: center;"><?= $user["email"] ?></td>
-                    <td scope="row" style="text-align: center;"><?= $user["telefono"] ?></td>
-                    <td scope="row" style="text-align: left;"><?= $user["direccion"] ?></td>
-                    <td scope="row" data-value="<?= $user["estado"] ?>" data-toggle="tooltip" data-placement="top" title="" style="text-align: left;">
-                        <div class="<?= $estado[$user["estado"]] ?>"></div>
-                    </td>
-                    <td scope="row" style="text-align: center;"><?= $user["roles"] ?></td>
-                    <td scope="row">
-                        <div class="btn-group Editbuttons" aria-label="Grupo edicion">
-                            <?php if (array_key_exists("usuarios_editar", $_SESSION['permisos'])) :  ?>
-                                <button type="button" class="btn btn-success btnEditUserId" data-toggle="modal" data-target="#usuarios_editUsuario" data-id='<?= $user["idusuario"] ?>'><?= $icons['edit'] ?></button>
-                            <?php endif; ?>
-                            <?php if ($user["identificador"] != null) : ?>
-                                <button type="button" class="btn btn-info seeLinkBtnUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['link'] ?></button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-danger " data-id='<?= $user["idusuario"] ?>'><?= $icons['trash'] ?></button>
-                        </div>
-                    </td>
-                </tr>
+                <?php if ($user["estado"] != 3) : ?>
+
+                    <tr class="TrRow">
+                        <td scope="row" style="text-align: center;"><?= $user["idusuario"] ?></td>
+                        <td scope="row" style="text-align: left;"><?= $user["nombre"] ?></td>
+                        <td scope="row" style="text-align: left;"><?= $user["usuario"] ?></td>
+                        <td scope="row" style="text-align: center;"><?= $user["email"] ?></td>
+                        <td scope="row" style="text-align: center;"><?= $user["telefono"] ?></td>
+                        <td scope="row" style="text-align: left;"><?= $user["direccion"] ?></td>
+                        <td scope="row" data-value="<?= $user["estado"] ?>" data-toggle="tooltip" data-placement="top" title="" style="text-align: left;">
+                            <div class="<?= $estado[$user["estado"]] ?>"></div>
+                        </td>
+                        <td scope="row" style="text-align: center;"><?= $user["roles"] ?></td>
+                        <td scope="row">
+                            <div class="btn-group Editbuttons" aria-label="Grupo edicion">
+                                <?php if (array_key_exists("usuarios_editar", $_SESSION['permisos'])) :  ?>
+                                    <button type="button" class="btn btn-success btnEditUserId" data-toggle="modal" data-target="#usuarios_editUsuario" data-id='<?= $user["idusuario"] ?>'><?= $icons['edit'] ?></button>
+                                <?php endif; ?>
+                                <?php if ($user["identificador"] != null) : ?>
+                                    <button type="button" class="btn btn-info seeLinkBtnUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['link'] ?></button>
+                                <?php endif; ?>
+                                <button type="button" class="btn btn-danger btnDisableUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['trash'] ?></button>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>

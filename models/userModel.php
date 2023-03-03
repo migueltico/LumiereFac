@@ -55,4 +55,5 @@ class userModel
         );
         return $con->SRQ('SELECT permisos FROM rol WHERE idrol=:idrol', $datos);
     }
+
 }

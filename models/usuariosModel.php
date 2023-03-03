@@ -82,4 +82,10 @@ class usuariosModel
         $con = new conexion();
         return $con->SQND("SELECT * FROM rol");
     }
+    
+    public static function disableUser($data)
+    {
+        $con = new conexion();
+        return $con->SRQ('UPDATE usuario SET estado = :estado WHERE idusuario = :id', $data);
+    }
 }
