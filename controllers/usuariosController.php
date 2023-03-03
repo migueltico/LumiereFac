@@ -166,4 +166,12 @@ class usuariosController extends view
         header('Content-Type: application/json');
         echo json_encode($result);
     }
+    public function disableUser($var)
+    {
+        $data[':id'] = $_POST['id'];
+        $data[':estado'] = 3;
+        $result = users::disableUser($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
 }
