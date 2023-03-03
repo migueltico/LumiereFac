@@ -21,7 +21,6 @@
             ?>
             <?php foreach ($users as $user) : ?>
                 <?php if ($user["estado"] != 3) : ?>
-
                     <tr class="TrRow">
                         <td scope="row" style="text-align: center;"><?= $user["idusuario"] ?></td>
                         <td scope="row" style="text-align: left;"><?= $user["nombre"] ?></td>
