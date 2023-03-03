@@ -64,6 +64,9 @@ $("#bodyContent").on("click", ".btnDisableUser", function (e) {
 					confirmButtonText: "OK",
 					timer: 2500,
 				});
+                // remove row from table
+                $(e.target).closest("tr").remove();
+
 			} else {
 				Swal.fire({
 					position: "top",
