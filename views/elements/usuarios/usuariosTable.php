@@ -40,7 +40,7 @@
                                 <?php if ($user["identificador"] != null) : ?>
                                     <button type="button" class="btn btn-info seeLinkBtnUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['link'] ?></button>
                                 <?php endif; ?>
-                                <button type="button" class="btn btn-danger btnDisableUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['trash'] ?></button>
+                                <button type="button" class="btn btn-danger btnDisableUsera btnDisableUser" data-id='<?= $user["idusuario"] ?>'><?= $icons['trash'] ?></button>
                             </div>
                         </td>
                     </tr>
