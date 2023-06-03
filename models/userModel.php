@@ -61,9 +61,9 @@ class userModel
             return array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado 2");
         }
     }
-    public static function changePasswordUser($user, $pass)
+    public static function changePasswordUser($user, $pass, $db)
     {
-        $con = new conexion();
+        $con = new conexion($db);
         $datos = array(
             ":user" => $user,
             ":pass" => $pass
