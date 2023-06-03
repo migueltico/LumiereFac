@@ -58,16 +58,21 @@ class userModel
             return $con->SRQ('SELECT permisos FROM rol WHERE idrol=:idrol', $datos);
         } catch (\Throwable $th) {
             //throw $th;
-            return array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado 2");
+            return array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado");
         }
     }
     public static function changePasswordUser($user, $pass, $db)
     {
+        try {
         $con = new conexion($db);
         $datos = array(
             ":user" => $user,
             ":pass" => $pass
         );
-        return $con->SRQ('UPDATE usuario SET password = :pass WHERE usuario = :user', $datos);
+        return $con->SQ('UPDATE usuario SET password = :pass WHERE usuario = :user', $datos);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado 2", $th->getMessage());
+        }
     }
 }
