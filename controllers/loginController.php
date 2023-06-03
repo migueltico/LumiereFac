@@ -31,6 +31,30 @@ class loginController extends view
         header('Content-Type: application/json');
         echo json_encode($permisosJson);
     }
+    public function changePasswordUser($var)
+    {
+        try {
+            $get =(Object)$var['params'];
+        
+            $response = user::changePasswordUser($get->user,$this->generarEncriptacion("123"));
+            //respose= {"rows":1,"data":false,"estado":true,"error":"00000","errorMsg":["00000",null,null]}
+            if($response['estado'] && $response['error'] == 00000){
+                $this->render("forcedChangePassword",array("user"=>$get->user,"pass"=>"123"));
+            }else{
+                echo json_encode(array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado 0", $response));
+            }
+        } catch (\Throwable $th) {
+            echo json_encode(array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado 1", $th->getMessage()));
+        }
+     
+
+    }
+    public function generarEncriptacion($dato)
+{
+    $hash = hash('sha256', $dato);
+    return $hash;
+}
+
     public function validar($var)
     {
         $post =  $var['post'];

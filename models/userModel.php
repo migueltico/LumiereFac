@@ -49,11 +49,25 @@ class userModel
      */
     public static function getPermisos($idRol)
     {
+        try {
+            //code...
+            $con = new conexion();
+            $datos = array(
+                ":idrol" => $idRol
+            );
+            return $con->SRQ('SELECT permisos FROM rol WHERE idrol=:idrol', $datos);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado 2");
+        }
+    }
+    public static function changePasswordUser($user, $pass)
+    {
         $con = new conexion();
         $datos = array(
-            ":idrol" => $idRol
+            ":user" => $user,
+            ":pass" => $pass
         );
-        return $con->SRQ('SELECT permisos FROM rol WHERE idrol=:idrol', $datos);
+        return $con->SRQ('UPDATE usuario SET password = :pass WHERE usuario = :user', $datos);
     }
-
 }
