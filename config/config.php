@@ -29,6 +29,7 @@ if ($env == 1) {
         "Alajuela" => "maindb",
         "Heredia" => "herediadb",
         "San Carlos" => "sancarlosdb",
+        "San Jose" => "sanjosedb",
         "TestDB" => "testdb",
         "TestDB2" => "testdb2",
 
