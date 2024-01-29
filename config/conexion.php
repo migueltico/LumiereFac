@@ -147,23 +147,31 @@ class conexion
 	 */
 	public function SPCALLNR($sql, array $datos)
 	{
-		try {
-			$this->statement = $this->con->prepare($sql);
-			$this->statement->execute($datos);
-			if (!$this->statement) {
-				$stm = false;
-			} else {
-				$stm = true;
+			try {
+					$this->statement = $this->con->prepare($sql);
+					$this->statement->execute($datos);
+					$stm = $this->statement !== false;  // Verificar si la ejecución fue exitosa
+	
+					// Obtener el código de error y la información del error
+					$error_code = $this->statement->errorCode();
+					$error_info = $this->statement->errorInfo();
+	
+					// Verificar si hay un mensaje de error personalizado desde el trigger
+					if (!empty($error_info[2])) {
+							$error_message = $error_info[2];
+							$estado = array('estado' => false, 'error' => $error_code, 'errorMsg' => $error_message);
+					} else {
+							$estado = array('estado' => $stm, 'error' => $error_code, 'errorMsg' => $error_info);
+					}
+	
+					return $estado;
+			} catch (\PDOException $e){
+					// Manejar otros errores PDO aquí
+					$this->disconnect();
+					return array('estado' => false, 'error' => $e->getCode(), 'errorMsg' => $e->getMessage());
 			}
-			$estado = array('estado' => $stm, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
-			$return = $estado;
-			return $return;
-		} catch (\PDOException $e) {
-
-			$this->disconnect();
-			return $e;
-		}
 	}
+	
 	/**
 	 * SIMPLE QUERY, NO RETORNA DATOS, NO SE PASAN LOS DATOS POR VARIABLE EN EL EXECUTE
 	 *

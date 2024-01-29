@@ -34,8 +34,8 @@ class productModel
             $datos[":talla"] = (int) $combosData[$db][3];
             $con = new conexion($db);
             $mainProductOtherDbs = $con->SQ(
-                'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio)
-    VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio)',
+                'INSERT INTO producto (descripcion,descripcion_short,marca,estilo,idcategoria,idtalla,codigo,iva,activado_iva,creado_por,modificado_por,image_url,estado,categoriaPrecio,isNew)
+    VALUES (:descripcion,:descripcion_short,:marca,:estilo,:categoria,:talla,:codigoBarras,:iva_valor,:iva,:idusuario,:idusuario,:urls,:estado,:categoriaPrecio, 1)',
                 $datos
             );
             if ($mainProductOtherDbs['error'] != '00000') {
@@ -580,10 +580,11 @@ class productModel
      */
     public static function saveProductPrice($datos)
     {
-        $con = new conexion();
-        $setData = ':id,:costo,:venta,:unitario,:sugerido';
-        $sql = "CALL sp_updatePriceProduct($setData)";
-        return $con->SPCALLNR($sql, $datos);
+            $con = new conexion();
+            $setData = ':id,:costo,:venta,:unitario,:sugerido';
+            $sql = "CALL sp_updatePriceProduct($setData)";
+
+            return $con->SPCALLNR($sql, $datos); 
     }
     /**
      * Actualiza el stock 

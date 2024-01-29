@@ -51,7 +51,7 @@
                             <?php endif; ?>
                         </div>
                     </td>
-                    <td scope="row"><?= $product["descripcion"] ?></td>
+                    <td scope="row"><?= $product["descripcion"] ?><?= $product["isNew"] ? '<span class="ml-2 badge badge-pill badge-danger">Nuevo</span>' : '' ?></td>
                     <td scope="row" style="text-align: center;"><strong><?= $product["estilo"] ?></strong></td>
                     <td scope="row" style="text-align: center;"><strong><?= $product["talla"] ?></strong></td>
 

@@ -1,6 +1,6 @@
 <div class="row ml-2" style="max-width: 100%;">
     <form id="permisosForm" class="row">
-        <input type="hidden" name="id" value="<?=$id?>">
+        <input type="hidden" name="id" value="<?= $id ?>">
         <div class="col-lg-12 mb-3" style="max-width: 100%;">
             <div class="card" style="max-width: 100%;">
                 <div class="card-header"><strong style="font-size:1.2rem">Admin</strong></div>
@@ -122,7 +122,11 @@
                         <div class="card p-3 textcolorhover">
                             <label class="text-success" for="stock_modulo"><input type="checkbox" class="mr-2" name="stock_modulo" id="stock_modulo">Ver modulo</label>
                             <label class="text-success" for="stock_ver_precios"><input type="checkbox" class="mr-2" name="stock_ver_precios" id="stock_ver_precios">Ver precio U, precio C, precio S.</label>
-                            <label class="text-success" for="stock_cambiar_precios"><input type="checkbox" class="mr-2" name="stock_cambiar_precios" id="stock_cambiar_precios">Cambiar precios</label>
+                            <label class="text-success" for="stock_cambiar_precios"><input type="checkbox" class="mr-2" name="stock_cambiar_precios" id="stock_cambiar_precios">Mostrar Opciones de cambiar precios</label>
+                            <label class="text-success" for="modificar_precio" data-toggle="tooltip" title="Todo usuario con la opcion de 'mostrar opciones de cambiar precio' podra modificar el precio al producto recien creado, para poder modificar el precio a futuro se requiere esta opcion activada">
+                                <input type="checkbox" class="mr-2" name="modificar_precio" id="modificar_precio">
+                                Permitir cambiar precios siempre
+                            </label>
                             <label class="text-success" for="stock_agregar"><input type="checkbox" class="mr-2" name="stock_agregar" id="stock_agregar">Agregar stock y minimo</label>
                         </div>
                     </label>

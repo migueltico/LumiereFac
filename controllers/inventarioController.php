@@ -219,20 +219,30 @@ class inventarioController extends view
   }
   public function saveProductPrice($var)
   {
-    $data = array(
-      ':id' => $_POST['id'],
-      ':costo' => $_POST['costo'],
-      ':venta' => $_POST['venta'],
-      ':unitario' => $_POST['unitario'],
-      ':sugerido' => $_POST['sugerido']
-    );
-    $stock = product::saveProductPrice($data);
-    $datos = json_encode($data);
-    if ($stock['error'] == '00000') {
-      admin::saveLog("Actualizar", "Inventario",  "Se actualizo los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+    try {
+      $data = array(
+        ':id' => $_POST['id'],
+        ':costo' => $_POST['costo'],
+        ':venta' => $_POST['venta'],
+        ':unitario' => $_POST['unitario'],
+        ':sugerido' => $_POST['sugerido']
+      );
+      $stock = product::saveProductPrice($data);
+      
+      $datos = json_encode($stock);
+      // var_dump($datos);
+      // die();
+      if ($stock['error'] == '00000') {
+        admin::saveLog("Actualizar", "Inventario",  "Se actualizo los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+      } else {
+        admin::saveLog("Actualizar", "Inventario",  "Error al actualizar los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+      }
+      header('Content-Type: application/json');
+      echo json_encode($stock);
+    } catch (\Throwable $th) {
+      header('Content-Type: application/json');
+      echo json_encode(array("error" => $th));
     }
-    header('Content-Type: application/json');
-    echo json_encode($stock);
   }
   public function updateStock($var)
   {

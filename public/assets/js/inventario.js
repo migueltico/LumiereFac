@@ -445,7 +445,21 @@ function saveProductPrice(e) {
                     confirmButtonText: 'OK',
                     timer: 2500
                 })
-            } else {
+            } else if (resp.error == 'ER001') {
+                //on click on refreshj
+                Swal.fire({
+                    position: 'top',
+                    title: resp.msg,
+                    text: 'No tienes permisos para modificar el precio de venta, por favor comuniquese con un administrador para realizar esta accion',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        refreshStock()
+                    }
+                  });
+
+            }else{
                 refreshStock()
                 Swal.fire({
                     position: 'top',
