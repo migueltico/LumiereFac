@@ -19,7 +19,16 @@ class logsController extends view
     {
         try{
         $icon = help::icon();
-        $data["logs"] = logs::getLogs()['data'];
+        $logs = logs::getLogs();
+        //if exist data key in array
+        if(array_key_exists('data', $logs)){
+            $data["logs"] =  $logs['data'];
+        }else{
+            echo "<pre>";
+            print_r($logs);
+            echo "</pre>";
+            die();
+        }
         $data["icons"] =  $icon['icons'];
         $filtros  = logs::getActionsAndModulesFilters();
         $data['acciones'] = $filtros['acciones'];
