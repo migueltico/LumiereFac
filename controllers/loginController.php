@@ -89,9 +89,12 @@ class loginController extends view
                     setcookie("lsd_r", $data, strtotime('+1 days'));
                     //return json_encode(array("estado" => 200, "session" => $_SESSION));
                     //help::redirect("/dashboard");
+
+                    admin::saveLog('Login', 'Login', 'Se logeo el usuario ' . $_SESSION["usuario"], json_encode($_SESSION), $_SESSION["id"]);
+
                     echo json_encode(array("estado" => true, "msg" => "Login Exitoso"));
                 } else {
-
+                    admin::saveLog('Error', 'Login', 'Error al logear el usuario ' . $post["usuario"], json_encode($data), 0);
                     echo json_encode(array("estado" => false, "error" => "Usuario o contraseña no coinciden"));
                     //help::redirect("/");
                 }

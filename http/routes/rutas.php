@@ -7,7 +7,7 @@ use config\route;
 route::middleware(['loginMiddleware@updateSession'], function () {
     route::get('/change-password/:db/user/:user', 'loginController@changePasswordUser');
     route::get('/makeBackupDB', 'adminController@makeBackupDB');
-    route::get('/', 'loginController@index',['loginMiddleware@auth']);
+    route::get('/', 'loginController@index', ['loginMiddleware@auth']);
     route::get('/updateTotalFacturadoCajas', 'facturacionController@updateTotalFacturadoCajas');
     //+++++++++++ LOGIN +++++++++++//
     route::post('/validateauth', 'loginController@validar');
@@ -50,7 +50,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
         route::post('/categoriaprecios/edit', 'adminController@EditCategoriaPrecios');
         route::post('/categoriaprecios/delete', 'adminController@DeleteCategoriaPrecios');
         route::post('/ofertas', 'adminController@ofertas');
-        route::post('/ofertas/getproduct', 'adminController@getproduct');        
+        route::post('/ofertas/getproduct', 'adminController@getproduct');
         route::post('/ofertas/getofertasbyid', 'adminController@getOfertasById');
         route::post('/ofertas/addoferta', 'adminController@addoferta');
         route::post('/ofertas/deleteoferta', 'adminController@deleteOferta');
@@ -164,6 +164,12 @@ route::middleware(['loginMiddleware@updateSession'], function () {
     route::group('estadisticas', function () {
         route::post('/getMoreSalesPerMonth', 'estadisticasController@getMoreSalesPerMonth');
         route::post('/getLastWeekSales', 'estadisticasController@getLastWeekSales');
+    });
+
+    //+++++++++++ Historial +++++++++++//
+    route::group('historial', function () {
+        route::post('/logs', 'logsController@index');
+        route::post('/getLogs', 'logsController@getLogs');
     });
     //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
     route::post('/upload/files', 'uploadsController@uploads');

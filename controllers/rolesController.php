@@ -7,6 +7,7 @@ use config\view;
 use models\rolesModel as rols;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use models\adminModel as admin;
 //Funciones de ayuda
 use config\helper as help;
 // la clase debe llamarse igual que el controlador respetando mayusculas
@@ -49,6 +50,15 @@ class rolesController extends view
         );
 
         $rol = rols::setRol($data);
+
+        //admin log
+
+        if ($rol['error'] == '00000') {
+            admin::saveLog('Nuevo', 'Permisos', 'Se creo el rol ' . $_POST['rol'], json_encode($datos), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Permisos', 'Error al crear el rol ' . $_POST['rol'], json_encode($datos), $_SESSION["id"]);
+        }
+
         header('Content-Type: application/json');
         echo json_encode($rol);
     }
@@ -65,6 +75,15 @@ class rolesController extends view
         );
         $rols = rols::setRolpermisos($data);
         $rols['rols'] = $_POST;
+
+        $rolData = rols::getRolById(array(":idrol" => $id));
+
+        if ($rols['error'] == '00000') {
+            admin::saveLog('Editar', 'Permisos', 'Se edito el rol ' . $rolData['data']['rol'], json_encode($data), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Permisos', 'Error al editar el rol ' . $rolData['data']['rol'], json_encode($data), $_SESSION["id"]);
+        }
+
         header('Content-Type: application/json');
         echo json_encode($rols);
     }

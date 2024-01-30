@@ -49,6 +49,7 @@ class productModel
             return array("data" => null, "error" => 1, "otherdb" => $otherDbResults,   "errorData" => $otherDbResults, "msg" => "Error al Registras los datos");
         }
     }
+    
     /**
      * obtiene todas las categorias
      *
@@ -651,4 +652,12 @@ class productModel
         $con = new conexion();
         return $con->SQNDNR("UPDATE producto SET estado = $estado WHERE idproducto=$id");
     }
+
+    public static function getProductColumnDataByID($id, $column)
+    {
+        $con = new conexion();
+        $sql = "SELECT $column FROM producto WHERE idproducto=$id";
+        return $con->SQR_ONEROW($sql);
+    }
+    
 }
