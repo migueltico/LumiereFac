@@ -35,4 +35,8 @@
 			<?php endforeach; ?>
 		</tbody>
 	</table>
+	<div class="moreRows"style="text-align: center;margin-bottom: 20px;margin-top: 20px;margin: 0 auto;">
+				<input type="hidden" name="" id="currentPage"value="0">
+		<button class="btn btn-lg btn-primary" id="btnMoreRows">Cargar más</button>
+	</div>
 </div>

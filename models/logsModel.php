@@ -19,7 +19,7 @@ class logsModel
      * @param int $perPage Cantidad de registros por página (opcional, valor predeterminado: 500).
      * @return array Arreglo con los registros de logs que cumplen con los filtros especificados.
      */
-    public static function getLogs($startDate = '', $endDate = '', $modulo = '', $accion = '', $usuario = '', $page = 1, $perPage = 500)
+    public static function getLogs($startDate = '', $endDate = '', $modulo = '', $accion = '', $usuario = '', $page = 1, $perPage = 20)
     {
         $less7Days = date('Y-m-d', strtotime('-7 days'));
         $startDate = $startDate == '' ? $less7Days : $startDate;

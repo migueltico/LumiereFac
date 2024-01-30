@@ -170,6 +170,7 @@ route::middleware(['loginMiddleware@updateSession'], function () {
     route::group('historial', function () {
         route::post('/logs', 'logsController@index');
         route::post('/getLogs', 'logsController@getLogs');
+        route::post('/getLogsRows', 'logsController@getLogsRows');
     });
     //+++++++++++ SUBIDA DE ARCHIVOS +++++++++++//
     route::post('/upload/files', 'uploadsController@uploads');

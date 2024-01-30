@@ -50,6 +50,19 @@
 					<label for="usuario">ID Usuario</label>
 					<input type="text" class="form-control" id="usuario" placeholder="Filtrar por ID de usuario">
 				</div>
+
+				<!-- Input for row per page -->
+				<div class="form-group col-md-4" style="max-width: 130px;" <label for="perPage">cantidad por página</label>
+					<select class="form-control" id="perPage">
+						<option value="20" selected>20</option>
+						<option value="50">50</option>
+						<option value="100">100</option>
+						<option value="200">200</option>
+						<option value="500">500</option>
+						<option value="1000">1000</option>
+					</select>
+				</div>
+
 			</div>
 			<div class="form-row">
 				<div class="form-group col-md-12">
@@ -64,6 +77,18 @@
 	</div>
 
 	<div class="card-body loadTable">
-		<?php include(self::element('logs/logsTable')) ?>
 	</div>
+	<div id="floatButtoToGoTop" class="floatButtoToGoTop">
+		<button class="btn btn-primary" id="btnGoTop">Ir arriba</button>
+	</div>
+	<style>
+		.floatButtoToGoTop {
+			position: fixed;
+			bottom: 0;
+			right: 0;
+			margin: 0 auto;
+			z-index: 999;
+			background-color: blue;
+		}
+	</style>
 </div>

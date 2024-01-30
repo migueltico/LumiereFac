@@ -17,24 +17,13 @@ class logsController extends view
 {
     public function index()
     {
-        try{
-        $icon = help::icon();
-        $logs = logs::getLogs();
-        //if exist data key in array
-        if(array_key_exists('data', $logs)){
-            $data["logs"] =  $logs['data'];
-        }else{
-            echo "<pre>";
-            print_r($logs);
-            echo "</pre>";
-            die();
-        }
-        $data["icons"] =  $icon['icons'];
-        $filtros  = logs::getActionsAndModulesFilters();
-        $data['acciones'] = $filtros['acciones'];
-        $data['modulos'] = $filtros['modulos'];
-        echo view::renderElement('logs/logs', $data);
-        }catch(\Throwable $th){
+        try {
+  
+            $filtros  = logs::getActionsAndModulesFilters();
+            $data['acciones'] = $filtros['acciones'];
+            $data['modulos'] = $filtros['modulos'];
+            echo view::renderElement('logs/logs', $data);
+        } catch (\Throwable $th) {
             echo $th->getMessage();
         }
     }
@@ -46,13 +35,34 @@ class logsController extends view
         $modulo = $_POST['modulo'];
         $accion = $_POST['accion'];
         $usuario = $_POST['usuario'];
-        $page = 1;
-        $perPage = 500;
+        $page = $_POST['currentPage'];
+        $perPage = $_POST['perPage'];
 
 
-        $data['logs'] = logs::getLogs($startDate, $endDate, $modulo, $accion, $usuario, $page, $perPage)['data'];
-    
+        $logs = logs::getLogs($startDate, $endDate, $modulo, $accion, $usuario, $page, $perPage);
+        $data['logs'] = $logs['data'];
+
 
         echo view::renderElement('logs/logsTable', $data);
+    }
+
+    public function getLogsRows()
+    {
+        $startDate = $_POST['startDate'];
+        $endDate = $_POST['endDate'];
+        $modulo = $_POST['modulo'];
+        $accion = $_POST['accion'];
+        $usuario = $_POST['usuario'];
+        $page = $_POST['currentPage'];
+        $perPage = $_POST['perPage'];
+        
+        //get continuetion of logs example: if currentPage = 2 and perPage = 10, the logs will be from 11 to 20
+
+        $countFrom = ($page - 1) * $perPage;
+
+        $data['countFrom'] = $countFrom;
+
+        $data['logs'] = logs::getLogs($startDate, $endDate, $modulo, $accion, $usuario, $page, $perPage)['data'];
+        echo view::renderElement('logs/logsRow', $data);
     }
 }
