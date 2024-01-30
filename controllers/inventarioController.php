@@ -5,6 +5,7 @@ namespace controllers;
 use config\view;
 // manda a llamar al controlador de conexiones a bases de datos
 use models\productModel as product;
+use models\userModel as user;
 use models\sucursalModel as sucursal;
 use models\adminModel as admin;
 use controllers\uploadsController as upload;
@@ -12,6 +13,7 @@ use controllers\uploadsController as upload;
 use config\helper as help;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+
 // new Picqer\Barcode\BarcodeGeneratorPNG();
 // la clase debe llamarse igual que el controlador respetando mayusculas
 class inventarioController extends view
@@ -133,9 +135,12 @@ class inventarioController extends view
     $tienda_traslado =  $tiendaData[1];
     $productos = json_decode($_POST['productos'], true);
     $traslado = product::insertTraslado($dbOrigen, $tienda_traslado, $productos, $comentario, $dbTienda);
-    // if($traslado['dbTraslate'] == "SUCCESS" && !$traslado['error'] ){
 
-    // }
+    if ($traslado['error'] == '00000') {
+      admin::saveLog("Agregar", "Inventario",  "Se creo el traslado: " . $traslado['data']['id'], json_encode($_POST), $_SESSION['id']);
+    } else {
+      admin::saveLog("Error", "Inventario",  "Error al crear el traslado: " . $traslado['data']['id'], json_encode($_POST), $_SESSION['id']);
+    }
     header('Content-Type: application/json');
     echo json_encode($traslado);
   }
@@ -202,6 +207,12 @@ class inventarioController extends view
     $codigos = $this->getCodesFromStringTraslado($_POST['codigos']);
 
     $traslado = product::cancelarTraslado($id, $dbOrigen, $dbTraslado, $codigos);
+
+    if ($traslado['error'] == '00000') {
+      admin::saveLog("Cancelar", "Inventario",  "Se cancelo el traslado: " . $traslado['data']['id'], json_encode($_POST), $_SESSION['id']);
+    } else {
+      admin::saveLog("Error", "Inventario",  "Error al cancelar el traslado: " . $traslado['data']['id'], json_encode($_POST), $_SESSION['id']);
+    }
     header('Content-Type: application/json');
     echo json_encode($traslado);
   }
@@ -227,23 +238,59 @@ class inventarioController extends view
         ':unitario' => $_POST['unitario'],
         ':sugerido' => $_POST['sugerido']
       );
-      $stock = product::saveProductPrice($data);
-      
-      $datos = json_encode($stock);
-      // var_dump($datos);
-      // die();
-      if ($stock['error'] == '00000') {
-        admin::saveLog("Actualizar", "Inventario",  "Se actualizo los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
-      } else {
-        admin::saveLog("Actualizar", "Inventario",  "Error al actualizar los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+
+      $precioVentaNew = $_POST['venta'];
+
+      $userPermisos = user::getRolUserAndPermisos($_SESSION['id']);
+      $permisos = json_decode($userPermisos['data']['permisos'], true);
+      $hasPermiso = array_key_exists("modificar_precio", $permisos);
+
+      $productoIsNew =  product::getProductColumnDataByID($_POST['id'], 'isNew, precio_venta')['data'];
+
+      $canSavePrices = false;
+
+      switch ($productoIsNew['isNew']) {
+        case '1':
+          $canSavePrices = true; // si es nuevo se puede modificar el precio por que es un producto nuevo y no necesita permisos
+          break;
+        case '0':
+          if ($productoIsNew['precio_venta'] != $precioVentaNew && $hasPermiso) {
+            $canSavePrices = true; // si el precio es diferente y tiene permisos se puede modificar el precio
+          } else if ($productoIsNew['precio_venta'] == $precioVentaNew) {
+            $canSavePrices = true; // si el precio es igual se puede modificar el precio por que no existe cambio y no necesita permisos
+          } else if ($productoIsNew['precio_venta'] != $precioVentaNew && !$hasPermiso) {
+            $canSavePrices = false; // si el precio es diferente y no tiene permisos no se puede modificar el precio
+          } else {
+            $canSavePrices = true;
+          }
+          break;
       }
-      header('Content-Type: application/json');
-      echo json_encode($stock);
+
+      if ($canSavePrices) {
+        $stock = product::saveProductPrice($data);
+        $datos = json_encode($stock);
+
+        if ($stock['error'] == '00000') {
+          admin::saveLog("Actualizar", "Inventario",  "Se actualizo los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+        } else {
+          admin::saveLog("Error", "Inventario",  "Error al actualizar los datos de precios del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($stock);
+      } else {
+
+        admin::saveLog("Error", "Inventario",  "Error al actualizar los datos de precios del producto ID: " . $_POST['id'], json_encode(array("error" => "ER001", "msg" => "No tiene permisos")), $_SESSION['id']);
+
+        header('Content-Type: application/json');
+        echo json_encode(array("error" => "ER001", "msg" => "No tiene permisos"));
+      }
     } catch (\Throwable $th) {
       header('Content-Type: application/json');
       echo json_encode(array("error" => $th));
     }
   }
+
   public function updateStock($var)
   {
     $data = array(
@@ -254,6 +301,8 @@ class inventarioController extends view
     $datos = json_encode($data);
     if ($stock['error'] == '00000') {
       admin::saveLog("Actualizar", "Inventario",  "Se actualizo el Stock del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+    } else {
+      admin::saveLog("Error", "Inventario",  "Error al actualizar el Stock del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
     }
     header('Content-Type: application/json');
     echo json_encode($stock);
@@ -268,6 +317,8 @@ class inventarioController extends view
     $datos = json_encode($data);
     if ($stock['error'] == '00000') {
       admin::saveLog("Actualizar", "Inventario",  "Se actualizo el Stock Minimo del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
+    } else {
+      admin::saveLog("Error", "Inventario",  "Error al actualizar el Stock Minimo del producto ID: " . $_POST['id'], $datos, $_SESSION['id']);
     }
     header('Content-Type: application/json');
     echo json_encode($stock);
@@ -384,6 +435,13 @@ class inventarioController extends view
       $urls = upload::uploads();
       $datos[":urls"] = implode(",", $urls['urls']);
       $addProduct = product::Addproduct($datos, $dbs, $combos);
+
+      if ($addProduct['error'] == '00000') {
+        admin::saveLog("Agregar", "Inventario",  "Se agrego el producto: " . $_POST['descripcion'], json_encode($datos), $_SESSION['id']);
+      } else {
+        admin::saveLog("Error", "Inventario",  "Error al agregar el producto: " . $_POST['descripcion'], json_encode($datos), $_SESSION['id']);
+      }
+
       header('Content-Type: application/json');
       echo json_encode($addProduct);
     } else {
@@ -422,6 +480,13 @@ class inventarioController extends view
     $updateProduct = product::updateProduct($datos);
     $unlinkState = upload::removeImgAdd($_POST["urlsToDelete"]);
     $updateProduct['unlinkState'] = $unlinkState['data'];
+
+    if ($updateProduct['error'] == '00000') {
+      admin::saveLog("Actualizar", "Inventario",  "Se actualizo el producto: " . $_POST['descripcion'], json_encode($datos), $_SESSION['id']);
+    } else {
+      admin::saveLog("Error", "Inventario",  "Error al actualizar el producto: " . $_POST['descripcion'], json_encode($datos), $_SESSION['id']);
+    }
+
     header('Content-Type: application/json');
     echo json_encode($updateProduct);
   }
@@ -467,6 +532,13 @@ class inventarioController extends view
   public function disableProduct()
   {
     $result = product::disableProduct($_POST['id'], $_POST['estado']);
+
+    if ($result['error'] == '00000') {
+      admin::saveLog("Actualizar", "Inventario",  "Se actualizo el estado del producto ID: " . $_POST['id'], json_encode($_POST), $_SESSION['id']);
+    } else {
+      admin::saveLog("Error", "Inventario",  "Error al actualizar el estado del producto ID: " . $_POST['id'], json_encode($_POST), $_SESSION['id']);
+    }
+
     header('Content-Type: application/json');
     echo json_encode($result);
   }

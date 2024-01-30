@@ -243,6 +243,11 @@ class facturacionController extends view
         $data[':id'] = (int) $_SESSION['id'];
         $data[':fecha_init'] = $_POST['fecha'];
         $result = fac::setAbrirCaja($data);
+        if ($result['error'] == "00000") {
+            admin::saveLog('Abrir', 'Caja', 'Se abrio la caja ' . $result['lastID'], json_encode($data), $_SESSION["id"]);
+        }else{
+            admin::saveLog('Error', 'Caja', 'Error al abrir la caja', json_encode($data), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($result);
     }
@@ -250,6 +255,11 @@ class facturacionController extends view
     {
         $data[':idcaja'] = (int) $_POST['idcaja'];
         $result = fac::abrirCajaEstado($data);
+        if ($result['error'] == "00000") {
+            admin::saveLog('Abrir', 'Caja', 'Se habilito la caja ' . $_POST['idcaja'], json_encode($data), $_SESSION["id"]);
+        }else{
+            admin::saveLog('Error', 'Caja', 'Error al abrir la caja ' . $_POST['idcaja'], json_encode($data), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         $_SESSION['hasCaja'] = true;
         echo json_encode($result);
@@ -296,6 +306,12 @@ class facturacionController extends view
         $data[':total_facturado'] = $_POST['total_facturado'];
         $data[':id'] = (int)  $_POST['id'];
         $result = fac::cerrarCajafinal($data);
+
+        if ($result['error'] == "00000") {
+            admin::saveLog('Cerrar', 'Caja', 'Se cerro la caja ' . $_POST['id'], json_encode($data), $_SESSION["id"]);
+        }else{
+            admin::saveLog('Error', 'Caja', 'Error al cerrar la caja ' . $_POST['id'], json_encode($data), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($result);
     }
@@ -525,6 +541,14 @@ class facturacionController extends view
 
 
         $apartados =  fac::setAbonoRecibo($data, true);
+
+        if ($apartados['error'] == '00000') {
+            admin::saveLog('Abono', 'Apartados', 'Se abono a la factura ' . $_POST['idfactura'], json_encode($data), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Apartados', 'Error al abonar a la factura ' . $_POST['idfactura'], json_encode($data), $_SESSION["id"]);
+        }
+
+
         $NewData["data"] = admin::infoSucursal();
         if ($montoEfectivo > 0) {
             $efectivoArray = ["tipo" => "efectivo", "monto" => $montoEfectivo];
