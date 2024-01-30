@@ -75,4 +75,11 @@ class userModel
             return array("estado" => false, "error" => "Error con la Base de datos, por favor comuniquese con el encargado 2", $th->getMessage());
         }
     }
+
+    public static function getRolUserAndPermisos($id): array
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW("SELECT permisos, usuario FROM  usuario u INNER JOIN rol r ON r.idrol = u.rol WHERE u.idusuario = $id");
+    }
+
 }

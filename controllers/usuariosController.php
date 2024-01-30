@@ -44,6 +44,11 @@ class usuariosController extends view
         $datos[':rol'] = (isset($_POST['rol']) ? $_POST['rol'] : 0);
         $datos[':identificador'] = help::randLetterNumber(8);
         $users = users::setUsers($datos);
+        if ($users['error'] == '00000') {
+            admin::saveLog('Nuevo', 'Usuarios', 'Se creo el usuario ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Usuarios', 'Error al crear el usuario ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($users);
     }
@@ -69,6 +74,12 @@ class usuariosController extends view
             $datos[':rol'] = $_POST['rol'];
         }
         $users = users::editUser($datos);
+
+        if ($users['error'] == '00000') {
+            admin::saveLog('Actualizar', 'Usuarios', 'Se actualizo el usuario ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Usuarios', 'Error al actualizar el usuario ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($users);
     }
@@ -97,6 +108,11 @@ class usuariosController extends view
         $users["newuser"] = $newUser ? true : false;
         $users["olduser"] = $olduser;
         $users["same"] =  $same;
+        if ($users['error'] == '00000') {
+            admin::saveLog('Actualizar', 'Usuarios', 'Se actualizo el usuario ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Usuarios', 'Error al actualizar el usuario ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($users);
     }
@@ -106,6 +122,14 @@ class usuariosController extends view
         $datos[':id'] = $_POST['id'];
         $datos[':newpassword'] = $hash;
         $users = users::updatePass($datos);
+        unset($datos[':newpassword']);
+        if ($users['error'] == '00000') {
+
+            admin::saveLog('Actualizar', 'Usuarios', 'Se actualizo la contraseña del usuario ' . $_POST['id'], json_encode($datos), $_SESSION["id"]);
+        } else {
+
+            admin::saveLog('Error', 'Usuarios', 'Error al actualizar la contraseña del usuario ' . $_POST['id'], json_encode($datos), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($users);
     }

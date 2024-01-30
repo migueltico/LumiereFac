@@ -82,7 +82,7 @@ class usuariosModel
         $con = new conexion();
         return $con->SQND("SELECT * FROM rol");
     }
-    
+
     public static function disableUser($data)
     {
         $con = new conexion();
