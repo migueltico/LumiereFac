@@ -51,6 +51,14 @@ class adminController extends view
         $data[':modificado_por'] = (int) $_SESSION['id'];
         $data[':activo'] = 1;
         $admin = admin::addnewDescuento($data);
+
+        if ($admin['error'] == '00000') {
+            admin::saveLog('Nuevo', 'Descuentos', 'Se creo el descuento ' . $_POST['descripcion'], json_encode($data), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Descuentos', 'Error al crear el descuento ' . $_POST['descripcion'], json_encode($data), $_SESSION["id"]);
+        }
+
+
         header('Content-Type: application/json');
         echo json_encode($admin);
     }
@@ -65,6 +73,12 @@ class adminController extends view
         $data[':activo'] = (int)  $check;
         $data[':id'] = (int) $_POST['id'];
         $admin = admin::updateDescuento($data);
+
+        if ($admin['error'] == '00000') {
+            admin::saveLog('Editar', 'Descuentos', 'Se edito el descuento ' . $_POST['descripcion'], json_encode($data), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Descuentos', 'Error al editar el descuento ' . $_POST['descripcion'], json_encode($data), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($admin);
     }
@@ -73,6 +87,12 @@ class adminController extends view
         $data[':codigos'] = $_POST['codigos'];
         $data[':iddescuento'] = $_POST['iddescuento'];
         $admin = admin::aplicarDescuentoEnLote($data);
+
+        if ($admin['error'] == '00000') {
+            admin::saveLog('Editar', 'Descuentos', 'Se aplico el descuento ' . $_POST['iddescuento'] . ' a los productos seleccionados', json_encode($data), $_SESSION["id"]);
+        } else {
+            admin::saveLog('Error', 'Descuentos', 'Error al aplicar el descuento ' . $_POST['iddescuento'] . ' a los productos seleccionados', json_encode($data), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($admin);
     }

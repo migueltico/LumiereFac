@@ -43,6 +43,11 @@ class clientesController extends view
         $datos[':id'] = $_SESSION['id'];
         if($datos[":nombre"] !==""){
             $clientes = cliente::addNewClient($datos);
+            if($clientes['error'] == '00000'){
+                admin::saveLog('Nuevo', 'Clientes', 'Se creo el cliente ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+            }else{
+                admin::saveLog('Error', 'Clientes', 'Error al crear el cliente ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+            }
             header('Content-Type: application/json');
             echo json_encode($clientes);
         }else{
@@ -59,6 +64,11 @@ class clientesController extends view
         $datos[':id'] = $_SESSION['id'];
         $datos[':idcliente'] = $_POST['idcliente'];
         $clientes = cliente::updateClienteById($datos);
+        if($clientes['error'] == '00000'){
+            admin::saveLog('Actualizar', 'Clientes', 'Se actualizo el cliente ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        }else{
+            admin::saveLog('Error', 'Clientes', 'Error al actualizar el cliente ' . $_POST['nombre'], json_encode($datos), $_SESSION["id"]);
+        }
         header('Content-Type: application/json');
         echo json_encode($clientes);
     }
