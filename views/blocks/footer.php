@@ -6,6 +6,7 @@
 <!-- <script src="https://unpkg.com/@popper/public/assets/js/core@2"></script> -->
 <script src="/public/assets/js/bootstrap.js"></script>
 <script src="/public/assets/js/main.js?v=<?= rand(1, 1000) ?>"></script>
+<script src="/public/assets/js/logs.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/clientes.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/usuarios.js?v=<?= rand(1, 1000) ?>"></script>
 <script src="/public/assets/js/admin.js?v=<?= rand(1, 1000) ?>"></script>

@@ -25,6 +25,12 @@ class rolesModel
     public static function getRolesPermisos($data)
     {
         $con = new conexion();
-        return $con->SRQ("SELECT permisos FROM rol WHERE idrol = :idrol",$data);
+        return $con->SRQ("SELECT permisos FROM rol WHERE idrol = :idrol", $data);
+    }
+
+    public static function getRolById($data)
+    {
+        $con = new conexion();
+        return $con->SQR_ONEROW("SELECT * FROM rol WHERE idrol = " . $data[':idrol']);
     }
 }
