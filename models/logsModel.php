@@ -53,7 +53,7 @@ class logsModel
         $whereClause = implode(" AND ", $whereClauses);
     
         $consulta = "SELECT l.*, u.nombre
-            FROM LOG l
+            FROM log l
             INNER JOIN usuario u ON l.idusuario = u.idusuario
             " . (!empty($whereClause) ? "WHERE $whereClause" : "") . "
             ORDER BY l.creado_el DESC
@@ -69,12 +69,12 @@ class logsModel
     {
         $con = new conexion();
         $consulta = "SELECT DISTINCT l.accion
-            FROM LOG l
+            FROM log l
             ORDER BY l.accion ASC";
         $result1 = $con->MRQ($consulta);
 
         $consulta = "SELECT DISTINCT l.modulo
-            FROM LOG l
+            FROM log l
             ORDER BY l.modulo ASC";
         $result2 = $con->MRQ($consulta);
 
