@@ -17,6 +17,7 @@ class logsController extends view
 {
     public function index()
     {
+        try{
         $icon = help::icon();
         $data["logs"] = logs::getLogs()['data'];
         $data["icons"] =  $icon['icons'];
@@ -24,6 +25,9 @@ class logsController extends view
         $data['acciones'] = $filtros['acciones'];
         $data['modulos'] = $filtros['modulos'];
         echo view::renderElement('logs/logs', $data);
+        }catch(\Throwable $th){
+            echo $th->getMessage();
+        }
     }
 
     public function getLogs()
