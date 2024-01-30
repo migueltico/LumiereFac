@@ -130,7 +130,7 @@
             <a class="btnSlideDown" href="/dashboard"><span><?= $icons['history'] ?></span><span>Historial</span><span class="menu_down"><?= $icons['arrow_down'] ?></span></a>
             <ul class="listitems">
                 <?php if (array_key_exists("historial_modulo", $_SESSION['permisos'])) :  ?>
-                    <li data-functionName="0" data-linkto="/" class="dataLink"><span class="spanStyleMenu"></span><span>Historial</span><span></span></li>
+                    <li data-functionName="0" data-linkto="/historial/logs" class="dataLink"><span class="spanStyleMenu"></span><span>Historial</span><span></span></li>
                 <?php endif; ?>
             </ul>
         </li>
