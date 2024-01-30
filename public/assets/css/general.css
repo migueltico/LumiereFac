@@ -518,9 +518,20 @@ button.btn svg {
 }
 
 *::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
+    height: 5px;  
+    scrollbar-width : thin;
     background-color: #F5F5F5;
 }
+
+/*horizontal*/
+*::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #c5c5c5;
+}
+
+
 
 *::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
