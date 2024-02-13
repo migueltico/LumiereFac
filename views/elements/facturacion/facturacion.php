@@ -22,7 +22,7 @@
                             <div class="input-group-prepend">
                                 <button class="btn btn-outline-primary" data-toggle="modal" data-target="#SearchClientModal" type="button" id="fac_cliente">Cliente</button>
                             </div>
-                            <input type="text" disabled id="fac_cliente_input" class="form-control text-right" data-idGenerico="<?= $cliente['idcliente'] ?>" data-cliente="<?= $cliente['idcliente'] ?>" placeholder="Cliente" value="<?= $cliente['nombre'] ?>">
+                            <input type="text" disabled id="fac_cliente_input" class="form-control text-right" data-idGenerico="" data-cliente="" placeholder="Cliente" value="">
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
@@ -123,7 +123,7 @@
                     </div>
 
                     <div class="input-group mb-3 col-lg-6 col-md-6 col-sm-4">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#FacSendModal" id="PrintFactBtn">FACTURAR</button>
+                        <button type="button" class="btn btn-info" id="PrintFactBtn">FACTURAR</button>
                         <button type="button" class="btn btn-primary ml-5" data-toggle="modal" data-target="#reimprimirModal" id="rePrintFactBtn"><?=$icons['print'] ?> Reimprimir Fac</button>
                     </div>
                 </div>

@@ -862,14 +862,16 @@ $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
 	let tr = document.getElementById("appendItemRowProduct");
 	let count = tr.getElementsByTagName("tr");
 	let Multi = document.getElementById("MultiTipoPagoFact");
-
+	let clienteDatID = document.getElementById("fac_cliente_input");
 	let fac_active_btn = localStorage.getItem("fac_active_btn");
+	let canShowModal = true;
 	if (fac_active_btn == 1) {
 		localStorage.setItem("fac_active_btn", 0);
 	}
 
 	Multi.checked = false;
 	multiState(e);
+
 	if (count.length == 0) {
 		Swal.fire({
 			position: "top",
@@ -881,7 +883,33 @@ $("#bodyContent").on("click", "#PrintFactBtn", function (e) {
 			timerProgressBar: true,
 		});
 		$("#btnMakeFact").prop("disabled", true);
+		canShowModal = false;
+		return;
 	}
+
+	if (
+		clienteDatID.dataset.cliente == "" ||
+		clienteDatID.dataset.cliente == null ||
+		clienteDatID.dataset.cliente == undefined
+	) {
+		Swal.fire({
+			position: "top",
+			title: "",
+			text: "Asegurese de tener un cliente seleccionado",
+			icon: "error",
+			confirmButtonText: "OK",
+			timer: 2500,
+			timerProgressBar: true,
+		});
+		canShowModal = false;
+		$("#btnMakeFact").prop("disabled", true);
+		return;
+	}
+	//show modal
+	if (canShowModal) {
+		$("#FacSendModal").modal("show");
+	}
+
 	let btn_Envio = document.getElementById("btnTypeEnvio");
 	let btnApartado = document.getElementById("btnTypeApartado");
 	let btn_pagoContraEntrega = document.getElementById(
@@ -1811,7 +1839,7 @@ async function getProductFact(e) {
 			if (data.idOferta > 0) {
 				//Obtengo la info de la oferta
 				oferta = await getOferta(data.idOferta);
-                console.log(oferta);
+				console.log(oferta);
 				//verifico si existe alguna oferta registrada
 				let jsonOferta = localStorage.getItem("ofertas");
 				//si existe alguna oferta registrada agrego verifico si ya existe y si se puede stackear
