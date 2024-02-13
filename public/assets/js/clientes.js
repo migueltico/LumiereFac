@@ -1,6 +1,38 @@
 //AGREGA UN CLIENTE NUEVO
 $("#bodyContent").on("click", "#clientes_add_btnAddCliente", function (e) {
     let formData = new FormData(document.getElementById('clientes_AddClienteForm'))
+    let hasError = false
+    let msgError = ""
+    let clienteName = formData.get("nombre")
+    let inputCliente = document.getElementById("fac_cliente_input")
+    //validar que los campos no esten vacios en nombre y tel 
+    if (formData.get("nombre") === "") {
+        msgError += "El campo nombre no puede estar vacío.<br>"
+        hasError = true
+    }
+
+    if (formData.get("tel") === "") {
+        msgError += "El campo teléfono no puede estar vacío.<br>"
+        hasError = true
+    }
+    //validar que el telefono sea numerico
+    if (isNaN(formData.get("tel"))) {
+        msgError += "El campo teléfono debe ser numérico.<br>"
+        hasError = true
+    }
+
+    if (hasError) {
+        //show swal with html content
+        Swal.fire({
+            position: 'top',
+            title: 'Error',
+            html: msgError,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        })
+        return
+    }
+    
     fetch("clientes/addcliente", {
             method: "POST",
             body: formData
@@ -16,6 +48,20 @@ $("#bodyContent").on("click", "#clientes_add_btnAddCliente", function (e) {
                     confirmButtonText: 'OK',
                     timer: 2500
                 }, $("#clientes_addCliente").modal("toggle"))
+                //agrega el id al #fac_cliente_input en el data-cliente si el input existe
+                console.log({
+                    inputCliente,
+                    resp,
+                    clienteName
+                })
+                if (inputCliente) {
+                    inputCliente.value = clienteName
+                    inputCliente.dataset.cliente = resp.lastID
+                    console.log({
+                      clienteName,
+                        lastID: resp.lastID  
+                    })
+                }
             } else if (resp.error === "CLIENTE00002") {
                 Swal.fire({
                     position: 'top',

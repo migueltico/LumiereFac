@@ -615,3 +615,15 @@ button.btn svg {
 .pass_show .ptxt:hover {
     color: #333333;
 }
+.position-relative {
+    position: relative;
+}
+.required_field::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: red;
+    font-size: 18px;
+    font-weight: 600;
+    content: "*";
+}

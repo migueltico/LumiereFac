@@ -10,8 +10,8 @@
             <div class="modal-body">
                 <form id="clientes_AddClienteForm" class="display_flex_row" method="post">
                     <div class="modal-body display_flex_row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                            <div class="col-12">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ">
+                            <div class="col-12 position-relative required_field">
                                 <div class="input-group input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="inputGroup-sizing-sm">Nombre</span>
@@ -27,7 +27,7 @@
                                     <input type="text" name="cedula" class="form-control  p-3" id="clientes_add_cedula">
                                 </div>
                             </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 position-relative required_field">
                                 <div class="input-group input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="inputGroup-sizing-sm">Telefono</span>
