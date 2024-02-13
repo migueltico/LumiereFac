@@ -169,6 +169,11 @@ class conexion
 				$estado = array('estado' => $stm, 'error' => $error_code, 'errorMsg' => $error_info);
 			}
 
+			// si no existe error, retornar el estado y se agrega el último id insertado
+			if ($estado['estado'] != false) {
+				$estado['lastID'] = $this->con->lastInsertId();
+			}
+
 			return $estado;
 		} catch (\PDOException $e) {
 			// Manejar otros errores PDO aquí
