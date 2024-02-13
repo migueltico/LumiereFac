@@ -29,7 +29,9 @@ class clientesModel
     public static function addNewClient($datos)
     {
         $con = new conexion();
-        return $con->SPCALLNR("CALL sp_addNewClient(:nombre,:cedula, :telefono, :direccion, :email, :id)", $datos);
+        $sql = "INSERT INTO cliente(nombre, cedula, telefono, direccion, email, creado_por, modificado_por) 
+                VALUES ( :nombre, :cedula, :telefono, :direccion, :email, :id, :id)";
+        return $con->SQ($sql, $datos);
     }
     /**
      * actualiza un cliente
