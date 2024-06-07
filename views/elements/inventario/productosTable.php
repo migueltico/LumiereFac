@@ -59,7 +59,7 @@ $maxpage = @$paginationInfo['paginacion']['paginas'];
             </div>
             <p><?= $product["codigo"] ?></p>
 
-          <td scope="row"><?= $product["categoria"] ?></td>
+          <td scope="row"><?= $product["categoria"] ??  ' <span class="badge bg-danger text-white">Error: Agregar categoria</span> ' ?></td>
           <td scope="row"><?= $product["marca"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["estilo"] ?></td>
           <td scope="row" style="text-align: center;"><?= $product["talla"] ?></td>

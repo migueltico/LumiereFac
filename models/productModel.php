@@ -49,7 +49,7 @@ class productModel
             return array("data" => null, "error" => 1, "otherdb" => $otherDbResults,   "errorData" => $otherDbResults, "msg" => "Error al Registras los datos");
         }
     }
-    
+
     /**
      * obtiene todas las categorias
      *
@@ -350,9 +350,16 @@ class productModel
     public static function getProductById($id)
     {
         $con = new conexion();
+        $sq = " SELECT p.*, t.descripcion AS talla_descripcion,c.descripcion AS categoria,t.talla AS talla FROM producto AS p
+	INNER JOIN categoria AS c ON p.idcategoria = c.idcategoria
+	LEFT JOIN usuario AS u ON p.modificado_por = u.idusuario
+	INNER JOIN tallas AS t ON p.idtalla = t.idtallas
+	WHERE p.idproducto = $id";
+
+        // $result = $con->SPCALL($sq);
         $result = $con->SPCALL("CALL sp_getProductById($id)");
         if ($result['error'] == '00000') {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 0, "msg" => "Registros cargados correctamente");
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 0, "msg" => "Registros cargados correctamente1");
         } else if ($result['error'] !== '00000') {
             return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 1,   "errorData" => $result, "msg" => "Error al Cargar los datos");
         }
@@ -422,7 +429,7 @@ class productModel
         $sql = "
         SELECT p.*, c.descripcion AS categoria,p.estilo, t.talla AS talla, d.iddescuento,d.descripcion AS descuento_descripcion, d.descuento
         FROM producto AS p
-        INNER JOIN categoria AS c ON p.idcategoria = c.idcategoria
+        LEFT JOIN categoria AS c ON p.idcategoria = c.idcategoria
         LEFT JOIN usuario AS u ON p.modificado_por = u.idusuario
         INNER JOIN tallas AS t ON p.idtalla = t.idtallas
         LEFT OUTER JOIN descuentos AS d ON p.iddescuento = d.iddescuento
@@ -581,11 +588,11 @@ class productModel
      */
     public static function saveProductPrice($datos)
     {
-            $con = new conexion();
-            $setData = ':id,:costo,:venta,:unitario,:sugerido';
-            $sql = "CALL sp_updatePriceProduct($setData)";
+        $con = new conexion();
+        $setData = ':id,:costo,:venta,:unitario,:sugerido';
+        $sql = "CALL sp_updatePriceProduct($setData)";
 
-            return $con->SPCALLNR($sql, $datos); 
+        return $con->SPCALLNR($sql, $datos);
     }
     /**
      * Actualiza el stock 
@@ -659,5 +666,4 @@ class productModel
         $sql = "SELECT $column FROM producto WHERE idproducto=$id";
         return $con->SQR_ONEROW($sql);
     }
-    
 }
