@@ -350,9 +350,16 @@ class productModel
     public static function getProductById($id)
     {
         $con = new conexion();
+        $sq = " SELECT p.*, t.descripcion AS talla_descripcion,c.descripcion AS categoria,t.talla AS talla FROM producto AS p
+	INNER JOIN categoria AS c ON p.idcategoria = c.idcategoria
+	LEFT JOIN usuario AS u ON p.modificado_por = u.idusuario
+	INNER JOIN tallas AS t ON p.idtalla = t.idtallas
+	WHERE p.idproducto = $id";
+
+        // $result = $con->SPCALL($sq);
         $result = $con->SPCALL("CALL sp_getProductById($id)");
         if ($result['error'] == '00000') {
-            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 0, "msg" => "Registros cargados correctamente");
+            return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 0, "msg" => "Registros cargados correctamente1");
         } else if ($result['error'] !== '00000') {
             return array("data" =>  $result['data'], "rows" => $result['rows'], "error" => 1,   "errorData" => $result, "msg" => "Error al Cargar los datos");
         }
