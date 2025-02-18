@@ -49,7 +49,7 @@ class productModel
             return array("data" => null, "error" => 1, "otherdb" => $otherDbResults,   "errorData" => $otherDbResults, "msg" => "Error al Registras los datos");
         }
     }
-    
+
     /**
      * obtiene todas las categorias
      *
@@ -422,7 +422,7 @@ class productModel
         $sql = "
         SELECT p.*, c.descripcion AS categoria,p.estilo, t.talla AS talla, d.iddescuento,d.descripcion AS descuento_descripcion, d.descuento
         FROM producto AS p
-        INNER JOIN categoria AS c ON p.idcategoria = c.idcategoria
+        LEFT JOIN categoria AS c ON p.idcategoria = c.idcategoria
         LEFT JOIN usuario AS u ON p.modificado_por = u.idusuario
         INNER JOIN tallas AS t ON p.idtalla = t.idtallas
         LEFT OUTER JOIN descuentos AS d ON p.iddescuento = d.iddescuento
@@ -581,11 +581,11 @@ class productModel
      */
     public static function saveProductPrice($datos)
     {
-            $con = new conexion();
-            $setData = ':id,:costo,:venta,:unitario,:sugerido';
-            $sql = "CALL sp_updatePriceProduct($setData)";
+        $con = new conexion();
+        $setData = ':id,:costo,:venta,:unitario,:sugerido';
+        $sql = "CALL sp_updatePriceProduct($setData)";
 
-            return $con->SPCALLNR($sql, $datos); 
+        return $con->SPCALLNR($sql, $datos);
     }
     /**
      * Actualiza el stock 
@@ -659,5 +659,4 @@ class productModel
         $sql = "SELECT $column FROM producto WHERE idproducto=$id";
         return $con->SQR_ONEROW($sql);
     }
-    
 }
