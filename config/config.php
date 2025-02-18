@@ -15,7 +15,7 @@ define('BLOCKS', './views/blocks/');
 define('CONTENTS', './views/contents/');
 define('ELEMENTS', './views/elements/');
 define('MODALS', './views/modals/');
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'db');
 define('BACKUP_FOLDER', $_SERVER['DOCUMENT_ROOT'] . '/backups/');
 // define('DB_USER', 'root');
 define('DB_USER', 'root');
@@ -23,15 +23,15 @@ define('DB_PASS', '');
 define('TESTPAGE', '');
 $env_test = false;
 if ($env == 1) {
-    $DB_USER = "adminUser";
-    $DB_PASS = "MXx12Lumiere2!#W@rr";
+    $DB_USER = "root";
+    $DB_PASS = "1w25GuVZx@R2NESFJppiW3";
     $DB_NAME = array(
         "Alajuela" => "maindb",
-        "Heredia" => "herediadb",
-        "San Carlos" => "sancarlosdb",
-        "San Jose" => "sanjosedb",
-        "TestDB" => "testdb",
-        "TestDB2" => "testdb2",
+        // "Heredia" => "herediadb",
+        // "San Carlos" => "sancarlosdb",
+        // "San Jose" => "sanjosedb",
+        // "TestDB" => "testdb",
+        // "TestDB2" => "testdb2",
 
     );
 } else {

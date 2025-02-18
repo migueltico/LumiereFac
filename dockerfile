@@ -29,8 +29,5 @@ RUN a2ensite 000-default.conf && service apache2 restart
 # Establece el directorio de trabajo
 WORKDIR /var/www/html
 
-# Define una variable de entorno
-ENV DB_HOST "192.168.0.3"
-
 # Expone el puerto 80
 EXPOSE 80
