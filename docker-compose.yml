@@ -17,8 +17,8 @@ services:
     depends_on:
       - db
     networks:
-      localnet:
-        ipv4_address: 192.168.1.100  # IP fija para el contenedor web
+      main_network:
+        ipv4_address: 172.19.0.2  # IP estática
 
   db:
     image: mysql:8.4.4
@@ -32,17 +32,14 @@ services:
     ports:
       - "3305:3306"
     networks:
-      localnet:
-        ipv4_address: 192.168.1.101  # IP fija para MySQL
+      main_network:
+        ipv4_address: 172.19.0.3  # IP estática
     volumes:
       - db_data:/var/lib/mysql
 
 networks:
-  localnet:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.1.0/24  # Definimos la subred
+  main_network:
+    external: true
 
 volumes:
   db_data:
