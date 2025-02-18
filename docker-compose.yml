@@ -6,7 +6,7 @@ services:
     container_name: lumiere_alajuela
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "82:80"
     environment:
       MYSQL_HOST: "db"  # Sigue funcionando internamente con este alias
       MYSQL_USER: "admin_user"
