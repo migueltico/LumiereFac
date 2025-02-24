@@ -19,14 +19,24 @@ class conexion
 					"mysql:host=" . DB_HOST . ";dbname=" . $dbNow . ";charset=utf8mb4;",
 					$GLOBALS["DB_USER"],
 					$GLOBALS["DB_PASS"],
-					array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'", PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true)
+					array(
+						PDO::ATTR_PERSISTENT => false,
+						PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+						PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_general_ci'",
+						PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+					)
 				);
 			} else {
 				$this->con = new \PDO(
 					"mysql:host=" . DB_HOST . ";dbname=$db;charset=utf8mb4;",
 					$GLOBALS["DB_USER"],
 					$GLOBALS["DB_PASS"],
-					array(PDO::ATTR_PERSISTENT => false, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'", PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true)
+					array(
+						PDO::ATTR_PERSISTENT => false,
+						PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+						PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_general_ci'",
+						PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+					)
 				);
 			}
 		} catch (\PDOException $e) {
@@ -116,7 +126,7 @@ class conexion
 			if (strpos($sql, 'INSERT') !== false || strpos($sql, 'insert') !== false) {
 				$lastID = $this->con->lastInsertId();
 			}
-			$estado = array('estado' => $stm,'lastID' => $lastID, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
+			$estado = array('estado' => $stm, 'lastID' => $lastID, 'error' => $this->statement->errorCode(), 'errorMsg' => $this->statement->errorInfo());
 			$return = $estado;
 			return $return;
 		} catch (\PDOException $e) {
